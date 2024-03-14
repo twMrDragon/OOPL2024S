@@ -38,6 +38,7 @@
  *      3. Use ShowInitProgress(percent) to display loading progress.
 */
 
+#include "MovingObject.h"
 
 namespace game_framework {
 	/////////////////////////////////////////////////////////////////////////////
@@ -50,6 +51,16 @@ namespace game_framework {
 		AUDIO_NTUT				// 2
 	};
 
+	enum MainStage {
+		MENU_STAGE,
+		GAME_STAGE
+	};
+
+	enum MenuStage {
+		MAIN_MENU,
+		LEVEL_SELECT
+	};
+
 	/////////////////////////////////////////////////////////////////////////////
 	// 這個class為遊戲的遊戲開頭畫面物件
 	// 每個Member function的Implementation都要弄懂
@@ -57,7 +68,7 @@ namespace game_framework {
 
 	class CGameStateInit : public CGameState {
 	public:
-		CGameStateInit(CGame *g);
+		CGameStateInit(CGame* g);
 		void OnInit();  								// 遊戲的初值及圖形設定
 		void OnBeginState();							// 設定每次重玩所需的變數
 		void OnKeyUp(UINT, UINT, UINT); 				// 處理鍵盤Up的動作
@@ -65,7 +76,8 @@ namespace game_framework {
 	protected:
 		void OnShow();									// 顯示這個狀態的遊戲畫面
 	private:
-		CMovingBitmap logo;								// csie的logo
+		//CMovingBitmap logo;								// csie的logo
+		CMovingBitmap background;
 	};
 
 	/////////////////////////////////////////////////////////////////////////////
@@ -75,7 +87,7 @@ namespace game_framework {
 
 	class CGameStateRun : public CGameState {
 	public:
-		CGameStateRun(CGame *g);
+		CGameStateRun(CGame* g);
 		~CGameStateRun();
 		void OnBeginState();							// 設定每次重玩所需的變數
 		void OnInit();  								// 遊戲的初值及圖形設定
@@ -89,6 +101,40 @@ namespace game_framework {
 	protected:
 		void OnMove();									// 移動遊戲元素
 		void OnShow();									// 顯示這個狀態的遊戲畫面
+	private:
+		CMovingBitmap background;
+		void initBackground();
+
+		MainStage mainStage = MENU_STAGE;
+		MenuStage menuStage = MAIN_MENU;
+
+		/// <summary>
+		/// 主選單
+		/// </summary>
+		vector<CMovingBitmap> menuButtons = {
+			CMovingBitmap(),
+			CMovingBitmap(),
+			CMovingBitmap(),
+			CMovingBitmap(),
+			CMovingBitmap(),
+			CMovingBitmap(),
+			CMovingBitmap(),
+			CMovingBitmap(),
+		};
+		int buttonSelectIndex = 0;
+		void initMenuButtons();
+		void updateSelectIndex(int direction);
+		void showMenuButtons();
+
+		/// <summary>
+		/// 遊戲畫面的物件
+		/// </summary>
+		int playerDelta = 3;
+		bool fire = false;
+		MovingObject player;
+		vector<MovingObject> playerBullets;
+		void initGame();
+		void showGame();
 	};
 
 	/////////////////////////////////////////////////////////////////////////////
@@ -98,7 +144,7 @@ namespace game_framework {
 
 	class CGameStateOver : public CGameState {
 	public:
-		CGameStateOver(CGame *g);
+		CGameStateOver(CGame* g);
 		void OnBeginState();							// 設定每次重玩所需的變數
 		void OnInit();
 	protected:
