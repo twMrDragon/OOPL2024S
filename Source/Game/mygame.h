@@ -63,6 +63,17 @@ namespace game_framework {
 		SKILL_SELECT
 	};
 
+	enum MainMenuButton {
+		START,
+		EXTRA_START,
+		PRACTICE_START,
+		REPLAY,
+		SCORE,
+		MUSIC_ROOM,
+		OPTION,
+		QUIT
+	};
+
 	/////////////////////////////////////////////////////////////////////////////
 	// 這個class為遊戲的遊戲開頭畫面物件
 	// 每個Member function的Implementation都要弄懂
@@ -112,7 +123,7 @@ namespace game_framework {
 
 		/// 主選單
 		vector<CMovingBitmap> mainMenuButtons;
-		int mainMenuSelectIndex = 0;
+		int mainMenuButtonSelectIndex = 0;
 		void initMenu();
 		void setMainMenuSelection(int direction);
 		void showMainMenuButtons();
@@ -124,9 +135,13 @@ namespace game_framework {
 		bool fire = false;
 		MovingObject player;
 		vector<MovingObject> playerBullets;
+		vector<MovingObject> enemies;
+		vector<MovingObject> fallingObjects;
 		void initGame();
 		void showGame();
 		void fixPlayerLocation();
+		void checkBulletHitEnemy();
+		void addFallingObject(MovingObject enemy);
 	};
 
 	/////////////////////////////////////////////////////////////////////////////
