@@ -28,6 +28,8 @@ void CGameStateRun::OnBeginState()
 void CGameStateRun::OnMove()							// 移動遊戲元素
 {
 	player.updateTopLeftBySpeed();
+	fixPlayerLocation();
+
 	for (size_t i = 0; i < playerBullets.size(); i++)
 	{
 		playerBullets[i].updateTopLeftBySpeed();
@@ -44,7 +46,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 {
 	initBackground();
-	initMenuButtons();
+	initMenu();
 	initGame();
 	GotoGameState(GAME_STATE_RUN);
 }
@@ -54,15 +56,15 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	if (mainStage == MENU_STAGE) {
 		if (nChar == VK_UP) {
 			if (mainStage == MENU_STAGE)
-				updateSelectIndex(-1);
+				setMainMenuSelection(-1);
 		}
 		else if (nChar == VK_DOWN) {
 			if (mainStage == MENU_STAGE)
-				updateSelectIndex(1);
+				setMainMenuSelection(1);
 		}
 		else if (nChar == 0x5A) {
 			if (mainStage == MENU_STAGE) {
-				if (buttonSelectIndex == 0)
+				if (mainMenuSelectIndex == 0)
 					mainStage = GAME_STAGE;
 			}
 		}
@@ -132,7 +134,7 @@ void CGameStateRun::OnShow()
 {
 	if (mainStage == MENU_STAGE) {
 		background.ShowBitmap();
-		showMenuButtons();
+		showMainMenuButtons();
 	}
 	else {
 		showGame();
@@ -144,16 +146,16 @@ void CGameStateRun::initBackground() {
 	background.SetTopLeft(0, 0);
 }
 
-void CGameStateRun::showMenuButtons() {
-	int d = 5;
-	for (size_t i = 0; i < menuButtons.size(); i++)
+void CGameStateRun::showMainMenuButtons() {
+	int d = 3;
+	for (size_t i = 0; i < mainMenuButtons.size(); i++)
 	{
-		CMovingBitmap button = menuButtons[i];
-		if (button.GetFrameIndexOfBitmap() == 0 && buttonSelectIndex == i) {
+		CMovingBitmap button = mainMenuButtons[i];
+		if (button.GetFrameIndexOfBitmap() == 0 && mainMenuSelectIndex == i) {
 			button.SetTopLeft(button.GetLeft() - d, button.GetTop() - d);
 			button.SetFrameIndexOfBitmap(1);
 		}
-		else if (button.GetFrameIndexOfBitmap() == 1 && buttonSelectIndex != i) {
+		else if (button.GetFrameIndexOfBitmap() == 1 && mainMenuSelectIndex != i) {
 			button.SetTopLeft(button.GetLeft() + d, button.GetTop() + d);
 			button.SetFrameIndexOfBitmap(0);
 		}
@@ -161,45 +163,129 @@ void CGameStateRun::showMenuButtons() {
 	}
 }
 
-void CGameStateRun::initMenuButtons() {
-	int startX = 448;
-	int startY = 200;
-	int dx = -10;
-	int dy = 28;
-	vector<vector<string>> imagePath = {
-		{"Resources\\Image\\TL\\title01\\Sprite10.bmp","Resources\\Image\\TL\\title01s\\Sprite10.bmp"},
-		{"Resources\\Image\\TL\\title01\\Sprite11.bmp","Resources\\Image\\TL\\title01s\\Sprite11.bmp"},
-		{"Resources\\Image\\TL\\title01\\Sprite26.bmp","Resources\\Image\\TL\\title01s\\Sprite26.bmp"},
-		{"Resources\\Image\\TL\\title01\\Sprite12.bmp","Resources\\Image\\TL\\title01s\\Sprite12.bmp"},
-		{"Resources\\Image\\TL\\title01\\Sprite13.bmp","Resources\\Image\\TL\\title01s\\Sprite13.bmp"},
-		{"Resources\\Image\\TL\\title01\\Sprite25.bmp","Resources\\Image\\TL\\title01s\\Sprite25.bmp"},
-		{"Resources\\Image\\TL\\title01\\Sprite15.bmp","Resources\\Image\\TL\\title01s\\Sprite15.bmp"},
-		{"Resources\\Image\\TL\\title01\\Sprite14.bmp","Resources\\Image\\TL\\title01s\\Sprite14.bmp"}
-	};
-	for (size_t i = 0; i < menuButtons.size(); i++)
-	{
-		menuButtons[i].LoadBitmapByString(imagePath[i], RGB(0, 0, 0));
-		menuButtons[i].SetTopLeft(startX + dx * i, startY + dy * i);
-	}
+void CGameStateRun::initMenu() {
+	// main menu
+	CMovingBitmap startButton;
+	startButton.LoadBitmapByString({ "Resources\\Image\\TL\\title01\\Sprite10.bmp","Resources\\Image\\TL\\title01s\\Sprite10.bmp" });
+	startButton.SetTopLeft(447, 199);
+	mainMenuButtons.push_back(startButton);
+
+	CMovingBitmap extraStartButton;
+	extraStartButton.LoadBitmapByString({ "Resources\\Image\\TL\\title01\\Sprite11.bmp","Resources\\Image\\TL\\title01s\\Sprite11.bmp" });
+	extraStartButton.SetTopLeft(438, 227);
+	mainMenuButtons.push_back(extraStartButton);
+
+	CMovingBitmap practiceStartButton;
+	practiceStartButton.LoadBitmapByString({ "Resources\\Image\\TL\\title01\\Sprite26.bmp","Resources\\Image\\TL\\title01s\\Sprite26.bmp" });
+	practiceStartButton.SetTopLeft(428, 256);
+	mainMenuButtons.push_back(practiceStartButton);
+
+	CMovingBitmap replayButton;
+	replayButton.LoadBitmapByString({ "Resources\\Image\\TL\\title01\\Sprite12.bmp","Resources\\Image\\TL\\title01s\\Sprite12.bmp" });
+	replayButton.SetTopLeft(418, 284);
+	mainMenuButtons.push_back(replayButton);
+
+
+	CMovingBitmap scoreButton;
+	scoreButton.LoadBitmapByString({ "Resources\\Image\\TL\\title01\\Sprite13.bmp","Resources\\Image\\TL\\title01s\\Sprite13.bmp" });
+	scoreButton.SetTopLeft(408, 312);
+	mainMenuButtons.push_back(scoreButton);
+
+
+	CMovingBitmap musicRoomButton;
+	musicRoomButton.LoadBitmapByString({ "Resources\\Image\\TL\\title01\\Sprite25.bmp","Resources\\Image\\TL\\title01s\\Sprite25.bmp" });
+	musicRoomButton.SetTopLeft(398, 340);
+	mainMenuButtons.push_back(musicRoomButton);
+
+
+	CMovingBitmap optionButton;
+	optionButton.LoadBitmapByString({ "Resources\\Image\\TL\\title01\\Sprite15.bmp","Resources\\Image\\TL\\title01s\\Sprite15.bmp" });
+	optionButton.SetTopLeft(388, 369);
+	mainMenuButtons.push_back(optionButton);
+
+
+	CMovingBitmap quitButton;
+	quitButton.LoadBitmapByString({ "Resources\\Image\\TL\\title01\\Sprite14.bmp","Resources\\Image\\TL\\title01s\\Sprite14.bmp" });
+	quitButton.SetTopLeft(378, 396);
+	mainMenuButtons.push_back(quitButton);
 }
 
-void CGameStateRun::updateSelectIndex(int direction) {
-	buttonSelectIndex += direction;
-	if (buttonSelectIndex < 0)
-		buttonSelectIndex = 0;
-	else if (buttonSelectIndex == menuButtons.size())
-		buttonSelectIndex = menuButtons.size() - 1;
+void CGameStateRun::setMainMenuSelection(int direction) {
+	mainMenuSelectIndex += direction;
+	if (mainMenuSelectIndex < 0)
+		mainMenuSelectIndex = 0;
+	else if (mainMenuSelectIndex == mainMenuButtons.size())
+		mainMenuSelectIndex = mainMenuButtons.size() - 1;
 }
 
 void CGameStateRun::initGame() {
+	// player
 	player.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite0.bmp" }, RGB(205, 205, 205));
 	player.SetTopLeft(200, 400);
+	// player moveing area
+	playerArea.LoadEmptyBitmap(447, 383);
+	playerArea.SetTopLeft(32, 16);
+
+	// interface labels
+	CMovingBitmap maxScoreLabel;
+	maxScoreLabel.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite9.bmp" }, RGB(0, 0, 0));
+	maxScoreLabel.SetTopLeft(432, 58);
+	gameInterface.push_back(maxScoreLabel);
+
+	CMovingBitmap scoreLabel;
+	scoreLabel.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite8.bmp" }, RGB(0, 0, 0));
+	scoreLabel.SetTopLeft(431, 82);
+	gameInterface.push_back(scoreLabel);
+
+	CMovingBitmap playerLabel;
+	playerLabel.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite10.bmp" }, RGB(0, 0, 0));
+	playerLabel.SetTopLeft(432, 121);
+	gameInterface.push_back(playerLabel);
+
+	CMovingBitmap bombLabel;
+	bombLabel.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite11.bmp" }, RGB(0, 0, 0));
+	bombLabel.SetTopLeft(432, 146);
+	gameInterface.push_back(bombLabel);
+
+	CMovingBitmap powerLabel;
+	powerLabel.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite15.bmp" }, RGB(0, 0, 0));
+	powerLabel.SetTopLeft(432, 186);
+	gameInterface.push_back(powerLabel);
+
+	CMovingBitmap grazeLabel;
+	grazeLabel.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite16.bmp" }, RGB(0, 0, 0));
+	grazeLabel.SetTopLeft(431, 206);
+	gameInterface.push_back(grazeLabel);
+
+	CMovingBitmap pointLabel;
+	pointLabel.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite20.bmp" }, RGB(0, 0, 0));
+	pointLabel.SetTopLeft(432, 226);
+	gameInterface.push_back(pointLabel);
 }
 
 void CGameStateRun::showGame() {
 	player.ShowBitmap();
+	for (size_t i = 0; i < gameInterface.size(); i++)
+		gameInterface[i].ShowBitmap();
 	for (size_t i = 0; i < playerBullets.size(); i++)
 	{
 		playerBullets[i].ShowBitmap();
+	}
+}
+
+void CGameStateRun::fixPlayerLocation() {
+	if (player.GetTop() < playerArea.GetTop()) {
+		player.SetTopLeft(player.GetLeft(), playerArea.GetTop());
+	}
+	if (player.GetLeft() < playerArea.GetLeft())
+	{
+		player.SetTopLeft(playerArea.GetLeft(), player.GetTop());
+	}
+	if (player.GetTop() + player.GetHeight() > playerArea.GetTop() + playerArea.GetHeight()) {
+		player.SetTopLeft(player.GetLeft(), playerArea.GetTop() + playerArea.GetHeight() - player.GetHeight());
+	}
+	if (player.GetLeft() + player.GetWidth() > playerArea.GetLeft() + playerArea.GetWidth())
+	{
+		player.SetTopLeft(playerArea.GetLeft() + playerArea.GetWidth() - player.GetWidth(), player.GetTop());
 	}
 }
