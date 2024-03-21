@@ -2,7 +2,9 @@
 #include "MovingObject.h"
 
 MovingObject::MovingObject() :CMovingBitmap() {
-
+	//HRESULT h = CoCreateGuid(&(this->guid));
+	//if (h != S_OK)
+	//	throw exception("generate guid failed");
 }
 
 void MovingObject::updateTopLeftBySpeed() {

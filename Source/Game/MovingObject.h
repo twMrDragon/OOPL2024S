@@ -7,10 +7,16 @@ class MovingObject :public CMovingBitmap
 {
 public:
 	MovingObject();
-	int getSpeedX() { return speedX; };
+	// setter
 	void setSpeedX(int speed) { speedX = speed; };
-	int getSpeedY() { return speedY; };
 	void setSpeedY(int speed) { speedY = speed; };
+	void setSpeed(int x, int y) { speedX = x; speedY = y; };
+
+	// getter
+	int getSpeedX() { return speedX; };
+	int getSpeedY() { return speedY; };
+
+	// methon
 	void updateTopLeftBySpeed();
 private:
 	int speedX = 0;
