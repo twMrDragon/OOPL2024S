@@ -174,49 +174,33 @@ void CGameStateRun::showMainMenuButtons() {
 
 void CGameStateRun::initMenu() {
 	// main menu
-	CMovingBitmap startButton;
-	startButton.LoadBitmapByString({ "Resources\\Image\\TL\\title01\\Sprite10.bmp","Resources\\Image\\TL\\title01s\\Sprite10.bmp" }, RGB(0, 0, 0));
-	startButton.SetTopLeft(447, 199);
-	mainMenuButtons.push_back(startButton);
-
-	CMovingBitmap extraStartButton;
-	extraStartButton.LoadBitmapByString({ "Resources\\Image\\TL\\title01\\Sprite11.bmp","Resources\\Image\\TL\\title01s\\Sprite11.bmp" }, RGB(0, 0, 0));
-	extraStartButton.SetTopLeft(438, 227);
-	mainMenuButtons.push_back(extraStartButton);
-
-	CMovingBitmap practiceStartButton;
-	practiceStartButton.LoadBitmapByString({ "Resources\\Image\\TL\\title01\\Sprite26.bmp","Resources\\Image\\TL\\title01s\\Sprite26.bmp" }, RGB(0, 0, 0));
-	practiceStartButton.SetTopLeft(428, 256);
-	mainMenuButtons.push_back(practiceStartButton);
-
-	CMovingBitmap replayButton;
-	replayButton.LoadBitmapByString({ "Resources\\Image\\TL\\title01\\Sprite12.bmp","Resources\\Image\\TL\\title01s\\Sprite12.bmp" }, RGB(0, 0, 0));
-	replayButton.SetTopLeft(418, 284);
-	mainMenuButtons.push_back(replayButton);
-
-
-	CMovingBitmap scoreButton;
-	scoreButton.LoadBitmapByString({ "Resources\\Image\\TL\\title01\\Sprite13.bmp","Resources\\Image\\TL\\title01s\\Sprite13.bmp" }, RGB(0, 0, 0));
-	scoreButton.SetTopLeft(408, 312);
-	mainMenuButtons.push_back(scoreButton);
-
-
-	CMovingBitmap musicRoomButton;
-	musicRoomButton.LoadBitmapByString({ "Resources\\Image\\TL\\title01\\Sprite25.bmp","Resources\\Image\\TL\\title01s\\Sprite25.bmp" }, RGB(0, 0, 0));
-	musicRoomButton.SetTopLeft(398, 340);
-	mainMenuButtons.push_back(musicRoomButton);
-
-
-	CMovingBitmap optionButton;
-	optionButton.LoadBitmapByString({ "Resources\\Image\\TL\\title01\\Sprite15.bmp","Resources\\Image\\TL\\title01s\\Sprite15.bmp" }, RGB(0, 0, 0));
-	optionButton.SetTopLeft(388, 369);
-	mainMenuButtons.push_back(optionButton);
-
-
-	CMovingBitmap quitButton;
-	quitButton.LoadBitmapByString({ "Resources\\Image\\TL\\title01\\Sprite14.bmp","Resources\\Image\\TL\\title01s\\Sprite14.bmp" }, RGB(0, 0, 0));
-	quitButton.SetTopLeft(378, 396);
-	mainMenuButtons.push_back(quitButton);
+	vector<vector<string>> buttonImagePaths = {
+		{ "Resources\\Image\\TL\\title01\\Sprite10.bmp","Resources\\Image\\TL\\title01s\\Sprite10.bmp" },
+		{ "Resources\\Image\\TL\\title01\\Sprite11.bmp","Resources\\Image\\TL\\title01s\\Sprite11.bmp" },
+		{ "Resources\\Image\\TL\\title01\\Sprite26.bmp","Resources\\Image\\TL\\title01s\\Sprite26.bmp" },
+		{ "Resources\\Image\\TL\\title01\\Sprite12.bmp","Resources\\Image\\TL\\title01s\\Sprite12.bmp" },
+		{ "Resources\\Image\\TL\\title01\\Sprite13.bmp","Resources\\Image\\TL\\title01s\\Sprite13.bmp" },
+		{ "Resources\\Image\\TL\\title01\\Sprite25.bmp","Resources\\Image\\TL\\title01s\\Sprite25.bmp" },
+		{ "Resources\\Image\\TL\\title01\\Sprite15.bmp","Resources\\Image\\TL\\title01s\\Sprite15.bmp" },
+		{ "Resources\\Image\\TL\\title01\\Sprite14.bmp","Resources\\Image\\TL\\title01s\\Sprite14.bmp" },
+	};
+	vector<vector<int>> buttonLocations = {
+		{447,199},
+		{438, 227},
+		{428, 256},
+		{418, 284},
+		{408, 312},
+		{398, 340},
+		{388, 369},
+		{378, 396}
+	};
+	for (size_t i = 0; i < buttonImagePaths.size(); i++)
+	{
+		CMovingBitmap button;
+		button.LoadBitmapByString(buttonImagePaths[i], RGB(0, 0, 0));
+		button.SetTopLeft(buttonLocations[i][0], buttonLocations[i][1]);
+		mainMenuButtons.push_back(button);
+	}
 }
 
 void CGameStateRun::setMainMenuSelection(int direction) {
@@ -236,40 +220,31 @@ void CGameStateRun::initGame() {
 	playerArea.SetTopLeft(32, 16);
 
 	// interface labels
-	CMovingBitmap maxScoreLabel;
-	maxScoreLabel.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite9.bmp" }, RGB(0, 0, 0));
-	maxScoreLabel.SetTopLeft(432, 58);
-	gameInterface.push_back(maxScoreLabel);
-
-	CMovingBitmap scoreLabel;
-	scoreLabel.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite8.bmp" }, RGB(0, 0, 0));
-	scoreLabel.SetTopLeft(431, 82);
-	gameInterface.push_back(scoreLabel);
-
-	CMovingBitmap playerLabel;
-	playerLabel.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite10.bmp" }, RGB(0, 0, 0));
-	playerLabel.SetTopLeft(432, 121);
-	gameInterface.push_back(playerLabel);
-
-	CMovingBitmap bombLabel;
-	bombLabel.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite11.bmp" }, RGB(0, 0, 0));
-	bombLabel.SetTopLeft(432, 146);
-	gameInterface.push_back(bombLabel);
-
-	CMovingBitmap powerLabel;
-	powerLabel.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite15.bmp" }, RGB(0, 0, 0));
-	powerLabel.SetTopLeft(432, 186);
-	gameInterface.push_back(powerLabel);
-
-	CMovingBitmap grazeLabel;
-	grazeLabel.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite16.bmp" }, RGB(0, 0, 0));
-	grazeLabel.SetTopLeft(431, 206);
-	gameInterface.push_back(grazeLabel);
-
-	CMovingBitmap pointLabel;
-	pointLabel.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite20.bmp" }, RGB(0, 0, 0));
-	pointLabel.SetTopLeft(432, 226);
-	gameInterface.push_back(pointLabel);
+	vector<vector<string>> labelImagePaths = {
+		{ "Resources\\Image\\CM\\front\\Sprite9.bmp" },
+		{ "Resources\\Image\\CM\\front\\Sprite8.bmp" },
+		{ "Resources\\Image\\CM\\front\\Sprite10.bmp" },
+		{ "Resources\\Image\\CM\\front\\Sprite11.bmp" },
+		{ "Resources\\Image\\CM\\front\\Sprite15.bmp" },
+		{ "Resources\\Image\\CM\\front\\Sprite16.bmp" },
+		{ "Resources\\Image\\CM\\front\\Sprite20.bmp" },
+	};
+	vector<vector<int>> labelLocations = {
+		{432, 58},
+		{431, 82},
+		{432, 121},
+		{432, 146},
+		{432, 186},
+		{431, 206},
+		{432, 226}
+	};
+	for (size_t i = 0; i < labelImagePaths.size(); i++)
+	{
+		CMovingBitmap label;
+		label.LoadBitmapByString(labelImagePaths[i], RGB(0, 0, 0));
+		label.SetTopLeft(labelLocations[i][0], labelLocations[i][1]);
+		gameInterface.push_back(label);
+	}
 
 	// test enemy
 	int x = 32;
