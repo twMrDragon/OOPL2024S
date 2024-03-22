@@ -218,7 +218,9 @@ void CGameStateRun::initGame() {
 	// player moveing area
 	playerArea.LoadEmptyBitmap(447, 383);
 	playerArea.SetTopLeft(32, 16);
-
+	// live and bomb star
+	RedStar.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite17.bmp" }, RGB(0, 0, 0));
+	GreenStar.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite18.bmp" }, RGB(0, 0, 0));
 	// interface labels
 	vector<vector<string>> labelImagePaths = {
 		{ "Resources\\Image\\CM\\front\\Sprite9.bmp" },
@@ -279,6 +281,17 @@ void CGameStateRun::showGame() {
 	// falling object
 	for (size_t i = 0; i < fallingObjects.size(); i++)
 		fallingObjects[i].ShowBitmap();
+
+	for (int i = 0; i < RemainingLives ; i++)
+	{
+		RedStar.SetTopLeft(496+i*RedStar.GetWidth(), 122);
+		RedStar.ShowBitmap();
+	}
+	for (int i = 0; i < Bomb; i++)
+	{
+		GreenStar.SetTopLeft(496 + i * GreenStar.GetWidth(), 146);
+		GreenStar.ShowBitmap();
+	}
 }
 
 void CGameStateRun::fixPlayerLocation() {
