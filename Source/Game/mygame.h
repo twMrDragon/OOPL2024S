@@ -39,6 +39,7 @@
 */
 
 #include "MovingObject.h"
+#include "NumberSystem.h"
 
 namespace game_framework {
 	/////////////////////////////////////////////////////////////////////////////
@@ -146,6 +147,7 @@ namespace game_framework {
 		void fixPlayerLocation();
 		void checkBulletHitEnemy();
 		void addFallingObject(MovingObject enemy);
+		vector<NumberSystem> numberSystems;
 	};
 
 	/////////////////////////////////////////////////////////////////////////////
