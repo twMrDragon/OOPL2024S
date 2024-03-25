@@ -58,7 +58,20 @@ namespace game_framework {
 
 	enum MenuStage {
 		MAIN_MENU,
-		LEVEL_SELECT
+		LEVEL_SELECT,
+		CHARCATER_SELECT,
+		SKILL_SELECT
+	};
+
+	enum MainMenuButton {
+		START,
+		EXTRA_START,
+		PRACTICE_START,
+		REPLAY,
+		SCORE,
+		MUSIC_ROOM,
+		OPTION,
+		QUIT
 	};
 
 	/////////////////////////////////////////////////////////////////////////////
@@ -108,33 +121,31 @@ namespace game_framework {
 		MainStage mainStage = MENU_STAGE;
 		MenuStage menuStage = MAIN_MENU;
 
-		/// <summary>
 		/// 主選單
-		/// </summary>
-		vector<CMovingBitmap> menuButtons = {
-			CMovingBitmap(),
-			CMovingBitmap(),
-			CMovingBitmap(),
-			CMovingBitmap(),
-			CMovingBitmap(),
-			CMovingBitmap(),
-			CMovingBitmap(),
-			CMovingBitmap(),
-		};
-		int buttonSelectIndex = 0;
-		void initMenuButtons();
-		void updateSelectIndex(int direction);
-		void showMenuButtons();
+		vector<CMovingBitmap> mainMenuButtons;
+		int mainMenuButtonSelectIndex = 0;
+		void initMenu();
+		void setMainMenuSelection(int direction);
+		void showMainMenuButtons();
 
-		/// <summary>
 		/// 遊戲畫面的物件
-		/// </summary>
-		int playerDelta = 3;
+		CMovingBitmap playerArea;
+		vector<CMovingBitmap> gameInterface;
+		int Bomb = 3;
+		int RemainingLives = 3;
+		int playerDelta = 7;
 		bool fire = false;
+		CMovingBitmap GreenStar;
+		CMovingBitmap RedStar;
 		MovingObject player;
 		vector<MovingObject> playerBullets;
+		vector<MovingObject> enemies;
+		vector<MovingObject> fallingObjects;
 		void initGame();
 		void showGame();
+		void fixPlayerLocation();
+		void checkBulletHitEnemy();
+		void addFallingObject(MovingObject enemy);
 	};
 
 	/////////////////////////////////////////////////////////////////////////////
