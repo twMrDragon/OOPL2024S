@@ -69,6 +69,10 @@
     <ClCompile Include="Source\Game\Point.cpp">
       <Filter>MyGame</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\Enemy.cpp">
+      <Filter>MyGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\MapData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Library\audio.h">
@@ -116,6 +120,10 @@
     <ClInclude Include="Source\Game\Point.h">
       <Filter>MyGame</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\Enemy.h">
+      <Filter>MyGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\MapData.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Source\Core\game.rc">

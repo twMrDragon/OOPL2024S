@@ -51,14 +51,17 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 		fallingObjects[i].updateTopLeftBySpeed();
 	}
 	if (mainStage == GAME_STAGE) {
-		if (frameCounter < bezierSpeedTest.size()) {
-			for (size_t i = 0; i < enemies.size(); i++)
-			{
-				enemies[i].setSpeed(bezierSpeedTest[frameCounter]);
-				enemies[i].updateTopLeftBySpeed();
-			}
+		map<size_t, MapData>::iterator iter = mapDatum.find(frameCounter);
+		if (iter != mapDatum.end()) {
+			Enemy enemy;
+			enemy.LoadBitmapByString(iter->second.resource, iter->second.colorFilter);
+			enemy.SetTopLeft(iter->second.location.x, iter->second.location.y);
+			enemy.setSpeeds(iter->second.speeds);
+			enemies.push_back(enemy);
 		}
 		frameCounter += 1;
+		for (size_t i = 0; i < enemies.size(); i++)
+			enemies[i].updateBySpeeds();
 	}
 }
 
@@ -270,25 +273,35 @@ void CGameStateRun::initGame() {
 	numberSystems[3].setXY(496, 206);
 	numberSystems[4].setXY(496, 226);
 
+	initMapDatum();
+}
+
+void CGameStateRun::initMapDatum() {
+	int frame = 0;
 	// test enemy
-	int x = 32;
-	int y = 32;
-	for (size_t i = 0; i < 1; i++)
+	Bezier bezier({ Point(0,0),Point(0,150) });
+	vector<Point> speedTemp = bezier.getEachSpeed(60);
+	vector<Point> bezierSpeedTest = speedTemp;
+	Bezier bezier2({ Point(0,0),Point(50,80),Point(250,-80),Point(300,0) });
+	vector<Point> speedTemp2 = bezier2.getEachSpeed(90);
+	bezierSpeedTest.insert(bezierSpeedTest.end(), speedTemp2.begin() + 1, speedTemp2.end());
+	bezierSpeedTest.insert(bezierSpeedTest.end(), speedTemp.begin() + 1, speedTemp.end());
+
+	int x = 16;
+	Enemy mesaureEnemy;
+	mesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" }, RGB(254, 254, 254));
+	for (size_t i = 0; i < 5; i++)
 	{
-		x = 32;
-		for (size_t j = 0; j < 5; j++)
-		{
-			MovingObject enemy;
-			enemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" }, RGB(254, 254, 254));
-			enemy.SetTopLeft(x, y);
-			x += 32;
-			enemies.push_back(enemy);
-		}
-		y += 32;
+		MapData mapData;
+		mapData.resource = { "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" };
+		mapData.colorFilter = RGB(254, 254, 254);
+		mapData.location = Point(x, -mesaureEnemy.GetHeight());
+		mapData.speeds = bezierSpeedTest;
+		mapDatum[frame] = mapData;
+		frame += 12;
+		x += mesaureEnemy.GetWidth() / 3;
 	}
 
-	bezierTest.setPoints({ Point(0,0),Point(320,480),Point(640,0) });
-	bezierSpeedTest = bezierTest.getEachSpeed(300);
 }
 
 void CGameStateRun::showGame() {
@@ -313,12 +326,13 @@ void CGameStateRun::showGame() {
 	// falling object
 	for (size_t i = 0; i < fallingObjects.size(); i++)
 		fallingObjects[i].ShowBitmap();
-
+	// player star
 	for (int i = 0; i < RemainingLives; i++)
 	{
 		RedStar.SetTopLeft(496 + i * RedStar.GetWidth(), 122);
 		RedStar.ShowBitmap();
 	}
+	// bomb star
 	for (int i = 0; i < Bomb; i++)
 	{
 		GreenStar.SetTopLeft(496 + i * GreenStar.GetWidth(), 146);

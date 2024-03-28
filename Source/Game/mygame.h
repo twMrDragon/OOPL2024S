@@ -41,6 +41,8 @@
 #include "MovingObject.h"
 #include "NumberSystem.h"
 #include "Bezier.h"
+#include "Enemy.h"
+#include "MapData.h"
 
 namespace game_framework {
 	/////////////////////////////////////////////////////////////////////////////
@@ -135,23 +137,24 @@ namespace game_framework {
 		vector<CMovingBitmap> gameInterface;
 		int Bomb = 3;
 		int RemainingLives = 3;
-		int playerDelta = 7;
-		bool fire = false;
 		CMovingBitmap GreenStar;
 		CMovingBitmap RedStar;
+		vector<NumberSystem> numberSystems;
+		// 玩家可交互物件
+		int playerDelta = 7;
+		bool fire = false;
 		MovingObject player;
 		vector<MovingObject> playerBullets;
-		vector<MovingObject> enemies;
+		vector<Enemy> enemies;
 		vector<MovingObject> fallingObjects;
 		void initGame();
+		void initMapDatum();
 		void showGame();
 		void fixPlayerLocation();
 		void checkBulletHitEnemy();
 		void addFallingObject(MovingObject enemy);
-		vector<NumberSystem> numberSystems;
-		Bezier bezierTest;
-		vector<Point> bezierSpeedTest;
 		size_t frameCounter = 0;
+		map<size_t, MapData> mapDatum;
 	};
 
 	/////////////////////////////////////////////////////////////////////////////
