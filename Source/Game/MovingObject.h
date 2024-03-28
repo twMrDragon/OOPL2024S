@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Library/gameutil.h"
+#include "Point.h"
 using namespace game_framework;
 
 class MovingObject :public CMovingBitmap
@@ -8,18 +9,18 @@ class MovingObject :public CMovingBitmap
 public:
 	MovingObject();
 	// setter
-	void setSpeedX(int speed) { speedX = speed; };
-	void setSpeedY(int speed) { speedY = speed; };
-	void setSpeed(int x, int y) { speedX = x; speedY = y; };
+	void setSpeed(Point speed) { this->speed = speed; };
+	void setSpeedX(int x) { this->speed.x = x; };
+	void setSpeedY(int y) { this->speed.y = y; };
 
 	// getter
-	int getSpeedX() { return speedX; };
-	int getSpeedY() { return speedY; };
+	Point getSpeed() { return this->speed; };
+	int getSpeedX() { return this->speed.x; };
+	int getSpeedY() { return this->speed.y; };
 
 	// methon
 	void updateTopLeftBySpeed();
 private:
-	int speedX = 0;
-	int speedY = 0;
+	Point speed;
 };
 

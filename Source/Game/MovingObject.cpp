@@ -8,7 +8,7 @@ MovingObject::MovingObject() :CMovingBitmap() {
 }
 
 void MovingObject::updateTopLeftBySpeed() {
-	if (speedX == 0 && speedY == 0)
+	if (speed.x == 0 && speed.y == 0)
 		return;
-	SetTopLeft(GetLeft() + speedX, GetTop() + speedY);
+	SetTopLeft(GetLeft() + speed.x, GetTop() + speed.y);
 }

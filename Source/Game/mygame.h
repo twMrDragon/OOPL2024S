@@ -40,6 +40,7 @@
 
 #include "MovingObject.h"
 #include "NumberSystem.h"
+#include "Bezier.h"
 
 namespace game_framework {
 	/////////////////////////////////////////////////////////////////////////////
@@ -148,6 +149,9 @@ namespace game_framework {
 		void checkBulletHitEnemy();
 		void addFallingObject(MovingObject enemy);
 		vector<NumberSystem> numberSystems;
+		Bezier bezierTest;
+		vector<Point> bezierSpeedTest;
+		size_t frameCounter = 0;
 	};
 
 	/////////////////////////////////////////////////////////////////////////////

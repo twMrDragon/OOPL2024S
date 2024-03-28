@@ -50,6 +50,16 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 	{
 		fallingObjects[i].updateTopLeftBySpeed();
 	}
+	if (mainStage == GAME_STAGE) {
+		if (frameCounter < bezierSpeedTest.size()) {
+			for (size_t i = 0; i < enemies.size(); i++)
+			{
+				enemies[i].setSpeed(bezierSpeedTest[frameCounter]);
+				enemies[i].updateTopLeftBySpeed();
+			}
+		}
+		frameCounter += 1;
+	}
 }
 
 void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
@@ -263,7 +273,7 @@ void CGameStateRun::initGame() {
 	// test enemy
 	int x = 32;
 	int y = 32;
-	for (size_t i = 0; i < 5; i++)
+	for (size_t i = 0; i < 1; i++)
 	{
 		x = 32;
 		for (size_t j = 0; j < 5; j++)
@@ -276,6 +286,9 @@ void CGameStateRun::initGame() {
 		}
 		y += 32;
 	}
+
+	bezierTest.setPoints({ Point(0,0),Point(320,480),Point(640,0) });
+	bezierSpeedTest = bezierTest.getEachSpeed(300);
 }
 
 void CGameStateRun::showGame() {
@@ -290,7 +303,7 @@ void CGameStateRun::showGame() {
 	numberSystems[2].showNumber(0);
 	numberSystems[3].showNumber(0);
 	numberSystems[4].showNumber(0);
-	
+
 	// bullet
 	for (size_t i = 0; i < playerBullets.size(); i++)
 		playerBullets[i].ShowBitmap();
@@ -301,9 +314,9 @@ void CGameStateRun::showGame() {
 	for (size_t i = 0; i < fallingObjects.size(); i++)
 		fallingObjects[i].ShowBitmap();
 
-	for (int i = 0; i < RemainingLives ; i++)
+	for (int i = 0; i < RemainingLives; i++)
 	{
-		RedStar.SetTopLeft(496+i*RedStar.GetWidth(), 122);
+		RedStar.SetTopLeft(496 + i * RedStar.GetWidth(), 122);
 		RedStar.ShowBitmap();
 	}
 	for (int i = 0; i < Bomb; i++)
@@ -351,6 +364,6 @@ void CGameStateRun::addFallingObject(MovingObject enemy) {
 	int left = enemy.GetLeft() + (enemy.GetWidth() - falling.GetWidth()) / 2;
 	int top = enemy.GetTop() + (enemy.GetHeight() - falling.GetHeight()) / 2;
 	falling.SetTopLeft(left, top);
-	falling.setSpeed(0, 3);
+	falling.setSpeed(Point(0, 3));
 	fallingObjects.push_back(falling);
 }
