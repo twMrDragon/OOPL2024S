@@ -49,7 +49,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 	for (size_t i = 0; i < fallingObjects.size(); i++)
 	{
 		fallingObjects[i].updateTopLeftBySpeed();
-		if (fallingObjects[i].IsOverlap(fallingObjects[i],player))
+		if (fallingObjects[i].IsOverlap(fallingObjects[i], player))
 		{
 			fallingObjects.erase(fallingObjects.begin() + i);
 			Power++;
@@ -73,7 +73,6 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 
 void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 {
-	initBackground();
 	initMenu();
 	initGame();
 	GotoGameState(GAME_STATE_RUN);
@@ -169,11 +168,6 @@ void CGameStateRun::OnShow()
 	}
 }
 
-void CGameStateRun::initBackground() {
-	background.LoadBitmapByString({ "Resources\\Image\\TL\\title00\\Sprite0.bmp" });
-	background.SetTopLeft(0, 0);
-}
-
 void CGameStateRun::showMainMenuButtons() {
 	int d = 3;
 	for (size_t i = 0; i < mainMenuButtons.size(); i++)
@@ -192,6 +186,9 @@ void CGameStateRun::showMainMenuButtons() {
 }
 
 void CGameStateRun::initMenu() {
+	// menu background
+	background.LoadBitmapByString({ "Resources\\Image\\TL\\title00\\Sprite0.bmp" });
+	background.SetTopLeft(0, 0);
 	// main menu
 	vector<vector<string>> buttonImagePaths = {
 		{ "Resources\\Image\\TL\\title01\\Sprite10.bmp","Resources\\Image\\TL\\title01s\\Sprite10.bmp" },
@@ -235,8 +232,14 @@ void CGameStateRun::initGame() {
 	player.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite0.bmp" }, RGB(205, 205, 205));
 	player.SetTopLeft(200, 400);
 	// player moveing area
-	playerArea.LoadEmptyBitmap(447, 383);
+	playerArea.LoadEmptyBitmap(448, 384);
 	playerArea.SetTopLeft(32, 16);
+	// interface background
+	for (int filename : {5, 6, 7, 23}) {
+		CMovingBitmap interfaceBackgound;
+		interfaceBackgound.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite" + to_string(filename) + ".bmp" });
+		interfaceBackgroundResource.push_back(interfaceBackgound);
+	}
 	// live and bomb star
 	RedStar.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite17.bmp" }, RGB(0, 0, 0));
 	GreenStar.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite18.bmp" }, RGB(0, 0, 0));
@@ -285,15 +288,15 @@ void CGameStateRun::initGame() {
 void CGameStateRun::initMapDatum() {
 	int frame = 0;
 	// test enemy
-	Bezier bezier({ Point(0,0),Point(0,150) });
-	vector<Point> speedTemp = bezier.getEachSpeed(60);
-	vector<Point> bezierSpeedTest = speedTemp;
-	Bezier bezier2({ Point(0,0),Point(50,80),Point(250,-80),Point(300,0) });
-	vector<Point> speedTemp2 = bezier2.getEachSpeed(90);
-	bezierSpeedTest.insert(bezierSpeedTest.end(), speedTemp2.begin() + 1, speedTemp2.end());
-	bezierSpeedTest.insert(bezierSpeedTest.end(), speedTemp.begin() + 1, speedTemp.end());
+	Bezier straightLine({ Point(0,0),Point(0,150) });
+	vector<Point> speedTemp = straightLine.getEachSpeed(60);
+	vector<Point> wave1 = speedTemp;
+	Bezier curve({ Point(0,0),Point(50,80),Point(190,-80),Point(240,0) });
+	vector<Point> speedTemp2 = curve.getEachSpeed(90);
+	wave1.insert(wave1.end(), speedTemp2.begin() + 1, speedTemp2.end());
+	wave1.insert(wave1.end(), speedTemp.begin() + 1, speedTemp.end());
 
-	int x = 16;
+	int x = 80;
 	Enemy mesaureEnemy;
 	mesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" }, RGB(254, 254, 254));
 	for (size_t i = 0; i < 5; i++)
@@ -302,27 +305,19 @@ void CGameStateRun::initMapDatum() {
 		mapData.resource = { "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" };
 		mapData.colorFilter = RGB(254, 254, 254);
 		mapData.location = Point(x, -mesaureEnemy.GetHeight());
-		mapData.speeds = bezierSpeedTest;
+		mapData.speeds = wave1;
 		mapDatum[frame] = mapData;
 		frame += 12;
 		x += mesaureEnemy.GetWidth() / 3;
 	}
+
+	Bezier curve2({ Point(0,0),Point(50,80),Point(250,-80),Point(300,0) });
 
 }
 
 void CGameStateRun::showGame() {
 	// player
 	player.ShowBitmap();
-	// interfaece labe
-	for (size_t i = 0; i < gameInterface.size(); i++)
-		gameInterface[i].ShowBitmap();
-	// number system
-	numberSystems[0].showNumber(1000000);
-	numberSystems[1].showNumber(0);
-	numberSystems[2].showNumber(Power);
-	numberSystems[3].showNumber(0);
-	numberSystems[4].showNumber(0);
-
 	// bullet
 	for (size_t i = 0; i < playerBullets.size(); i++)
 		playerBullets[i].ShowBitmap();
@@ -332,6 +327,19 @@ void CGameStateRun::showGame() {
 	// falling object
 	for (size_t i = 0; i < fallingObjects.size(); i++)
 		fallingObjects[i].ShowBitmap();
+
+	// interface
+	// interface border
+	showBorder();
+	// interfaece labe
+	for (size_t i = 0; i < gameInterface.size(); i++)
+		gameInterface[i].ShowBitmap();
+	// number system
+	numberSystems[0].showNumber(1000000);
+	numberSystems[1].showNumber(0);
+	numberSystems[2].showNumber(Power);
+	numberSystems[3].showNumber(0);
+	numberSystems[4].showNumber(0);
 	// player star
 	for (int i = 0; i < RemainingLives; i++)
 	{
@@ -343,6 +351,36 @@ void CGameStateRun::showGame() {
 	{
 		GreenStar.SetTopLeft(496 + i * GreenStar.GetWidth(), 146);
 		GreenStar.ShowBitmap();
+	}
+}
+
+void CGameStateRun::showBorder() {
+	// right border
+	CMovingBitmap leftBackground = interfaceBackgroundResource[0];
+	for (int y = 0; y < 480; y += leftBackground.GetHeight())
+	{
+		leftBackground.SetTopLeft(0, y);
+		leftBackground.ShowBitmap();
+	}
+	// top, bottom border
+	CMovingBitmap topBackground = interfaceBackgroundResource[1];
+	CMovingBitmap bottomBackground = interfaceBackgroundResource[2];
+	for (int x = topBackground.GetWidth(); x < playerArea.GetLeft() + playerArea.GetWidth(); x += topBackground.GetWidth())
+	{
+		topBackground.SetTopLeft(x, 0);
+		topBackground.ShowBitmap();
+		bottomBackground.SetTopLeft(x, 480 - bottomBackground.GetHeight());
+		bottomBackground.ShowBitmap();
+	}
+	// right border
+	CMovingBitmap rightBackground = interfaceBackgroundResource[3];
+	for (int y = 0; y < 480; y += rightBackground.GetHeight())
+	{
+		for (int x = playerArea.GetLeft() + playerArea.GetWidth(); x < 640; x += rightBackground.GetWidth())
+		{
+			rightBackground.SetTopLeft(x, y);
+			rightBackground.ShowBitmap();
+		}
 	}
 }
 
