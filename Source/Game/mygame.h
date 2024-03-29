@@ -135,6 +135,7 @@ namespace game_framework {
 		/// 遊戲畫面的物件
 		CMovingBitmap playerArea;
 		vector<CMovingBitmap> gameInterface;
+		int Power = 0;
 		int Bomb = 3;
 		int RemainingLives = 3;
 		CMovingBitmap GreenStar;

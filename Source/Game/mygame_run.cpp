@@ -49,6 +49,12 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 	for (size_t i = 0; i < fallingObjects.size(); i++)
 	{
 		fallingObjects[i].updateTopLeftBySpeed();
+		if (fallingObjects[i].IsOverlap(fallingObjects[i],player))
+		{
+			fallingObjects.erase(fallingObjects.begin() + i);
+			Power++;
+		}
+
 	}
 	if (mainStage == GAME_STAGE) {
 		map<size_t, MapData>::iterator iter = mapDatum.find(frameCounter);
@@ -313,7 +319,7 @@ void CGameStateRun::showGame() {
 	// number system
 	numberSystems[0].showNumber(1000000);
 	numberSystems[1].showNumber(0);
-	numberSystems[2].showNumber(0);
+	numberSystems[2].showNumber(Power);
 	numberSystems[3].showNumber(0);
 	numberSystems[4].showNumber(0);
 
@@ -364,8 +370,6 @@ void CGameStateRun::checkBulletHitEnemy() {
 				addFallingObject(enemies[j]);
 				playerBullets.erase(playerBullets.begin() + i);
 				enemies.erase(enemies.begin() + j);
-				i--;
-				j--;
 				break;
 			}
 		}
