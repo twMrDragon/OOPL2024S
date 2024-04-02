@@ -39,6 +39,10 @@
 */
 
 #include "MovingObject.h"
+#include "NumberSystem.h"
+#include "Bezier.h"
+#include "Enemy.h"
+#include "MapData.h"
 
 namespace game_framework {
 	/////////////////////////////////////////////////////////////////////////////
@@ -116,7 +120,6 @@ namespace game_framework {
 		void OnShow();									// 顯示這個狀態的遊戲畫面
 	private:
 		CMovingBitmap background;
-		void initBackground();
 
 		MainStage mainStage = MENU_STAGE;
 		MenuStage menuStage = MAIN_MENU;
@@ -128,24 +131,32 @@ namespace game_framework {
 		void setMainMenuSelection(int direction);
 		void showMainMenuButtons();
 
-		/// 遊戲畫面的物件
+		// 遊戲畫面的物件
 		CMovingBitmap playerArea;
 		vector<CMovingBitmap> gameInterface;
+		int Power = 0;
 		int Bomb = 3;
 		int RemainingLives = 3;
-		int playerDelta = 7;
-		bool fire = false;
 		CMovingBitmap GreenStar;
 		CMovingBitmap RedStar;
+		vector<NumberSystem> numberSystems;
+		vector<CMovingBitmap> interfaceBackgroundResource;
+		// 玩家可交互物件
+		int playerDelta = 7;
+		bool fire = false;
 		MovingObject player;
 		vector<MovingObject> playerBullets;
-		vector<MovingObject> enemies;
+		vector<Enemy> enemies;
 		vector<MovingObject> fallingObjects;
 		void initGame();
+		void initMapDatum();
 		void showGame();
+		void showBorder();
 		void fixPlayerLocation();
 		void checkBulletHitEnemy();
 		void addFallingObject(MovingObject enemy);
+		size_t frameCounter = 0;
+		map<size_t, MapData> mapDatum;
 	};
 
 	/////////////////////////////////////////////////////////////////////////////
