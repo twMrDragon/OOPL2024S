@@ -27,36 +27,38 @@ void CGameStateRun::OnBeginState()
 }
 
 void CGameStateRun::OnMove()							// 移動遊戲元素
-{	// player
-	player.updateTopLeftBySpeed();
-	fixPlayerLocation();
-
-	// bullet
-	for (size_t i = 0; i < playerBullets.size(); i++)
-	{
-		playerBullets[i].updateTopLeftBySpeed();
-	}
-	if (fire) {
-		MovingObject bullet;
-		bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite64.bmp" }, RGB(205, 205, 205));
-		bullet.SetTopLeft(player.GetLeft(), player.GetTop() + bullet.GetHeight());
-		bullet.setSpeedY(-5);
-		playerBullets.push_back(bullet);
-	}
-	checkBulletHitEnemy();
-
-	// falling object
-	for (size_t i = 0; i < fallingObjects.size(); i++)
-	{
-		fallingObjects[i].updateTopLeftBySpeed();
-		if (fallingObjects[i].IsOverlap(fallingObjects[i], player))
-		{
-			fallingObjects.erase(fallingObjects.begin() + i);
-			Power++;
-		}
-
-	}
+{	
 	if (mainStage == GAME_STAGE) {
+		// player
+		player.updateTopLeftBySpeed();
+		fixPlayerLocation();
+
+		// player bullet
+		for (size_t i = 0; i < playerBullets.size(); i++)
+		{
+			playerBullets[i].updateTopLeftBySpeed();
+		}
+		if (fire) {
+			MovingObject bullet;
+			bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite64.bmp" }, RGB(205, 205, 205));
+			bullet.SetTopLeft(player.GetLeft(), player.GetTop() + bullet.GetHeight());
+			bullet.setSpeedY(-5);
+			playerBullets.push_back(bullet);
+		}
+		checkBulletHitEnemy();
+
+		// falling object
+		for (size_t i = 0; i < fallingObjects.size(); i++)
+		{
+			fallingObjects[i].updateTopLeftBySpeed();
+			if (fallingObjects[i].IsOverlap(fallingObjects[i], player))
+			{
+				fallingObjects.erase(fallingObjects.begin() + i);
+				Power++;
+			}
+
+		}
+		// generate enemy
 		map<size_t, vector<MapData>>::iterator iter = mapDatum.find(frameCounter);
 		if (iter != mapDatum.end()) {
 			for (size_t i = 0; i < iter->second.size(); i++)
@@ -65,12 +67,17 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 				enemy.LoadBitmapByString(iter->second[i].resource, iter->second[i].colorFilter);
 				enemy.SetTopLeft(iter->second[i].location.x, iter->second[i].location.y);
 				enemy.setSpeeds(iter->second[i].speeds);
+				enemy.setAction(iter->second[i].enemyAction);
 				enemies.push_back(enemy);
 			}
 		}
 		frameCounter += 1;
+		// enemy
 		for (size_t i = 0; i < enemies.size(); i++)
-			enemies[i].updateBySpeeds();
+			enemies[i].update(player,&enemyBullets);
+		// enemy bullets
+		for (size_t i = 0; i < enemyBullets.size(); i++)
+			enemyBullets[i].updateTopLeftBySpeed();
 	}
 }
 
@@ -419,6 +426,9 @@ void CGameStateRun::initMapDatum() {
 		mapData.resource = { "Resources\\Image\\ST\\stg1enm\\Sprite8.bmp" };
 		mapData.colorFilter = RGB(254, 254, 254);
 		mapData.location = wave4Points[i];
+
+		mapData.enemyAction[40] = { &BulletCreator::createStage1PinkEnemyBullet };
+
 		if (wave4Points[i].x + wave4MesaureEnemy.GetWidth() / 2 > playerArea.GetTop() + playerArea.GetWidth() / 2) {
 			mapData.speeds = wave4Right;
 		}
@@ -528,15 +538,19 @@ void CGameStateRun::initMapDatum() {
 void CGameStateRun::showGame() {
 	// player
 	player.ShowBitmap();
-	// bullet
+	// player bullets
 	for (size_t i = 0; i < playerBullets.size(); i++)
 		playerBullets[i].ShowBitmap();
-	// enemy
-	for (size_t i = 0; i < enemies.size(); i++)
-		enemies[i].ShowBitmap();
 	// falling object
 	for (size_t i = 0; i < fallingObjects.size(); i++)
 		fallingObjects[i].ShowBitmap();
+	// enemy
+	for (size_t i = 0; i < enemies.size(); i++)
+		enemies[i].ShowBitmap();
+	// enemy bullets
+	for (size_t i = 0; i < enemyBullets.size(); i++)
+		enemyBullets[i].ShowBitmap();
+
 
 	// interface
 	// interface border

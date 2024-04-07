@@ -43,6 +43,7 @@
 #include "Bezier.h"
 #include "Enemy.h"
 #include "MapData.h"
+#include "BulletCreator.h"
 
 namespace game_framework {
 	/////////////////////////////////////////////////////////////////////////////
@@ -147,6 +148,7 @@ namespace game_framework {
 		MovingObject player;
 		vector<MovingObject> playerBullets;
 		vector<Enemy> enemies;
+		vector<MovingObject> enemyBullets;
 		vector<MovingObject> fallingObjects;
 		void initGame();
 		void initMapDatum();

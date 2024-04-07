@@ -244,6 +244,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Source\Game\Bezier.cpp" />
+    <ClCompile Include="Source\Game\BulletCreator.cpp" />
     <ClCompile Include="Source\Game\Enemy.cpp" />
     <ClCompile Include="Source\Game\MapData.cpp" />
     <ClCompile Include="Source\Game\MovingObject.cpp" />
@@ -264,6 +265,7 @@
     <ClInclude Include="Source\Core\Resource.h" />
     <ClInclude Include="Source\Core\StdAfx.h" />
     <ClInclude Include="Source\Game\Bezier.h" />
+    <ClInclude Include="Source\Game\BulletCreator.h" />
     <ClInclude Include="Source\Game\config.h" />
     <ClInclude Include="Source\Game\Enemy.h" />
     <ClInclude Include="Source\Game\MapData.h" />
