@@ -156,7 +156,7 @@ namespace game_framework {
 		void checkBulletHitEnemy();
 		void addFallingObject(MovingObject enemy);
 		size_t frameCounter = 0;
-		map<size_t, MapData> mapDatum;
+		map<size_t, vector<MapData>> mapDatum;
 	};
 
 	/////////////////////////////////////////////////////////////////////////////
