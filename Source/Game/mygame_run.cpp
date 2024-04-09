@@ -27,47 +27,57 @@ void CGameStateRun::OnBeginState()
 }
 
 void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
-{	// player
-	player.updateTopLeftBySpeed();
-	fixPlayerLocation();
-
-	// bullet
-	for (size_t i = 0; i < playerBullets.size(); i++)
-	{
-		playerBullets[i].updateTopLeftBySpeed();
-	}
-	if (fire) {
-		MovingObject bullet;
-		bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite64.bmp" }, RGB(205, 205, 205));
-		bullet.SetTopLeft(player.GetLeft(), player.GetTop() + bullet.GetHeight());
-		bullet.setSpeedY(-5);
-		playerBullets.push_back(bullet);
-	}
-	checkBulletHitEnemy();
-
-	// falling object
-	for (size_t i = 0; i < fallingObjects.size(); i++)
-	{
-		fallingObjects[i].updateTopLeftBySpeed();
-		if (fallingObjects[i].IsOverlap(fallingObjects[i], player))
-		{
-			fallingObjects.erase(fallingObjects.begin() + i);
-			Power++;
-		}
-
-	}
+{	
 	if (mainStage == GAME_STAGE) {
-		map<size_t, MapData>::iterator iter = mapDatum.find(frameCounter);
+		// player
+		player.updateTopLeftBySpeed();
+		fixPlayerLocation();
+
+		// player bullet
+		for (size_t i = 0; i < playerBullets.size(); i++)
+		{
+			playerBullets[i].updateTopLeftBySpeed();
+		}
+		if (fire) {
+			MovingObject bullet;
+			bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite64.bmp" }, RGB(205, 205, 205));
+			bullet.SetTopLeft(player.GetLeft(), player.GetTop() + bullet.GetHeight());
+			bullet.setSpeedY(-5);
+			playerBullets.push_back(bullet);
+		}
+		checkBulletHitEnemy();
+
+		// falling object
+		for (size_t i = 0; i < fallingObjects.size(); i++)
+		{
+			fallingObjects[i].updateTopLeftBySpeed();
+			if (fallingObjects[i].IsOverlap(fallingObjects[i], player))
+			{
+				fallingObjects.erase(fallingObjects.begin() + i);
+				Power++;
+			}
+
+		}
+		// generate enemy
+		map<size_t, vector<MapData>>::iterator iter = mapDatum.find(frameCounter);
 		if (iter != mapDatum.end()) {
-			Enemy enemy;
-			enemy.LoadBitmapByString(iter->second.resource, iter->second.colorFilter);
-			enemy.SetTopLeft(iter->second.location.x, iter->second.location.y);
-			enemy.setSpeeds(iter->second.speeds);
-			enemies.push_back(enemy);
+			for (size_t i = 0; i < iter->second.size(); i++)
+			{
+				Enemy enemy;
+				enemy.LoadBitmapByString(iter->second[i].resource, iter->second[i].colorFilter);
+				enemy.SetTopLeft(iter->second[i].location.x, iter->second[i].location.y);
+				enemy.setSpeeds(iter->second[i].speeds);
+				enemy.setAction(iter->second[i].enemyAction);
+				enemies.push_back(enemy);
+			}
 		}
 		frameCounter += 1;
+		// enemy
 		for (size_t i = 0; i < enemies.size(); i++)
-			enemies[i].updateBySpeeds();
+			enemies[i].update(player,&enemyBullets);
+		// enemy bullets
+		for (size_t i = 0; i < enemyBullets.size(); i++)
+			enemyBullets[i].updateTopLeftBySpeed();
 	}
 }
 
@@ -286,47 +296,261 @@ void CGameStateRun::initGame() {
 }
 
 void CGameStateRun::initMapDatum() {
-	int frame = 0;
-	// test enemy
-	Bezier straightLine({ Point(0,0),Point(0,150) });
-	vector<Point> speedTemp = straightLine.getEachSpeed(60);
-	vector<Point> wave1 = speedTemp;
-	Bezier curve({ Point(0,0),Point(50,80),Point(190,-80),Point(240,0) });
-	vector<Point> speedTemp2 = curve.getEachSpeed(90);
-	wave1.insert(wave1.end(), speedTemp2.begin() + 1, speedTemp2.end());
-	wave1.insert(wave1.end(), speedTemp.begin() + 1, speedTemp.end());
+	// stage 1
+	// wave 1
+	Bezier straightLine1({ Point(0,0),Point(0,150) });
+	vector<Point> straightLine1Speeds = straightLine1.getEachSpeed(60);
+	vector<Point> wave1 = straightLine1Speeds;
+	Bezier curve1({ Point(0,0),Point(77,50),Point(154,-50),Point(231,0) });
+	vector<Point> curve1Speeds = curve1.getEachSpeed(90);
+	wave1.insert(wave1.end(), curve1Speeds.begin() + 1, curve1Speeds.end());
+	wave1.insert(wave1.end(), straightLine1Speeds.begin() + 1, straightLine1Speeds.end());
 
-	int x = 80;
-	Enemy mesaureEnemy;
-	mesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" }, RGB(254, 254, 254));
-	for (size_t i = 0; i < 5; i++)
+	Enemy wave1MesaureEnemy;
+	wave1MesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" }, RGB(254, 254, 254));
+	int frame = 0;
+	int wave1X = playerArea.GetLeft() + wave1MesaureEnemy.GetWidth() * 3 / 2;
+	for (int i = 0; i < 5; i++)
 	{
 		MapData mapData;
 		mapData.resource = { "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" };
 		mapData.colorFilter = RGB(254, 254, 254);
-		mapData.location = Point(x, -mesaureEnemy.GetHeight());
+		mapData.location = Point(wave1X, -wave1MesaureEnemy.GetHeight());
 		mapData.speeds = wave1;
-		mapDatum[frame] = mapData;
+		mapDatum[frame] = { mapData };
 		frame += 12;
-		x += mesaureEnemy.GetWidth() / 3;
+		wave1X += wave1MesaureEnemy.GetWidth() / 3;
 	}
 
-	Bezier curve2({ Point(0,0),Point(50,80),Point(250,-80),Point(300,0) });
+	// wave 2
+	Bezier curve2({ Point(0,0),Point(-77,50),Point(-154,-50),Point(-231,0) });
+	vector<Point> wave2 = straightLine1Speeds;
+	vector<Point> curve2Speeds = curve2.getEachSpeed(90);
+	wave2.insert(wave2.end(), curve2Speeds.begin() + 1, curve2Speeds.end());
+	wave2.insert(wave2.end(), straightLine1Speeds.begin() + 1, straightLine1Speeds.end());
 
+	frame = 100;
+	int wave2X = playerArea.GetLeft() + playerArea.GetWidth() - wave1MesaureEnemy.GetWidth() * 5 / 2;
+	for (int i = 0; i < 8; i++)
+	{
+		MapData mapData;
+		mapData.resource = { "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" };
+		mapData.colorFilter = RGB(254, 254, 254);
+		mapData.location = Point(wave2X, -wave1MesaureEnemy.GetHeight());
+		mapData.speeds = wave2;
+		mapDatum[frame] = { mapData };
+		frame += 12;
+		wave2X -= wave1MesaureEnemy.GetWidth() / 3;
+	}
+
+	// wave 3
+	Bezier straightLine3({ Point(0,0),Point(0,220) });
+	vector<Point> straightLine3Speeds = straightLine3.getEachSpeed(75);
+	vector<Point> wave31 = straightLine3Speeds;
+	vector<Point> wave32 = straightLine3Speeds;
+	Bezier curve31({ Point(0,0),Point(-100,150),Point(-200,30) });
+	vector<Point> curve31Speeds = curve31.getEachSpeed(90);
+	Bezier curve32({ Point(0,0),Point(100,150),Point(200,30) });
+	vector<Point> curve32Speeds = curve32.getEachSpeed(90);
+	wave31.insert(wave31.end(), curve31Speeds.begin() + 1, curve31Speeds.end());
+	wave32.insert(wave32.end(), curve32Speeds.begin() + 1, curve32Speeds.end());
+
+	frame = 250;
+	int wave3X1 = playerArea.GetLeft() + wave1MesaureEnemy.GetWidth();
+	int wave3X2 = playerArea.GetLeft() + playerArea.GetWidth() - wave1MesaureEnemy.GetWidth() * 2;
+	for (int i = 0; i < 10; i++)
+	{
+		MapData mapData;
+		mapData.resource = { "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" };
+		mapData.colorFilter = RGB(254, 254, 254);
+		mapData.location = Point(wave3X1, -wave1MesaureEnemy.GetHeight());
+		mapData.speeds = wave31;
+		mapDatum[frame] = { mapData };
+
+		mapData.location = Point(wave3X2, -wave1MesaureEnemy.GetHeight());
+		mapData.speeds = wave32;
+		mapDatum[frame].push_back(mapData);
+
+		frame += 12;
+		wave3X1 += (wave1MesaureEnemy.GetWidth() / 2 - 1);
+		wave3X2 -= (wave1MesaureEnemy.GetWidth() / 2 - 1);
+	}
+
+	// wave 4
+	frame = 400;
+	Enemy wave4MesaureEnemy;
+	wave4MesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm\\Sprite8.bmp" }, RGB(254, 254, 254));
+	Bezier straightLine41({ Point(0,0) ,Point(0,130) });
+	Bezier straightLine42({ Point(0,0) ,Point(0,-130) });
+	Bezier curve41({ Point(0,0),Point(-25,60),Point(-50,0) });
+	Bezier curve42({ Point(0,0),Point(25,60),Point(50,0) });
+	Bezier wait({ Point(0,0),Point(0,0) });
+	vector<Point> straightLine41Speeds = straightLine41.getEachSpeed(40);
+	vector<Point> straightLine42Speeds = straightLine42.getEachSpeed(40);
+	vector<Point> curve41Speeds = curve41.getEachSpeed(30);
+	vector<Point> curve42Speeds = curve42.getEachSpeed(30);
+	vector<Point> waitSpeeds = wait.getEachSpeed(30);
+	vector<Point> wave4Left = straightLine41Speeds;
+	vector<Point> wave4Right = straightLine41Speeds;
+	wave4Left.insert(wave4Left.end(), waitSpeeds.begin(), waitSpeeds.end());
+	wave4Left.insert(wave4Left.end(), curve41Speeds.begin() + 1, curve41Speeds.end());
+	wave4Left.insert(wave4Left.end(), straightLine42Speeds.begin() + 1, straightLine42Speeds.end());
+	wave4Right.insert(wave4Right.end(), waitSpeeds.begin(), waitSpeeds.end());
+	wave4Right.insert(wave4Right.end(), curve42Speeds.begin() + 1, curve42Speeds.end());
+	wave4Right.insert(wave4Right.end(), straightLine42Speeds.begin() + 1, straightLine42Speeds.end());
+
+	vector<Point> wave4Points = {
+		Point(playerArea.GetLeft() + 30,-wave4MesaureEnemy.GetHeight()),
+		Point(playerArea.GetLeft() + playerArea.GetWidth() - 150,-wave4MesaureEnemy.GetHeight()),
+		Point(playerArea.GetLeft() + 120,-wave4MesaureEnemy.GetHeight()),
+		Point(playerArea.GetLeft() + playerArea.GetWidth() - 58,-wave4MesaureEnemy.GetHeight()),
+		Point(playerArea.GetLeft() + 16,-wave4MesaureEnemy.GetHeight()),
+		Point(playerArea.GetLeft() + playerArea.GetWidth() - 75,-wave4MesaureEnemy.GetHeight()),
+		Point(playerArea.GetLeft() + 180,-wave4MesaureEnemy.GetHeight()),
+		Point(playerArea.GetLeft() + playerArea.GetWidth() - 60,-wave4MesaureEnemy.GetHeight()),
+		Point(playerArea.GetLeft() + 28,-wave4MesaureEnemy.GetHeight()),
+		Point(playerArea.GetLeft() + playerArea.GetWidth() - 195,-wave4MesaureEnemy.GetHeight()),
+		Point(playerArea.GetLeft() + 15,-wave4MesaureEnemy.GetHeight()),
+		Point(playerArea.GetLeft() + playerArea.GetWidth() - 105,-wave4MesaureEnemy.GetHeight()),
+		Point(playerArea.GetLeft() + 135,-wave4MesaureEnemy.GetHeight()),
+		Point(playerArea.GetLeft() + playerArea.GetWidth() - 70,-wave4MesaureEnemy.GetHeight()),
+		Point(playerArea.GetLeft() + 30,-wave4MesaureEnemy.GetHeight()),
+		Point(playerArea.GetLeft() + playerArea.GetWidth() - 195,-wave4MesaureEnemy.GetHeight()),
+	};
+	vector<size_t> wave4DeltaFrame = { 45,39,39,39,34,34,29,29,29,24,24,24,24,24,19,0 };
+
+
+	for (size_t i = 0; i < wave4Points.size(); i++)
+	{
+		MapData mapData;
+		mapData.resource = { "Resources\\Image\\ST\\stg1enm\\Sprite8.bmp" };
+		mapData.colorFilter = RGB(254, 254, 254);
+		mapData.location = wave4Points[i];
+
+		mapData.enemyAction[40] = { &BulletCreator::createStage1PinkEnemyBullet };
+
+		if (wave4Points[i].x + wave4MesaureEnemy.GetWidth() / 2 > playerArea.GetTop() + playerArea.GetWidth() / 2) {
+			mapData.speeds = wave4Right;
+		}
+		else {
+			mapData.speeds = wave4Left;
+		}
+		mapDatum[frame] = { mapData };
+		frame += wave4DeltaFrame[i];
+	}
+
+	// wave 5
+	frame = 900;
+	vector<Point> wave5Points = {
+		Point(210,-wave1MesaureEnemy.GetHeight()),
+		Point(290,-wave1MesaureEnemy.GetHeight()),
+		Point(217,-wave1MesaureEnemy.GetHeight()),
+		Point(357,-wave1MesaureEnemy.GetHeight()),
+		Point(160,-wave1MesaureEnemy.GetHeight()),
+		Point(167,-wave1MesaureEnemy.GetHeight()),
+		Point(270,-wave1MesaureEnemy.GetHeight()),
+		Point(100,-wave1MesaureEnemy.GetHeight()),
+		Point(277,-wave1MesaureEnemy.GetHeight()),
+		Point(297,-wave1MesaureEnemy.GetHeight()),
+		Point(177,-wave1MesaureEnemy.GetHeight()),
+		Point(172,-wave1MesaureEnemy.GetHeight()),
+		Point(179,-wave1MesaureEnemy.GetHeight()),
+		Point(62,-wave1MesaureEnemy.GetHeight()),
+		Point(255,-wave1MesaureEnemy.GetHeight()),
+		Point(262,-wave1MesaureEnemy.GetHeight()),
+		Point(152,-wave1MesaureEnemy.GetHeight()),
+		Point(325,-wave1MesaureEnemy.GetHeight()),
+		Point(180,-wave1MesaureEnemy.GetHeight()),
+	};
+	vector<int> wave5MovingHeight = {
+		102,102,240,99,240,99,99,240,240,93,99,99,99,240,99,99,99,240,240
+	};
+	vector<bool> wave5TurnDirection = {
+		false,true,true,true,true,true,false,false,true,true,true,false,true,true,false,false,true,true,false
+	};
+	Bezier curve5Right({ Point(0,-40),Point(0,5),Point(-5,0),Point(40,0) });
+	vector<Point> curve5RightSpeeds = curve5Right.getEachSpeed(30);
+	curve5RightSpeeds[curve5RightSpeeds.size() - 1].y = 0;
+	Bezier curve5Left({ Point(0,-40),Point(0,5),Point(5,0),Point(-40,0) });
+	vector<Point> curve5LeftSpeeds = curve5Left.getEachSpeed(30);
+	curve5LeftSpeeds[curve5LeftSpeeds.size() - 1].y = 0;
+	for (size_t i = 0; i < wave5Points.size(); i++)
+	{
+		vector<Point> speeds = {};
+		for (int j = 0; j < wave5MovingHeight[i] / 3; j++)
+			speeds.push_back(Point(0, 3));
+		if (wave5TurnDirection[i])
+		{
+			speeds.insert(speeds.end(), curve5RightSpeeds.begin() + 1, curve5RightSpeeds.end());
+		}
+		else {
+			speeds.insert(speeds.end(), curve5LeftSpeeds.begin() + 1, curve5LeftSpeeds.end());
+		}
+
+
+		MapData mapData;
+		mapData.resource = { "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" };
+		mapData.colorFilter = RGB(254, 254, 254);
+		mapData.location = wave5Points[i];
+		mapData.speeds = speeds;
+		mapDatum[frame] = { mapData };
+		frame += 6;
+	}
+
+	// wave 6
+	frame = 1100;
+	int wave6X = playerArea.GetLeft() + playerArea.GetWidth() - wave1MesaureEnemy.GetWidth() * 5 / 2;
+	for (int i = 0; i < 6; i++)
+	{
+		MapData mapData;
+		mapData.resource = { "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" };
+		mapData.colorFilter = RGB(254, 254, 254);
+		mapData.location = Point(wave6X, -wave1MesaureEnemy.GetHeight());
+		mapData.speeds = wave2;
+		mapDatum[frame] = { mapData };
+
+		mapData.location.x += 30;
+		mapDatum[frame].push_back(mapData);
+
+		frame += 12;
+		wave6X -= wave1MesaureEnemy.GetWidth() / 3;
+	}
+	// wave 7
+	frame = 1180;
+	int wave7X = playerArea.GetLeft() + wave1MesaureEnemy.GetWidth() * 3 / 2;
+	for (int i = 0; i < 8; i++)
+	{
+		MapData mapData;
+		mapData.resource = { "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" };
+		mapData.colorFilter = RGB(254, 254, 254);
+		mapData.location = Point(wave7X, -wave1MesaureEnemy.GetHeight());
+		mapData.speeds = wave1;
+		mapDatum[frame] = { mapData };
+
+		mapData.location.x -= 30;
+		mapDatum[frame].push_back(mapData);
+
+		frame += 12;
+		wave7X += wave1MesaureEnemy.GetWidth() / 3;
+	}
 }
 
 void CGameStateRun::showGame() {
 	// player
 	player.ShowBitmap();
-	// bullet
+	// player bullets
 	for (size_t i = 0; i < playerBullets.size(); i++)
 		playerBullets[i].ShowBitmap();
-	// enemy
-	for (size_t i = 0; i < enemies.size(); i++)
-		enemies[i].ShowBitmap();
 	// falling object
 	for (size_t i = 0; i < fallingObjects.size(); i++)
 		fallingObjects[i].ShowBitmap();
+	// enemy
+	for (size_t i = 0; i < enemies.size(); i++)
+		enemies[i].ShowBitmap();
+	// enemy bullets
+	for (size_t i = 0; i < enemyBullets.size(); i++)
+		enemyBullets[i].ShowBitmap();
+
 
 	// interface
 	// interface border
