@@ -1,20 +1,20 @@
 #include "stdafx.h"
 #include "Bezier.h"
 
-Bezier::Bezier(std::vector<Point> points) {
+Bezier::Bezier(std::vector<POINTF> points) {
 	this->points = points;
 }
 
-void Bezier::setPoints(std::vector<Point> points) {
+void Bezier::setPoints(std::vector<POINTF> points) {
 	this->points = points;
 }
 
-Point Bezier::calculatePointWithRatio(std::vector<Point> points, int currnetT, int splitCount) {
+POINTF Bezier::calculatePointWithRatio(std::vector<POINTF> points, int currnetT, int splitCount) {
 	if (points.size() == 1)
 		return points[0];
-	std::vector<Point> descendingPoints;
+	std::vector<POINTF> descendingPoints;
 	for (size_t i = 1; i < points.size(); i++) {
-		Point p;
+		POINTF p;
 		p.x = (points[i].x - points[i - 1].x) * currnetT / splitCount + points[i - 1].x;
 		p.y = (points[i].y - points[i - 1].y) * currnetT / splitCount + points[i - 1].y;
 		descendingPoints.push_back(p);
@@ -22,20 +22,20 @@ Point Bezier::calculatePointWithRatio(std::vector<Point> points, int currnetT, i
 	return calculatePointWithRatio(descendingPoints, currnetT, splitCount);
 }
 
-std::vector<Point> Bezier::getEachPoint(int splitCount) {
-	std::vector<Point> points;
+std::vector<POINTF> Bezier::getEachPoint(int splitCount) {
+	std::vector<POINTF> points;
 	for (int i = 0; i < splitCount; i++)
 		points.push_back(calculatePointWithRatio(this->points, i, splitCount - 1));
 	return points;
 }
 
-std::vector<Point> Bezier::getEachSpeed(int splitCount) {
-	std::vector<Point> points = getEachPoint(splitCount);
-	std::vector<Point> speeds;
-	speeds.push_back(Point(0, 0));
+std::vector<POINTF> Bezier::getEachSpeed(int splitCount) {
+	std::vector<POINTF> points = getEachPoint(splitCount);
+	std::vector<POINTF> speeds;
+	speeds.push_back(POINTF{ 0,0 });
 	for (size_t i = 1; i < points.size(); i++)
 	{
-		Point p;
+		POINTF p;
 		p.x = points[i].x - points[i - 1].x;
 		p.y = points[i].y - points[i - 1].y;
 		speeds.push_back(p);

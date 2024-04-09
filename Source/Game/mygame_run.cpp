@@ -27,21 +27,21 @@ void CGameStateRun::OnBeginState()
 }
 
 void CGameStateRun::OnMove()							// 移動遊戲元素
-{	
+{
 	if (mainStage == GAME_STAGE) {
 		// player
-		player.updateTopLeftBySpeed();
+		player.updateLocationFBySpeed();
 		fixPlayerLocation();
 
 		// player bullet
 		for (size_t i = 0; i < playerBullets.size(); i++)
 		{
-			playerBullets[i].updateTopLeftBySpeed();
+			playerBullets[i].updateLocationFBySpeed();
 		}
 		if (fire) {
 			MovingObject bullet;
 			bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite64.bmp" }, RGB(205, 205, 205));
-			bullet.SetTopLeft(player.GetLeft(), player.GetTop() + bullet.GetHeight());
+			bullet.setLocationF(player.getLocationF().x + (player.GetWidth() - bullet.GetWidth()) / 2.0f, player.getLocationF().y + (player.GetHeight() - bullet.GetHeight()) / 2.0f);
 			bullet.setSpeedY(-5);
 			playerBullets.push_back(bullet);
 		}
@@ -50,13 +50,13 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		// falling object
 		for (size_t i = 0; i < fallingObjects.size(); i++)
 		{
-			fallingObjects[i].updateTopLeftBySpeed();
+			fallingObjects[i].updateLocationFBySpeed();
 			if (fallingObjects[i].IsOverlap(fallingObjects[i], player))
 			{
 				fallingObjects.erase(fallingObjects.begin() + i);
+				i--;
 				Power++;
 			}
-
 		}
 		// generate enemy
 		map<size_t, vector<MapData>>::iterator iter = mapDatum.find(frameCounter);
@@ -65,7 +65,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 			{
 				Enemy enemy;
 				enemy.LoadBitmapByString(iter->second[i].resource, iter->second[i].colorFilter);
-				enemy.SetTopLeft(iter->second[i].location.x, iter->second[i].location.y);
+				enemy.setLocationF(iter->second[i].location.x, iter->second[i].location.y);
 				enemy.setSpeeds(iter->second[i].speeds);
 				enemy.setAction(iter->second[i].enemyAction);
 				enemies.push_back(enemy);
@@ -74,10 +74,10 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		frameCounter += 1;
 		// enemy
 		for (size_t i = 0; i < enemies.size(); i++)
-			enemies[i].update(player,&enemyBullets);
+			enemies[i].update(player, &enemyBullets);
 		// enemy bullets
 		for (size_t i = 0; i < enemyBullets.size(); i++)
-			enemyBullets[i].updateTopLeftBySpeed();
+			enemyBullets[i].updateLocationFBySpeed();
 	}
 }
 
@@ -240,7 +240,7 @@ void CGameStateRun::setMainMenuSelection(int direction) {
 void CGameStateRun::initGame() {
 	// player
 	player.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite0.bmp" }, RGB(205, 205, 205));
-	player.SetTopLeft(200, 400);
+	player.setLocationF(200, 400);
 	// player moveing area
 	playerArea.LoadEmptyBitmap(448, 384);
 	playerArea.SetTopLeft(32, 16);
@@ -298,11 +298,11 @@ void CGameStateRun::initGame() {
 void CGameStateRun::initMapDatum() {
 	// stage 1
 	// wave 1
-	Bezier straightLine1({ Point(0,0),Point(0,150) });
-	vector<Point> straightLine1Speeds = straightLine1.getEachSpeed(60);
-	vector<Point> wave1 = straightLine1Speeds;
-	Bezier curve1({ Point(0,0),Point(77,50),Point(154,-50),Point(231,0) });
-	vector<Point> curve1Speeds = curve1.getEachSpeed(90);
+	Bezier straightLine1({ POINTF{0,0},POINTF{0,150} });
+	vector<POINTF> straightLine1Speeds = straightLine1.getEachSpeed(60);
+	vector<POINTF> wave1 = straightLine1Speeds;
+	Bezier curve1({ POINTF{0,0},POINTF{77,50},POINTF{154,-50},POINTF{231,0} });
+	vector<POINTF> curve1Speeds = curve1.getEachSpeed(90);
 	wave1.insert(wave1.end(), curve1Speeds.begin() + 1, curve1Speeds.end());
 	wave1.insert(wave1.end(), straightLine1Speeds.begin() + 1, straightLine1Speeds.end());
 
@@ -315,7 +315,7 @@ void CGameStateRun::initMapDatum() {
 		MapData mapData;
 		mapData.resource = { "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" };
 		mapData.colorFilter = RGB(254, 254, 254);
-		mapData.location = Point(wave1X, -wave1MesaureEnemy.GetHeight());
+		mapData.location = POINTF{ (float)wave1X, (float)-wave1MesaureEnemy.GetHeight() };
 		mapData.speeds = wave1;
 		mapDatum[frame] = { mapData };
 		frame += 12;
@@ -323,9 +323,9 @@ void CGameStateRun::initMapDatum() {
 	}
 
 	// wave 2
-	Bezier curve2({ Point(0,0),Point(-77,50),Point(-154,-50),Point(-231,0) });
-	vector<Point> wave2 = straightLine1Speeds;
-	vector<Point> curve2Speeds = curve2.getEachSpeed(90);
+	Bezier curve2({ POINTF{0,0},POINTF{ -77,50},POINTF{ -154,-50},POINTF{ -231,0} });
+	vector<POINTF> wave2 = straightLine1Speeds;
+	vector<POINTF> curve2Speeds = curve2.getEachSpeed(90);
 	wave2.insert(wave2.end(), curve2Speeds.begin() + 1, curve2Speeds.end());
 	wave2.insert(wave2.end(), straightLine1Speeds.begin() + 1, straightLine1Speeds.end());
 
@@ -336,7 +336,7 @@ void CGameStateRun::initMapDatum() {
 		MapData mapData;
 		mapData.resource = { "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" };
 		mapData.colorFilter = RGB(254, 254, 254);
-		mapData.location = Point(wave2X, -wave1MesaureEnemy.GetHeight());
+		mapData.location = POINTF{ (float)wave2X, (float)-wave1MesaureEnemy.GetHeight() };
 		mapData.speeds = wave2;
 		mapDatum[frame] = { mapData };
 		frame += 12;
@@ -344,14 +344,14 @@ void CGameStateRun::initMapDatum() {
 	}
 
 	// wave 3
-	Bezier straightLine3({ Point(0,0),Point(0,220) });
-	vector<Point> straightLine3Speeds = straightLine3.getEachSpeed(75);
-	vector<Point> wave31 = straightLine3Speeds;
-	vector<Point> wave32 = straightLine3Speeds;
-	Bezier curve31({ Point(0,0),Point(-100,150),Point(-200,30) });
-	vector<Point> curve31Speeds = curve31.getEachSpeed(90);
-	Bezier curve32({ Point(0,0),Point(100,150),Point(200,30) });
-	vector<Point> curve32Speeds = curve32.getEachSpeed(90);
+	Bezier straightLine3({ POINTF{0,0},POINTF{0,220} });
+	vector<POINTF> straightLine3Speeds = straightLine3.getEachSpeed(75);
+	vector<POINTF> wave31 = straightLine3Speeds;
+	vector<POINTF> wave32 = straightLine3Speeds;
+	Bezier curve31({ POINTF{0,0},POINTF{ -100,150},POINTF{ -200,30} });
+	vector<POINTF> curve31Speeds = curve31.getEachSpeed(90);
+	Bezier curve32({ POINTF{0,0},POINTF{100,150},POINTF{200,30} });
+	vector<POINTF> curve32Speeds = curve32.getEachSpeed(90);
 	wave31.insert(wave31.end(), curve31Speeds.begin() + 1, curve31Speeds.end());
 	wave32.insert(wave32.end(), curve32Speeds.begin() + 1, curve32Speeds.end());
 
@@ -363,11 +363,11 @@ void CGameStateRun::initMapDatum() {
 		MapData mapData;
 		mapData.resource = { "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" };
 		mapData.colorFilter = RGB(254, 254, 254);
-		mapData.location = Point(wave3X1, -wave1MesaureEnemy.GetHeight());
+		mapData.location = POINTF{ (float)wave3X1, (float)-wave1MesaureEnemy.GetHeight() };
 		mapData.speeds = wave31;
 		mapDatum[frame] = { mapData };
 
-		mapData.location = Point(wave3X2, -wave1MesaureEnemy.GetHeight());
+		mapData.location = POINTF{ (float)wave3X2, (float)-wave1MesaureEnemy.GetHeight() };
 		mapData.speeds = wave32;
 		mapDatum[frame].push_back(mapData);
 
@@ -380,18 +380,18 @@ void CGameStateRun::initMapDatum() {
 	frame = 400;
 	Enemy wave4MesaureEnemy;
 	wave4MesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm\\Sprite8.bmp" }, RGB(254, 254, 254));
-	Bezier straightLine41({ Point(0,0) ,Point(0,130) });
-	Bezier straightLine42({ Point(0,0) ,Point(0,-130) });
-	Bezier curve41({ Point(0,0),Point(-25,60),Point(-50,0) });
-	Bezier curve42({ Point(0,0),Point(25,60),Point(50,0) });
-	Bezier wait({ Point(0,0),Point(0,0) });
-	vector<Point> straightLine41Speeds = straightLine41.getEachSpeed(40);
-	vector<Point> straightLine42Speeds = straightLine42.getEachSpeed(40);
-	vector<Point> curve41Speeds = curve41.getEachSpeed(30);
-	vector<Point> curve42Speeds = curve42.getEachSpeed(30);
-	vector<Point> waitSpeeds = wait.getEachSpeed(30);
-	vector<Point> wave4Left = straightLine41Speeds;
-	vector<Point> wave4Right = straightLine41Speeds;
+	Bezier straightLine41({ POINTF{0,0} ,POINTF{0,130} });
+	Bezier straightLine42({ POINTF{0,0 }, POINTF{ 0,-130 } });
+	Bezier curve41({ POINTF{0,0},POINTF{ -25,60},POINTF{ -50,0} });
+	Bezier curve42({ POINTF{0,0},POINTF{25,60},POINTF{50,0} });
+	Bezier wait({ POINTF{0,0},POINTF{0,0 } });
+	vector<POINTF> straightLine41Speeds = straightLine41.getEachSpeed(40);
+	vector<POINTF> straightLine42Speeds = straightLine42.getEachSpeed(40);
+	vector<POINTF> curve41Speeds = curve41.getEachSpeed(30);
+	vector<POINTF> curve42Speeds = curve42.getEachSpeed(30);
+	vector<POINTF> waitSpeeds = wait.getEachSpeed(30);
+	vector<POINTF> wave4Left = straightLine41Speeds;
+	vector<POINTF> wave4Right = straightLine41Speeds;
 	wave4Left.insert(wave4Left.end(), waitSpeeds.begin(), waitSpeeds.end());
 	wave4Left.insert(wave4Left.end(), curve41Speeds.begin() + 1, curve41Speeds.end());
 	wave4Left.insert(wave4Left.end(), straightLine42Speeds.begin() + 1, straightLine42Speeds.end());
@@ -399,23 +399,23 @@ void CGameStateRun::initMapDatum() {
 	wave4Right.insert(wave4Right.end(), curve42Speeds.begin() + 1, curve42Speeds.end());
 	wave4Right.insert(wave4Right.end(), straightLine42Speeds.begin() + 1, straightLine42Speeds.end());
 
-	vector<Point> wave4Points = {
-		Point(playerArea.GetLeft() + 30,-wave4MesaureEnemy.GetHeight()),
-		Point(playerArea.GetLeft() + playerArea.GetWidth() - 150,-wave4MesaureEnemy.GetHeight()),
-		Point(playerArea.GetLeft() + 120,-wave4MesaureEnemy.GetHeight()),
-		Point(playerArea.GetLeft() + playerArea.GetWidth() - 58,-wave4MesaureEnemy.GetHeight()),
-		Point(playerArea.GetLeft() + 16,-wave4MesaureEnemy.GetHeight()),
-		Point(playerArea.GetLeft() + playerArea.GetWidth() - 75,-wave4MesaureEnemy.GetHeight()),
-		Point(playerArea.GetLeft() + 180,-wave4MesaureEnemy.GetHeight()),
-		Point(playerArea.GetLeft() + playerArea.GetWidth() - 60,-wave4MesaureEnemy.GetHeight()),
-		Point(playerArea.GetLeft() + 28,-wave4MesaureEnemy.GetHeight()),
-		Point(playerArea.GetLeft() + playerArea.GetWidth() - 195,-wave4MesaureEnemy.GetHeight()),
-		Point(playerArea.GetLeft() + 15,-wave4MesaureEnemy.GetHeight()),
-		Point(playerArea.GetLeft() + playerArea.GetWidth() - 105,-wave4MesaureEnemy.GetHeight()),
-		Point(playerArea.GetLeft() + 135,-wave4MesaureEnemy.GetHeight()),
-		Point(playerArea.GetLeft() + playerArea.GetWidth() - 70,-wave4MesaureEnemy.GetHeight()),
-		Point(playerArea.GetLeft() + 30,-wave4MesaureEnemy.GetHeight()),
-		Point(playerArea.GetLeft() + playerArea.GetWidth() - 195,-wave4MesaureEnemy.GetHeight()),
+	vector<POINTF> wave4Points = {
+		POINTF{(float)playerArea.GetLeft() + 30,(float)-wave4MesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea.GetLeft() + playerArea.GetWidth() - 150,(float)-wave4MesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea.GetLeft() + 120,(float)-wave4MesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea.GetLeft() + playerArea.GetWidth() - 58,(float)-wave4MesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea.GetLeft() + 16,(float)-wave4MesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea.GetLeft() + playerArea.GetWidth() - 75,(float)-wave4MesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea.GetLeft() + 180,(float)-wave4MesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea.GetLeft() + playerArea.GetWidth() - 60,(float)-wave4MesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea.GetLeft() + 28,(float)-wave4MesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea.GetLeft() + playerArea.GetWidth() - 195,(float)-wave4MesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea.GetLeft() + 15,(float)-wave4MesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea.GetLeft() + playerArea.GetWidth() - 105,(float)-wave4MesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea.GetLeft() + 135,(float)-wave4MesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea.GetLeft() + playerArea.GetWidth() - 70,(float)-wave4MesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea.GetLeft() + 30,(float)-wave4MesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea.GetLeft() + playerArea.GetWidth() - 195,(float)-wave4MesaureEnemy.GetHeight()},
 	};
 	vector<size_t> wave4DeltaFrame = { 45,39,39,39,34,34,29,29,29,24,24,24,24,24,19,0 };
 
@@ -441,26 +441,26 @@ void CGameStateRun::initMapDatum() {
 
 	// wave 5
 	frame = 900;
-	vector<Point> wave5Points = {
-		Point(210,-wave1MesaureEnemy.GetHeight()),
-		Point(290,-wave1MesaureEnemy.GetHeight()),
-		Point(217,-wave1MesaureEnemy.GetHeight()),
-		Point(357,-wave1MesaureEnemy.GetHeight()),
-		Point(160,-wave1MesaureEnemy.GetHeight()),
-		Point(167,-wave1MesaureEnemy.GetHeight()),
-		Point(270,-wave1MesaureEnemy.GetHeight()),
-		Point(100,-wave1MesaureEnemy.GetHeight()),
-		Point(277,-wave1MesaureEnemy.GetHeight()),
-		Point(297,-wave1MesaureEnemy.GetHeight()),
-		Point(177,-wave1MesaureEnemy.GetHeight()),
-		Point(172,-wave1MesaureEnemy.GetHeight()),
-		Point(179,-wave1MesaureEnemy.GetHeight()),
-		Point(62,-wave1MesaureEnemy.GetHeight()),
-		Point(255,-wave1MesaureEnemy.GetHeight()),
-		Point(262,-wave1MesaureEnemy.GetHeight()),
-		Point(152,-wave1MesaureEnemy.GetHeight()),
-		Point(325,-wave1MesaureEnemy.GetHeight()),
-		Point(180,-wave1MesaureEnemy.GetHeight()),
+	vector<POINTF> wave5Points = {
+		POINTF{210,(float)-wave1MesaureEnemy.GetHeight()},
+		POINTF{290,(float)-wave1MesaureEnemy.GetHeight()},
+		POINTF{217,(float)-wave1MesaureEnemy.GetHeight()},
+		POINTF{357,(float)-wave1MesaureEnemy.GetHeight()},
+		POINTF{160,(float)-wave1MesaureEnemy.GetHeight()},
+		POINTF{67,(float)-wave1MesaureEnemy.GetHeight()},
+		POINTF{270,(float)-wave1MesaureEnemy.GetHeight()},
+		POINTF{100,(float)-wave1MesaureEnemy.GetHeight()},
+		POINTF{277,(float)-wave1MesaureEnemy.GetHeight()},
+		POINTF{297,(float)-wave1MesaureEnemy.GetHeight()},
+		POINTF{177,(float)-wave1MesaureEnemy.GetHeight()},
+		POINTF{172,(float)-wave1MesaureEnemy.GetHeight()},
+		POINTF{179,(float)-wave1MesaureEnemy.GetHeight()},
+		POINTF{62,(float)-wave1MesaureEnemy.GetHeight()},
+		POINTF{255,(float)-wave1MesaureEnemy.GetHeight()},
+		POINTF{262,(float)-wave1MesaureEnemy.GetHeight()},
+		POINTF{152,(float)-wave1MesaureEnemy.GetHeight()},
+		POINTF{325,(float)-wave1MesaureEnemy.GetHeight()},
+		POINTF{180,(float)-wave1MesaureEnemy.GetHeight()},
 	};
 	vector<int> wave5MovingHeight = {
 		102,102,240,99,240,99,99,240,240,93,99,99,99,240,99,99,99,240,240
@@ -468,17 +468,17 @@ void CGameStateRun::initMapDatum() {
 	vector<bool> wave5TurnDirection = {
 		false,true,true,true,true,true,false,false,true,true,true,false,true,true,false,false,true,true,false
 	};
-	Bezier curve5Right({ Point(0,-40),Point(0,5),Point(-5,0),Point(40,0) });
-	vector<Point> curve5RightSpeeds = curve5Right.getEachSpeed(30);
+	Bezier curve5Right({ POINTF{0,-40},POINTF{0,5},POINTF{-5,0},POINTF{40,0} });
+	vector<POINTF> curve5RightSpeeds = curve5Right.getEachSpeed(30);
 	curve5RightSpeeds[curve5RightSpeeds.size() - 1].y = 0;
-	Bezier curve5Left({ Point(0,-40),Point(0,5),Point(5,0),Point(-40,0) });
-	vector<Point> curve5LeftSpeeds = curve5Left.getEachSpeed(30);
+	Bezier curve5Left({ POINTF{0,-40},POINTF{0,5},POINTF{5,0},POINTF{ -40,0} });
+	vector<POINTF> curve5LeftSpeeds = curve5Left.getEachSpeed(30);
 	curve5LeftSpeeds[curve5LeftSpeeds.size() - 1].y = 0;
 	for (size_t i = 0; i < wave5Points.size(); i++)
 	{
-		vector<Point> speeds = {};
+		vector<POINTF> speeds = {};
 		for (int j = 0; j < wave5MovingHeight[i] / 3; j++)
-			speeds.push_back(Point(0, 3));
+			speeds.push_back(POINTF{ 0, 3 });
 		if (wave5TurnDirection[i])
 		{
 			speeds.insert(speeds.end(), curve5RightSpeeds.begin() + 1, curve5RightSpeeds.end());
@@ -505,7 +505,7 @@ void CGameStateRun::initMapDatum() {
 		MapData mapData;
 		mapData.resource = { "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" };
 		mapData.colorFilter = RGB(254, 254, 254);
-		mapData.location = Point(wave6X, -wave1MesaureEnemy.GetHeight());
+		mapData.location = POINTF{ (float)wave6X, (float)-wave1MesaureEnemy.GetHeight() };
 		mapData.speeds = wave2;
 		mapDatum[frame] = { mapData };
 
@@ -523,7 +523,7 @@ void CGameStateRun::initMapDatum() {
 		MapData mapData;
 		mapData.resource = { "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" };
 		mapData.colorFilter = RGB(254, 254, 254);
-		mapData.location = Point(wave7X, -wave1MesaureEnemy.GetHeight());
+		mapData.location = POINTF{ (float)wave7X, (float)-wave1MesaureEnemy.GetHeight() };
 		mapData.speeds = wave1;
 		mapDatum[frame] = { mapData };
 
@@ -609,19 +609,23 @@ void CGameStateRun::showBorder() {
 }
 
 void CGameStateRun::fixPlayerLocation() {
-	if (player.GetTop() < playerArea.GetTop()) {
-		player.SetTopLeft(player.GetLeft(), playerArea.GetTop());
+	// hit top bound
+	if (player.getLocationF().y < playerArea.GetTop()) {
+		player.setLocationF(player.getLocationF().x, (float)playerArea.GetTop());
 	}
-	if (player.GetLeft() < playerArea.GetLeft())
+	// hit left bound
+	if (player.getLocationF().x < playerArea.GetLeft())
 	{
-		player.SetTopLeft(playerArea.GetLeft(), player.GetTop());
+		player.setLocationF((float)playerArea.GetLeft(), player.getLocationF().y);
 	}
-	if (player.GetTop() + player.GetHeight() > playerArea.GetTop() + playerArea.GetHeight()) {
-		player.SetTopLeft(player.GetLeft(), playerArea.GetTop() + playerArea.GetHeight() - player.GetHeight());
+	// hit bottom bound
+	if (player.getLocationF().y + player.GetHeight() > playerArea.GetTop() + playerArea.GetHeight()) {
+		player.setLocationF(player.getLocationF().x, (float)(playerArea.GetTop() + playerArea.GetHeight() - player.GetHeight()));
 	}
-	if (player.GetLeft() + player.GetWidth() > playerArea.GetLeft() + playerArea.GetWidth())
+	// hit right bound
+	if (player.getLocationF().x + player.GetWidth() > playerArea.GetLeft() + playerArea.GetWidth())
 	{
-		player.SetTopLeft(playerArea.GetLeft() + playerArea.GetWidth() - player.GetWidth(), player.GetTop());
+		player.setLocationF((float)(playerArea.GetLeft() + playerArea.GetWidth() - player.GetWidth()), player.getLocationF().y);
 	}
 }
 
@@ -641,9 +645,9 @@ void CGameStateRun::checkBulletHitEnemy() {
 void CGameStateRun::addFallingObject(MovingObject enemy) {
 	MovingObject falling;
 	falling.LoadBitmapByString({ "Resources\\Image\\CM\\etama3\\Sprite0.bmp" }, RGB(65, 52, 52));
-	int left = enemy.GetLeft() + (enemy.GetWidth() - falling.GetWidth()) / 2;
-	int top = enemy.GetTop() + (enemy.GetHeight() - falling.GetHeight()) / 2;
-	falling.SetTopLeft(left, top);
-	falling.setSpeed(Point(0, 3));
+	float left = enemy.getLocationF().x + (enemy.GetWidth() - falling.GetWidth()) / 2.0f;
+	float top = enemy.getLocationF().y + (enemy.GetHeight() - falling.GetHeight()) / 2.0f;
+	falling.setLocationF(left, top);
+	falling.setSpeed(POINTF{ 0, 3 });
 	fallingObjects.push_back(falling);
 }

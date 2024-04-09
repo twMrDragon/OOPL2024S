@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Enemy.h"
 
-void Enemy::setSpeeds(vector<Point> speeds) {
+void Enemy::setSpeeds(vector<POINTF> speeds) {
 	this->speeds = speeds;
 }
 
@@ -29,9 +29,9 @@ void Enemy::callEnemyAction(MovingObject player, vector<MovingObject>* bullets) 
 void Enemy::updateBySpeeds() {
 	if (frameCounter < speeds.size()) {
 		setSpeed(this->speeds[frameCounter]);
-		updateTopLeftBySpeed();
+		updateLocationFBySpeed();
 	}
 	else {
-		updateTopLeftBySpeed();
+		updateLocationFBySpeed();
 	}
 }
