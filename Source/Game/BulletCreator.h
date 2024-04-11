@@ -4,5 +4,5 @@
 class BulletCreator
 {
 public:
-	static void createStage1PinkEnemyBullet(Enemy enemy, MovingObject player, vector<MovingObject>* bullets);
+	static void createStage1PinkEnemyBullet(Enemy enemy, MovingObject* player, vector<MovingObject>* bullets);
 };
