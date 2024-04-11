@@ -5,7 +5,7 @@ using namespace game_framework;
 class MovingObject :public CMovingBitmap
 {
 public:
-	MovingObject() = default;
+	MovingObject();
 	// setter
 	void setSpeed(POINTF speed) { this->speed = speed; };
 	void setSpeedX(float x) { this->speed.x = x; };
@@ -21,10 +21,17 @@ public:
 
 	// methon
 	void updateLocationFBySpeed();
+	POINTF getCenter();
+	bool onLeave(MovingObject target);
+
+	// operate
+	bool MovingObject::operator<(const MovingObject& other) const;
 
 private:
 	POINTF speed{ 0,0 };
 	POINTF locationF{ 0,0 };
 	void updateCMovingBitmapLocation();
+	map<MovingObject, bool> touched;
+	GUID guid;
 };
 

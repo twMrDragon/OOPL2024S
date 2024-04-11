@@ -33,18 +33,8 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		player.updateLocationFBySpeed();
 		fixPlayerLocation();
 
-		// player bullet
-		for (size_t i = 0; i < playerBullets.size(); i++)
-		{
-			playerBullets[i].updateLocationFBySpeed();
-		}
-		if (fire) {
-			MovingObject bullet;
-			bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite64.bmp" }, RGB(205, 205, 205));
-			bullet.setLocationF(player.getLocationF().x + (player.GetWidth() - bullet.GetWidth()) / 2.0f, player.getLocationF().y + (player.GetHeight() - bullet.GetHeight()) / 2.0f);
-			bullet.setSpeedY(-5);
-			playerBullets.push_back(bullet);
-		}
+		// generate player bullet, move bullet and erase
+		updatePlayerBullet();
 		checkBulletHitEnemy();
 
 		// falling object
@@ -58,26 +48,10 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 				Power++;
 			}
 		}
-		// generate enemy
-		map<size_t, vector<MapData>>::iterator iter = mapDatum.find(frameCounter);
-		if (iter != mapDatum.end()) {
-			for (size_t i = 0; i < iter->second.size(); i++)
-			{
-				Enemy enemy;
-				enemy.LoadBitmapByString(iter->second[i].resource, iter->second[i].colorFilter);
-				enemy.setLocationF(iter->second[i].location.x, iter->second[i].location.y);
-				enemy.setSpeeds(iter->second[i].speeds);
-				enemy.setAction(iter->second[i].enemyAction);
-				enemies.push_back(enemy);
-			}
-		}
+		// generate enemy, move enemy and erase enemy leave player area
+		// same of enemy bullet
+		updateEnemy();
 		frameCounter += 1;
-		// enemy
-		for (size_t i = 0; i < enemies.size(); i++)
-			enemies[i].update(player, &enemyBullets);
-		// enemy bullets
-		for (size_t i = 0; i < enemyBullets.size(); i++)
-			enemyBullets[i].updateLocationFBySpeed();
 	}
 }
 
@@ -639,6 +613,73 @@ void CGameStateRun::checkBulletHitEnemy() {
 				break;
 			}
 		}
+	}
+}
+
+void CGameStateRun::updateEnemy()
+{
+	// generate emeny
+	map<size_t, vector<MapData>>::iterator iter = mapDatum.find(frameCounter);
+	if (iter != mapDatum.end()) {
+		for (size_t i = 0; i < iter->second.size(); i++)
+		{
+			Enemy enemy;
+			enemy.LoadBitmapByString(iter->second[i].resource, iter->second[i].colorFilter);
+			enemy.setLocationF(iter->second[i].location.x, iter->second[i].location.y);
+			enemy.setSpeeds(iter->second[i].speeds);
+			enemy.setAction(iter->second[i].enemyAction);
+			enemies.push_back(enemy);
+		}
+	}
+
+	// erase enemy and move enemy
+	for (size_t i = 0; i < enemies.size(); i++) {
+		if (enemies[i].onLeave(playerArea)) {
+			enemies.erase(enemies.begin() + i);
+			i--;
+			continue;
+		}
+		else {
+			enemies[i].update(&player, &enemyBullets);
+		}
+	}
+
+	// enemy bullets
+	for (size_t i = 0; i < enemyBullets.size(); i++) {
+		if (!enemyBullets[i].IsOverlap(enemyBullets[i], playerArea))
+		{
+			enemyBullets.erase(enemyBullets.begin() + i);
+			i--;
+			continue;
+		}
+		else {
+			enemyBullets[i].updateLocationFBySpeed();
+		}
+	}
+}
+
+void CGameStateRun::updatePlayerBullet()
+{
+	// erase bullet and move bullet
+	for (size_t i = 0; i < playerBullets.size(); i++)
+	{
+		if (!playerBullets[i].IsOverlap(playerBullets[i], playerArea))
+		{
+			playerBullets.erase(playerBullets.begin() + i);
+			i--;
+			continue;
+		}
+		else {
+			playerBullets[i].updateLocationFBySpeed();
+		}
+	}
+	// generate
+	if (fire) {
+		MovingObject bullet;
+		bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite64.bmp" }, RGB(205, 205, 205));
+		bullet.setLocationF(player.getCenter().x + bullet.GetWidth() / 2.0f, player.getCenter().y + bullet.GetHeight() / 2.0f);
+		bullet.setSpeedY(-5);
+		playerBullets.push_back(bullet);
 	}
 }
 

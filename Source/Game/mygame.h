@@ -133,7 +133,7 @@ namespace game_framework {
 		void showMainMenuButtons();
 
 		// 遊戲畫面的物件
-		CMovingBitmap playerArea;
+		MovingObject playerArea;
 		vector<CMovingBitmap> gameInterface;
 		int Power = 0;
 		int Bomb = 3;
@@ -157,7 +157,9 @@ namespace game_framework {
 		void fixPlayerLocation();
 		void checkBulletHitEnemy();
 		void addFallingObject(MovingObject enemy);
-		size_t frameCounter = 0;
+		void updatePlayerBullet();
+		void updateEnemy();
+		size_t frameCounter = 400;
 		map<size_t, vector<MapData>> mapDatum;
 	};
 
