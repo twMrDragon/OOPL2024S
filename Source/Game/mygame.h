@@ -151,7 +151,6 @@ namespace game_framework {
 		vector<MovingObject> enemyBullets;
 		vector<MovingObject> fallingObjects;
 		void initGame();
-		void initMapDatum();
 		void showGame();
 		void showBorder();
 		void fixPlayerLocation();
@@ -159,7 +158,7 @@ namespace game_framework {
 		void addFallingObject(MovingObject enemy);
 		void updatePlayerBullet();
 		void updateEnemy();
-		size_t frameCounter = 400;
+		size_t frameCounter = 0;
 		map<size_t, vector<MapData>> mapDatum;
 	};
 

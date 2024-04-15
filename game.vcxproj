@@ -246,6 +246,7 @@
     <ClCompile Include="Source\Game\Bezier.cpp" />
     <ClCompile Include="Source\Game\BulletCreator.cpp" />
     <ClCompile Include="Source\Game\Enemy.cpp" />
+    <ClCompile Include="Source\Game\MapCreator.cpp" />
     <ClCompile Include="Source\Game\MapData.cpp" />
     <ClCompile Include="Source\Game\MovingObject.cpp" />
     <ClCompile Include="Source\Game\mygame_initialize.cpp" />
@@ -267,6 +268,7 @@
     <ClInclude Include="Source\Game\BulletCreator.h" />
     <ClInclude Include="Source\Game\config.h" />
     <ClInclude Include="Source\Game\Enemy.h" />
+    <ClInclude Include="Source\Game\MapCreator.h" />
     <ClInclude Include="Source\Game\MapData.h" />
     <ClInclude Include="Source\Game\MovingObject.h" />
     <ClInclude Include="Source\Game\mygame.h" />
