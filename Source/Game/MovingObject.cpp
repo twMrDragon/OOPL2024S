@@ -19,6 +19,14 @@ bool MovingObject::onLeave(MovingObject target)
 	return false;
 }
 
+double MovingObject::angle2Target(MovingObject target)
+{
+	POINTF fromCenter = this->getCenter();
+	POINTF targetCenter = target.getCenter();
+	double angle2Target = 180 - atan2(targetCenter.y - fromCenter.y, fromCenter.x - targetCenter.x) * 180 / M_PI;
+	return angle2Target;
+}
+
 bool MovingObject::operator<(const MovingObject& other) const
 {
 	WCHAR temp[40];

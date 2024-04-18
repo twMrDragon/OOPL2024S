@@ -1,5 +1,8 @@
 #pragma once
 #include "../Library/gameutil.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 using namespace game_framework;
 
 class MovingObject :public CMovingBitmap
@@ -23,6 +26,7 @@ public:
 	void updateLocationFBySpeed();
 	POINTF getCenter();
 	bool onLeave(MovingObject target);
+	double angle2Target(MovingObject target);
 
 	// operate
 	bool MovingObject::operator<(const MovingObject& other) const;
