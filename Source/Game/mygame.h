@@ -44,6 +44,8 @@
 #include "Enemy.h"
 #include "MapData.h"
 #include "BulletCreator.h"
+#include "Player.h"
+#include "ReimuB.h"
 
 namespace game_framework {
 	/////////////////////////////////////////////////////////////////////////////
@@ -145,7 +147,7 @@ namespace game_framework {
 		// 玩家可交互物件
 		int playerDelta = 7;
 		bool fire = false;
-		MovingObject player;
+		ReimuB player;
 		vector<MovingObject> playerBullets;
 		vector<Enemy> enemies;
 		vector<MovingObject> enemyBullets;

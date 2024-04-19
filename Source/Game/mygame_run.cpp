@@ -9,6 +9,7 @@
 #include "MapCreator.h"
 
 
+
 using namespace game_framework;
 
 /////////////////////////////////////////////////////////////////////////////
@@ -61,6 +62,10 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	initMenu();
 	initGame();
 	GotoGameState(GAME_STATE_RUN);
+	
+
+
+
 }
 
 void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -214,7 +219,8 @@ void CGameStateRun::setMainMenuSelection(int direction) {
 
 void CGameStateRun::initGame() {
 	// player
-	player.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite0.bmp" }, RGB(205, 205, 205));
+	//player.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite0.bmp" }, RGB(205, 205, 205));
+	player.onInit();
 	player.setLocationF(200, 400);
 	// player moveing area
 	playerArea.LoadEmptyBitmap(448, 384);
@@ -444,13 +450,13 @@ void CGameStateRun::updatePlayerBullet()
 			playerBullets[i].updateLocationFBySpeed();
 		}
 	}
+	
 	// generate
 	if (fire) {
-		MovingObject bullet;
-		bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite64.bmp" }, RGB(205, 205, 205));
-		bullet.setLocationF(player.getCenter().x + bullet.GetWidth() / 2.0f, player.getCenter().y + bullet.GetHeight() / 2.0f);
-		bullet.setSpeedY(-5);
-		playerBullets.push_back(bullet);
+		player.power = Power;
+		vector<MovingObject> ms = player.attack();
+		playerBullets.insert(playerBullets.end(), ms.begin(),ms.end());//wave1.insert(wave1.end(), curve1Speeds.begin() + 1, curve1Speeds.end());
+		
 	}
 }
 

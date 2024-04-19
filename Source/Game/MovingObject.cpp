@@ -48,7 +48,7 @@ void MovingObject::updateLocationFBySpeed()
 	updateCMovingBitmapLocation();
 }
 
-MovingObject::MovingObject()
+MovingObject::MovingObject():CMovingBitmap()
 {
 	CoCreateGuid(&guid);
 }

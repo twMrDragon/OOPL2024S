@@ -75,7 +75,17 @@
     <ClCompile Include="Source\Game\MapData.cpp">
       <Filter>MyGame</Filter>
     </ClCompile>
+<<<<<<< Updated upstream
     <ClCompile Include="Source\Game\MapCreator.cpp">
+=======
+    <ClCompile Include="Source\Game\Player.cpp">
+      <Filter>MyGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\ReimuA.cpp">
+      <Filter>MyGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\ReimuB.cpp">
+>>>>>>> Stashed changes
       <Filter>MyGame</Filter>
     </ClCompile>
   </ItemGroup>
@@ -131,7 +141,17 @@
     <ClInclude Include="Source\Game\MapData.h">
       <Filter>MyGame</Filter>
     </ClInclude>
+<<<<<<< Updated upstream
     <ClInclude Include="Source\Game\MapCreator.h">
+=======
+    <ClInclude Include="Source\Game\Player.h">
+      <Filter>MyGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\ReimuA.h">
+      <Filter>MyGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\ReimuB.h">
+>>>>>>> Stashed changes
       <Filter>MyGame</Filter>
     </ClInclude>
   </ItemGroup>

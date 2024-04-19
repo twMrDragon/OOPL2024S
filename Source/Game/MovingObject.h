@@ -34,8 +34,9 @@ public:
 private:
 	POINTF speed{ 0,0 };
 	POINTF locationF{ 0,0 };
-	void updateCMovingBitmapLocation();
 	map<MovingObject, bool> touched;
 	GUID guid;
+	void updateCMovingBitmapLocation();
+
 };
 
