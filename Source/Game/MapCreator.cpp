@@ -4,20 +4,26 @@
 void MapCreator::init(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum)
 {
 	MapCreator::initStage1(playerArea, mapDatum);
+	MapCreator::initStage2(playerArea, mapDatum);
 }
 
 void MapCreator::initStage1(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum)
 {
-	MapCreator::initStage1Wave1(playerArea, mapDatum);
-	MapCreator::initStage1Wave2(playerArea, mapDatum);
-	MapCreator::initStage1Wave3(playerArea, mapDatum);
-	MapCreator::initStage1Wave4(playerArea, mapDatum);
-	MapCreator::initStage1Wave5(playerArea, mapDatum);
-	MapCreator::initStage1Wave6(playerArea, mapDatum);
-	MapCreator::initStage1Wave7(playerArea, mapDatum);
+	MapCreator::initStage1Type1Wave(playerArea, mapDatum, 0);
+	MapCreator::initStage1Type2Wave(playerArea, mapDatum, 100);
+	MapCreator::initStage1Type3Wave(playerArea, mapDatum, 250);
+	MapCreator::initStage1Type4Wave(playerArea, mapDatum, 400);
+	MapCreator::initStage1Type5Wave(playerArea, mapDatum, 900);
+	MapCreator::initStage1Type6Wave(playerArea, mapDatum, 1100);
+	MapCreator::initStage1Type7Wave(playerArea, mapDatum, 1180);
+	MapCreator::initStage1Type4Wave(playerArea, mapDatum, 1380);
+	MapCreator::initStage1Type7Wave(playerArea, mapDatum, 2000);
+	MapCreator::initStage1Type6Wave(playerArea, mapDatum, 2100);
+	MapCreator::initStage1Type7Wave(playerArea, mapDatum, 2200);
+	MapCreator::initStage1Type6Wave(playerArea, mapDatum, 2300);
 }
 
-void MapCreator::initStage1Wave1(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum)
+void MapCreator::initStage1Type1Wave(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum, int startFrame)
 {
 	// 隔畖
 	Bezier straightLine1({ POINTF{0,0},POINTF{0,150} });
@@ -29,24 +35,23 @@ void MapCreator::initStage1Wave1(MovingObject* playerArea, map<size_t, vector<Ma
 	wave1.insert(wave1.end(), straightLine1Speeds.begin() + 1, straightLine1Speeds.end());
 
 	// ノ芠代
-	Enemy wave1MesaureEnemy;
-	wave1MesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" }, RGB(254, 254, 254));
-	int frame = 0;
-	int wave1X = playerArea->GetLeft() + wave1MesaureEnemy.GetWidth() * 3 / 2;
+	Enemy mesaureEnemy;
+	mesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" }, RGB(254, 254, 254));
+	int startX = playerArea->GetLeft() + mesaureEnemy.GetWidth() * 3 / 2;
 	for (int i = 0; i < 5; i++)
 	{
 		MapData mapData;
 		mapData.resource = { "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" };
 		mapData.colorFilter = RGB(254, 254, 254);
-		mapData.location = POINTF{ (float)wave1X, (float)-wave1MesaureEnemy.GetHeight() };
+		mapData.location = POINTF{ (float)startX, (float)-mesaureEnemy.GetHeight() };
 		mapData.speeds = wave1;
-		(*mapDatum)[frame] = { mapData };
-		frame += 12;
-		wave1X += wave1MesaureEnemy.GetWidth() / 3;
+		(*mapDatum)[startFrame] = { mapData };
+		startFrame += 12;
+		startX += mesaureEnemy.GetWidth() / 3;
 	}
 }
 
-void MapCreator::initStage1Wave2(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum)
+void MapCreator::initStage1Type2Wave(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum, int startFrame)
 {
 	// 隔畖
 	Bezier straightLine1({ POINTF{0,0},POINTF{0,150} });
@@ -58,25 +63,24 @@ void MapCreator::initStage1Wave2(MovingObject* playerArea, map<size_t, vector<Ma
 	wave2.insert(wave2.end(), straightLine1Speeds.begin() + 1, straightLine1Speeds.end());
 
 	// ノ芠代
-	Enemy wave2MesaureEnemy;
-	wave2MesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" }, RGB(254, 254, 254));
+	Enemy mesaureEnemy;
+	mesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" }, RGB(254, 254, 254));
 
-	int frame = 100;
-	int wave2X = playerArea->GetLeft() + playerArea->GetWidth() - wave2MesaureEnemy.GetWidth() * 5 / 2;
+	int startX = playerArea->GetLeft() + playerArea->GetWidth() - mesaureEnemy.GetWidth() * 5 / 2;
 	for (int i = 0; i < 8; i++)
 	{
 		MapData mapData;
 		mapData.resource = { "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" };
 		mapData.colorFilter = RGB(254, 254, 254);
-		mapData.location = POINTF{ (float)wave2X, (float)-wave2MesaureEnemy.GetHeight() };
+		mapData.location = POINTF{ (float)startX, (float)-mesaureEnemy.GetHeight() };
 		mapData.speeds = wave2;
-		(*mapDatum)[frame] = { mapData };
-		frame += 12;
-		wave2X -= wave2MesaureEnemy.GetWidth() / 3;
+		(*mapDatum)[startFrame] = { mapData };
+		startFrame += 12;
+		startX -= mesaureEnemy.GetWidth() / 3;
 	}
 }
 
-void MapCreator::initStage1Wave3(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum)
+void MapCreator::initStage1Type3Wave(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum, int startFrame)
 {
 	// 隔畖
 	Bezier straightLine1({ POINTF{0,0},POINTF{0,220} });
@@ -91,36 +95,34 @@ void MapCreator::initStage1Wave3(MovingObject* playerArea, map<size_t, vector<Ma
 	wave32.insert(wave32.end(), curve2Speeds.begin() + 1, curve2Speeds.end());
 
 	// ノ芠代
-	Enemy wave3MesaureEnemy;
-	wave3MesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" }, RGB(254, 254, 254));
+	Enemy mesaureEnemy;
+	mesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" }, RGB(254, 254, 254));
 
-	int frame = 250;
-	int wave3X1 = playerArea->GetLeft() + wave3MesaureEnemy.GetWidth();
-	int wave3X2 = playerArea->GetLeft() + playerArea->GetWidth() - wave3MesaureEnemy.GetWidth() * 2;
+	int startX1 = playerArea->GetLeft() + mesaureEnemy.GetWidth();
+	int startX2 = playerArea->GetLeft() + playerArea->GetWidth() - mesaureEnemy.GetWidth() * 2;
 	for (int i = 0; i < 10; i++)
 	{
 		MapData mapData;
 		mapData.resource = { "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" };
 		mapData.colorFilter = RGB(254, 254, 254);
-		mapData.location = POINTF{ (float)wave3X1, (float)-wave3MesaureEnemy.GetHeight() };
+		mapData.location = POINTF{ (float)startX1, (float)-mesaureEnemy.GetHeight() };
 		mapData.speeds = wave31;
-		(*mapDatum)[frame] = { mapData };
+		(*mapDatum)[startFrame] = { mapData };
 
-		mapData.location = POINTF{ (float)wave3X2, (float)-wave3MesaureEnemy.GetHeight() };
+		mapData.location = POINTF{ (float)startX2, (float)-mesaureEnemy.GetHeight() };
 		mapData.speeds = wave32;
-		(*mapDatum)[frame].push_back(mapData);
+		(*mapDatum)[startFrame].push_back(mapData);
 
-		frame += 12;
-		wave3X1 += (wave3MesaureEnemy.GetWidth() / 2 - 1);
-		wave3X2 -= (wave3MesaureEnemy.GetWidth() / 2 - 1);
+		startFrame += 12;
+		startX1 += (mesaureEnemy.GetWidth() / 2 - 1);
+		startX2 -= (mesaureEnemy.GetWidth() / 2 - 1);
 	}
 }
 
-void MapCreator::initStage1Wave4(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum)
+void MapCreator::initStage1Type4Wave(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum, int startFrame)
 {
-	int frame = 400;
-	Enemy wave4MesaureEnemy;
-	wave4MesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm\\Sprite8.bmp" }, RGB(254, 254, 254));
+	Enemy mesaureEnemy;
+	mesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm\\Sprite8.bmp" }, RGB(254, 254, 254));
 	Bezier straightLine1({ POINTF{0,0} ,POINTF{0,130} });
 	Bezier straightLine2({ POINTF{0,0 }, POINTF{ 0,-130 } });
 	Bezier curve1({ POINTF{0,0},POINTF{ -25,60},POINTF{ -50,0} });
@@ -141,22 +143,22 @@ void MapCreator::initStage1Wave4(MovingObject* playerArea, map<size_t, vector<Ma
 	wave4Right.insert(wave4Right.end(), straightLine42Speeds.begin() + 1, straightLine42Speeds.end());
 
 	vector<POINTF> wave4Points = {
-		POINTF{(float)playerArea->GetLeft() + 30,(float)-wave4MesaureEnemy.GetHeight()},
-		POINTF{(float)playerArea->GetLeft() + playerArea->GetWidth() - 150,(float)-wave4MesaureEnemy.GetHeight()},
-		POINTF{(float)playerArea->GetLeft() + 120,(float)-wave4MesaureEnemy.GetHeight()},
-		POINTF{(float)playerArea->GetLeft() + playerArea->GetWidth() - 58,(float)-wave4MesaureEnemy.GetHeight()},
-		POINTF{(float)playerArea->GetLeft() + 16,(float)-wave4MesaureEnemy.GetHeight()},
-		POINTF{(float)playerArea->GetLeft() + playerArea->GetWidth() - 75,(float)-wave4MesaureEnemy.GetHeight()},
-		POINTF{(float)playerArea->GetLeft() + 180,(float)-wave4MesaureEnemy.GetHeight()},
-		POINTF{(float)playerArea->GetLeft() + playerArea->GetWidth() - 60,(float)-wave4MesaureEnemy.GetHeight()},
-		POINTF{(float)playerArea->GetLeft() + 28,(float)-wave4MesaureEnemy.GetHeight()},
-		POINTF{(float)playerArea->GetLeft() + playerArea->GetWidth() - 195,(float)-wave4MesaureEnemy.GetHeight()},
-		POINTF{(float)playerArea->GetLeft() + 15,(float)-wave4MesaureEnemy.GetHeight()},
-		POINTF{(float)playerArea->GetLeft() + playerArea->GetWidth() - 105,(float)-wave4MesaureEnemy.GetHeight()},
-		POINTF{(float)playerArea->GetLeft() + 135,(float)-wave4MesaureEnemy.GetHeight()},
-		POINTF{(float)playerArea->GetLeft() + playerArea->GetWidth() - 70,(float)-wave4MesaureEnemy.GetHeight()},
-		POINTF{(float)playerArea->GetLeft() + 30,(float)-wave4MesaureEnemy.GetHeight()},
-		POINTF{(float)playerArea->GetLeft() + playerArea->GetWidth() - 195,(float)-wave4MesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea->GetLeft() + 30,(float)-mesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea->GetLeft() + playerArea->GetWidth() - 150,(float)-mesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea->GetLeft() + 120,(float)-mesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea->GetLeft() + playerArea->GetWidth() - 58,(float)-mesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea->GetLeft() + 16,(float)-mesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea->GetLeft() + playerArea->GetWidth() - 75,(float)-mesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea->GetLeft() + 180,(float)-mesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea->GetLeft() + playerArea->GetWidth() - 60,(float)-mesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea->GetLeft() + 28,(float)-mesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea->GetLeft() + playerArea->GetWidth() - 195,(float)-mesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea->GetLeft() + 15,(float)-mesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea->GetLeft() + playerArea->GetWidth() - 105,(float)-mesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea->GetLeft() + 135,(float)-mesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea->GetLeft() + playerArea->GetWidth() - 70,(float)-mesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea->GetLeft() + 30,(float)-mesaureEnemy.GetHeight()},
+		POINTF{(float)playerArea->GetLeft() + playerArea->GetWidth() - 195,(float)-mesaureEnemy.GetHeight()},
 	};
 	vector<size_t> wave4DeltaFrame = { 45,39,39,39,34,34,29,29,29,24,24,24,24,24,19,0 };
 
@@ -170,44 +172,43 @@ void MapCreator::initStage1Wave4(MovingObject* playerArea, map<size_t, vector<Ma
 
 		mapData.enemyAction[40] = { &BulletCreator::createStage1PinkEnemyBullet };
 
-		if (wave4Points[i].x + wave4MesaureEnemy.GetWidth() / 2 > playerArea->GetTop() + playerArea->GetWidth() / 2) {
+		if (wave4Points[i].x + mesaureEnemy.GetWidth() / 2 > playerArea->GetTop() + playerArea->GetWidth() / 2) {
 			mapData.speeds = wave4Right;
 		}
 		else {
 			mapData.speeds = wave4Left;
 		}
-		(*mapDatum)[frame] = { mapData };
-		frame += wave4DeltaFrame[i];
+		(*mapDatum)[startFrame] = { mapData };
+		startFrame += wave4DeltaFrame[i];
 	}
 }
 
-void MapCreator::initStage1Wave5(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum)
+void MapCreator::initStage1Type5Wave(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum, int startFrame)
 {
 	// ノ芠代
-	Enemy wave5MesaureEnemy;
-	wave5MesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" }, RGB(254, 254, 254));
+	Enemy mesaureEnemy;
+	mesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" }, RGB(254, 254, 254));
 
-	int frame = 900;
 	vector<POINTF> wave5Points = {
-		POINTF{210,(float)-wave5MesaureEnemy.GetHeight()},
-		POINTF{290,(float)-wave5MesaureEnemy.GetHeight()},
-		POINTF{217,(float)-wave5MesaureEnemy.GetHeight()},
-		POINTF{357,(float)-wave5MesaureEnemy.GetHeight()},
-		POINTF{160,(float)-wave5MesaureEnemy.GetHeight()},
-		POINTF{67,(float)-wave5MesaureEnemy.GetHeight()},
-		POINTF{270,(float)-wave5MesaureEnemy.GetHeight()},
-		POINTF{100,(float)-wave5MesaureEnemy.GetHeight()},
-		POINTF{277,(float)-wave5MesaureEnemy.GetHeight()},
-		POINTF{297,(float)-wave5MesaureEnemy.GetHeight()},
-		POINTF{177,(float)-wave5MesaureEnemy.GetHeight()},
-		POINTF{172,(float)-wave5MesaureEnemy.GetHeight()},
-		POINTF{179,(float)-wave5MesaureEnemy.GetHeight()},
-		POINTF{62,(float)-wave5MesaureEnemy.GetHeight()},
-		POINTF{255,(float)-wave5MesaureEnemy.GetHeight()},
-		POINTF{262,(float)-wave5MesaureEnemy.GetHeight()},
-		POINTF{152,(float)-wave5MesaureEnemy.GetHeight()},
-		POINTF{325,(float)-wave5MesaureEnemy.GetHeight()},
-		POINTF{180,(float)-wave5MesaureEnemy.GetHeight()},
+		POINTF{210,(float)-mesaureEnemy.GetHeight()},
+		POINTF{290,(float)-mesaureEnemy.GetHeight()},
+		POINTF{217,(float)-mesaureEnemy.GetHeight()},
+		POINTF{357,(float)-mesaureEnemy.GetHeight()},
+		POINTF{160,(float)-mesaureEnemy.GetHeight()},
+		POINTF{67,(float)-mesaureEnemy.GetHeight()},
+		POINTF{270,(float)-mesaureEnemy.GetHeight()},
+		POINTF{100,(float)-mesaureEnemy.GetHeight()},
+		POINTF{277,(float)-mesaureEnemy.GetHeight()},
+		POINTF{297,(float)-mesaureEnemy.GetHeight()},
+		POINTF{177,(float)-mesaureEnemy.GetHeight()},
+		POINTF{172,(float)-mesaureEnemy.GetHeight()},
+		POINTF{179,(float)-mesaureEnemy.GetHeight()},
+		POINTF{62,(float)-mesaureEnemy.GetHeight()},
+		POINTF{255,(float)-mesaureEnemy.GetHeight()},
+		POINTF{262,(float)-mesaureEnemy.GetHeight()},
+		POINTF{152,(float)-mesaureEnemy.GetHeight()},
+		POINTF{325,(float)-mesaureEnemy.GetHeight()},
+		POINTF{180,(float)-mesaureEnemy.GetHeight()},
 	};
 	vector<int> wave5MovingHeight = {
 		102,102,240,99,240,99,99,240,240,93,99,99,99,240,99,99,99,240,240
@@ -240,16 +241,16 @@ void MapCreator::initStage1Wave5(MovingObject* playerArea, map<size_t, vector<Ma
 		mapData.colorFilter = RGB(254, 254, 254);
 		mapData.location = wave5Points[i];
 		mapData.speeds = speeds;
-		(*mapDatum)[frame] = { mapData };
-		frame += 6;
+		(*mapDatum)[startFrame] = { mapData };
+		startFrame += 6;
 	}
 }
 
-void MapCreator::initStage1Wave6(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum)
+void MapCreator::initStage1Type6Wave(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum, int startFrame)
 {
 	// ノ芠代
-	Enemy wave6MesaureEnemy;
-	wave6MesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" }, RGB(254, 254, 254));
+	Enemy mesaureEnemy;
+	mesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" }, RGB(254, 254, 254));
 
 	Bezier straightLine1({ POINTF{0,0},POINTF{0,150} });
 	vector<POINTF> straightLine1Speeds = straightLine1.getEachSpeed(60);
@@ -259,26 +260,25 @@ void MapCreator::initStage1Wave6(MovingObject* playerArea, map<size_t, vector<Ma
 	wave6.insert(wave6.end(), curve1Speeds.begin() + 1, curve1Speeds.end());
 	wave6.insert(wave6.end(), straightLine1Speeds.begin() + 1, straightLine1Speeds.end());
 
-	int frame = 1100;
-	int wave6X = playerArea->GetLeft() + playerArea->GetWidth() - wave6MesaureEnemy.GetWidth() * 5 / 2;
+	int startX = playerArea->GetLeft() + playerArea->GetWidth() - mesaureEnemy.GetWidth() * 5 / 2;
 	for (int i = 0; i < 6; i++)
 	{
 		MapData mapData;
 		mapData.resource = { "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" };
 		mapData.colorFilter = RGB(254, 254, 254);
-		mapData.location = POINTF{ (float)wave6X, (float)-wave6MesaureEnemy.GetHeight() };
+		mapData.location = POINTF{ (float)startX, (float)-mesaureEnemy.GetHeight() };
 		mapData.speeds = wave6;
-		(*mapDatum)[frame] = { mapData };
+		(*mapDatum)[startFrame] = { mapData };
 
 		mapData.location.x += 30;
-		(*mapDatum)[frame].push_back(mapData);
+		(*mapDatum)[startFrame].push_back(mapData);
 
-		frame += 12;
-		wave6X -= wave6MesaureEnemy.GetWidth() / 3;
+		startFrame += 12;
+		startX -= mesaureEnemy.GetWidth() / 3;
 	}
 }
 
-void MapCreator::initStage1Wave7(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum)
+void MapCreator::initStage1Type7Wave(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum, int startFrame)
 {
 	// 隔畖
 	Bezier straightLine1({ POINTF{0,0},POINTF{0,150} });
@@ -290,25 +290,73 @@ void MapCreator::initStage1Wave7(MovingObject* playerArea, map<size_t, vector<Ma
 	wave1.insert(wave1.end(), straightLine1Speeds.begin() + 1, straightLine1Speeds.end());
 
 	// ノ芠代
-	Enemy wave7MesaureEnemy;
-	wave7MesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" }, RGB(254, 254, 254));
+	Enemy mesaureEnemy;
+	mesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" }, RGB(254, 254, 254));
 
-	int frame = 1180;
-	int wave7X = playerArea->GetLeft() + wave7MesaureEnemy.GetWidth() * 3 / 2;
+	int startX = playerArea->GetLeft() + mesaureEnemy.GetWidth() * 3 / 2;
 	for (int i = 0; i < 8; i++)
 	{
 		MapData mapData;
 		mapData.resource = { "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" };
 		mapData.colorFilter = RGB(254, 254, 254);
-		mapData.location = POINTF{ (float)wave7X, (float)-wave7MesaureEnemy.GetHeight() };
+		mapData.location = POINTF{ (float)startX, (float)-mesaureEnemy.GetHeight() };
 		mapData.speeds = wave1;
-		(*mapDatum)[frame] = { mapData };
+		(*mapDatum)[startFrame] = { mapData };
 
 		mapData.location.x -= 30;
-		(*mapDatum)[frame].push_back(mapData);
+		(*mapDatum)[startFrame].push_back(mapData);
 
-		frame += 12;
-		wave7X += wave7MesaureEnemy.GetWidth() / 3;
+		startFrame += 12;
+		startX += mesaureEnemy.GetWidth() / 3;
 	}
 }
 
+void MapCreator::initStage2(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum)
+{
+	MapCreator::initStage2Type2Wave(playerArea, mapDatum, 2400);
+	MapCreator::initStage2Type3Wave(playerArea, mapDatum, 2680);
+	MapCreator::initStage2Type2Wave(playerArea, mapDatum, 2960);
+	MapCreator::initStage2Type3Wave(playerArea, mapDatum, 3240);
+}
+
+void MapCreator::initStage2Type2Wave(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum, int startFrame)
+{
+	// ノ芠代
+	Enemy mesaureEnemy;
+	mesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" }, RGB(254, 254, 254));
+
+	int startX = playerArea->GetLeft() + mesaureEnemy.GetWidth();
+
+	for (size_t i = 0; i < 17; i++)
+	{
+		MapData mapData;
+		mapData.resource = { "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" };
+		mapData.colorFilter = RGB(254, 254, 254);
+		mapData.location = POINTF{ (float)startX, (float)-mesaureEnemy.GetHeight() };
+		mapData.aimTarget = MapData::AIM_TARGET::PLAYER;
+		startX += 20;
+		(*mapDatum)[startFrame] = { mapData };
+		startFrame += 15;
+	}
+}
+
+void MapCreator::initStage2Type3Wave(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum, int startFrame)
+{
+	// ノ芠代
+	Enemy mesaureEnemy;
+	mesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" }, RGB(254, 254, 254));
+
+	int startX = playerArea->GetLeft() + playerArea->GetWidth() - 2 * mesaureEnemy.GetWidth();
+
+	for (size_t i = 0; i < 17; i++)
+	{
+		MapData mapData;
+		mapData.resource = { "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" };
+		mapData.colorFilter = RGB(254, 254, 254);
+		mapData.location = POINTF{ (float)startX, (float)-mesaureEnemy.GetHeight() };
+		mapData.aimTarget = MapData::AIM_TARGET::PLAYER;
+		startX -= 20;
+		(*mapDatum)[startFrame] = { mapData };
+		startFrame += 15;
+	}
+}

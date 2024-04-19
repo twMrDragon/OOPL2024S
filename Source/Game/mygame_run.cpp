@@ -267,7 +267,7 @@ void CGameStateRun::initGame() {
 	numberSystems[3].setXY(496, 206);
 	numberSystems[4].setXY(496, 226);
 
-	MapCreator::init(&playerArea,&mapDatum);
+	MapCreator::init(&playerArea, &mapDatum);
 }
 
 void CGameStateRun::showGame() {
@@ -387,7 +387,17 @@ void CGameStateRun::updateEnemy()
 			Enemy enemy;
 			enemy.LoadBitmapByString(iter->second[i].resource, iter->second[i].colorFilter);
 			enemy.setLocationF(iter->second[i].location.x, iter->second[i].location.y);
-			enemy.setSpeeds(iter->second[i].speeds);
+			if (iter->second[i].aimTarget == MapData::AIM_TARGET::NO) {
+				enemy.setSpeeds(iter->second[i].speeds);
+			}
+			else {
+				double angle2Player = enemy.angle2Target(player);
+				float speed = 3;
+				float x = (float)cos(angle2Player * M_PI / 180) * speed;
+				float y = (float)sin(angle2Player * M_PI / 180) * speed;
+				enemy.setSpeed(POINTF{ x,y });
+			}
+
 			enemy.setAction(iter->second[i].enemyAction);
 			enemies.push_back(enemy);
 		}
