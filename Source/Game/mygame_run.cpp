@@ -9,6 +9,7 @@
 #include "MapCreator.h"
 
 
+
 using namespace game_framework;
 
 /////////////////////////////////////////////////////////////////////////////
@@ -61,6 +62,10 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	initMenu();
 	initGame();
 	GotoGameState(GAME_STATE_RUN);
+	
+
+
+
 }
 
 void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -214,7 +219,8 @@ void CGameStateRun::setMainMenuSelection(int direction) {
 
 void CGameStateRun::initGame() {
 	// player
-	player.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite0.bmp" }, RGB(205, 205, 205));
+	//player.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite0.bmp" }, RGB(205, 205, 205));
+	player.onInit();
 	player.setLocationF(200, 400);
 	// player moveing area
 	playerArea.LoadEmptyBitmap(448, 384);
@@ -267,7 +273,7 @@ void CGameStateRun::initGame() {
 	numberSystems[3].setXY(496, 206);
 	numberSystems[4].setXY(496, 226);
 
-	MapCreator::init(&playerArea,&mapDatum);
+	MapCreator::init(&playerArea, &mapDatum);
 }
 
 void CGameStateRun::showGame() {
@@ -387,7 +393,17 @@ void CGameStateRun::updateEnemy()
 			Enemy enemy;
 			enemy.LoadBitmapByString(iter->second[i].resource, iter->second[i].colorFilter);
 			enemy.setLocationF(iter->second[i].location.x, iter->second[i].location.y);
-			enemy.setSpeeds(iter->second[i].speeds);
+			if (iter->second[i].aimTarget == MapData::AIM_TARGET::NO) {
+				enemy.setSpeeds(iter->second[i].speeds);
+			}
+			else {
+				double angle2Player = enemy.angle2Target(player);
+				float speed = 3;
+				float x = (float)cos(angle2Player * M_PI / 180) * speed;
+				float y = (float)sin(angle2Player * M_PI / 180) * speed;
+				enemy.setSpeed(POINTF{ x,y });
+			}
+
 			enemy.setAction(iter->second[i].enemyAction);
 			enemies.push_back(enemy);
 		}
@@ -434,13 +450,13 @@ void CGameStateRun::updatePlayerBullet()
 			playerBullets[i].updateLocationFBySpeed();
 		}
 	}
+	
 	// generate
 	if (fire) {
-		MovingObject bullet;
-		bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite64.bmp" }, RGB(205, 205, 205));
-		bullet.setLocationF(player.getCenter().x + bullet.GetWidth() / 2.0f, player.getCenter().y + bullet.GetHeight() / 2.0f);
-		bullet.setSpeedY(-5);
-		playerBullets.push_back(bullet);
+		player.power = Power;
+		vector<MovingObject> ms = player.attack();
+		playerBullets.insert(playerBullets.end(), ms.begin(),ms.end());//wave1.insert(wave1.end(), curve1Speeds.begin() + 1, curve1Speeds.end());
+		
 	}
 }
 
