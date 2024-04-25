@@ -1,10 +1,21 @@
 #include "stdafx.h"
 #include "MapCreator.h"
 
-void MapCreator::init(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum)
+void MapCreator::onInit(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum)
 {
 	MapCreator::initStage1(playerArea, mapDatum);
-	MapCreator::initStage2(playerArea, mapDatum);
+	//MapCreator::initStage2(playerArea, mapDatum);
+}
+
+std::shared_ptr<Boss> MapCreator::getCurrentBoss(size_t frame, MovingObject playerArea)
+{
+	if (frame == 2400) {
+		RumiaFirst boss = RumiaFirst();
+		boss.onInit(playerArea);
+		boss.show();
+		return std::make_shared<RumiaFirst>(boss);
+	}
+	return nullptr;
 }
 
 void MapCreator::initStage1(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum)
@@ -19,8 +30,9 @@ void MapCreator::initStage1(MovingObject* playerArea, map<size_t, vector<MapData
 	MapCreator::initStage1Type4Wave(playerArea, mapDatum, 1380);
 	MapCreator::initStage1Type7Wave(playerArea, mapDatum, 2000);
 	MapCreator::initStage1Type6Wave(playerArea, mapDatum, 2100);
-	MapCreator::initStage1Type7Wave(playerArea, mapDatum, 2200);
-	MapCreator::initStage1Type6Wave(playerArea, mapDatum, 2300);
+
+	//MapCreator::initStage1Type7Wave(playerArea, mapDatum, 2200);
+	//MapCreator::initStage1Type6Wave(playerArea, mapDatum, 2300);
 }
 
 void MapCreator::initStage1Type1Wave(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum, int startFrame)

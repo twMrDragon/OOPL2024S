@@ -6,8 +6,6 @@
 #include "../Library/gameutil.h"
 #include "../Library/gamecore.h"
 #include "mygame.h"
-#include "MapCreator.h"
-
 
 
 using namespace game_framework;
@@ -53,6 +51,18 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		// generate enemy, move enemy and erase enemy leave player area
 		// same of enemy bullet
 		updateEnemy();
+
+		// boss
+		std::shared_ptr<Boss> bossCreated = MapCreator::getCurrentBoss(frameCounter, playerArea);
+		if (bossCreated != nullptr)
+		{
+			this->boss = bossCreated;
+		}
+		if (this->boss != nullptr)
+		{
+			this->boss->update(player, &enemyBullets);
+		}
+
 		frameCounter += 1;
 	}
 }
@@ -62,10 +72,6 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 	initMenu();
 	initGame();
 	GotoGameState(GAME_STATE_RUN);
-	
-
-
-
 }
 
 void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -224,7 +230,7 @@ void CGameStateRun::initGame() {
 	player.setLocationF(200, 400);
 	// player moveing area
 	playerArea.LoadEmptyBitmap(448, 384);
-	playerArea.SetTopLeft(32, 16);
+	playerArea.setLocationF(32.0f, 16.0f);
 	// interface background
 	for (int filename : {5, 6, 7, 23}) {
 		CMovingBitmap interfaceBackgound;
@@ -261,6 +267,7 @@ void CGameStateRun::initGame() {
 		gameInterface.push_back(label);
 	}
 	// number system
+	// show score and player data
 	for (int i = 0; i < 5; i++) {
 		NumberSystem numberSystem;
 		numberSystems.push_back(numberSystem);
@@ -273,7 +280,7 @@ void CGameStateRun::initGame() {
 	numberSystems[3].setXY(496, 206);
 	numberSystems[4].setXY(496, 226);
 
-	MapCreator::init(&playerArea, &mapDatum);
+	MapCreator::onInit(&playerArea, &mapDatum);
 }
 
 void CGameStateRun::showGame() {
@@ -291,6 +298,10 @@ void CGameStateRun::showGame() {
 	// enemy bullets
 	for (size_t i = 0; i < enemyBullets.size(); i++)
 		enemyBullets[i].ShowBitmap();
+	// boss
+	if (this->boss != nullptr) {
+		boss->show();
+	}
 
 
 	// interface
@@ -450,13 +461,12 @@ void CGameStateRun::updatePlayerBullet()
 			playerBullets[i].updateLocationFBySpeed();
 		}
 	}
-	
+
 	// generate
 	if (fire) {
 		player.power = Power;
 		vector<MovingObject> ms = player.attack();
-		playerBullets.insert(playerBullets.end(), ms.begin(),ms.end());//wave1.insert(wave1.end(), curve1Speeds.begin() + 1, curve1Speeds.end());
-		
+		playerBullets.insert(playerBullets.end(), ms.begin(), ms.end());//wave1.insert(wave1.end(), curve1Speeds.begin() + 1, curve1Speeds.end());
 	}
 }
 
