@@ -14,6 +14,13 @@ bool Player::isDeath(MovingObject bullet) {
 	return IsOverlap(body, bullet);
 }
 
+void Player::reduceInvincible() {
+	if (invincible>0)
+	{
+		invincible--;
+	}
+}
+
 void Player::updateLocationFBySpeed()
 {
 	MovingObject::updateLocationFBySpeed();
@@ -38,3 +45,26 @@ void Player::updateBodyLaction() {
 	body.setLocationF(getCenter().x + body.GetWidth() / 2, getCenter().y + body.GetHeight() / 2);
 }
 
+void Player::setPower(int power) {
+	this->power = power;
+}
+
+int Player::getPower() {
+	return this->power;
+}
+
+void Player::setRemainingLives(int remainingLives) {
+	this->remainingLives = remainingLives;
+}
+
+int Player::getRemainingLives() {
+	return this->remainingLives;
+}
+
+int Player::getInvincible() {
+	return this->invincible;
+}
+
+void Player::setInvincible(int invincible) {
+	this->invincible = invincible;
+}

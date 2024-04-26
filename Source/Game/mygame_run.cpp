@@ -29,9 +29,21 @@ void CGameStateRun::OnBeginState()
 void CGameStateRun::OnMove()							// 移動遊戲元素
 {
 	if (mainStage == GAME_STAGE) {
+		player.reduceInvincible();
 		// player
+		for (size_t i = 0; i < enemyBullets.size(); i++)
+		{
+			if (player.isDeath(enemyBullets[i]))
+			{
+				
+				player.setInvincible(120);
+				player.setPower(1);
+				player.setRemainingLives(player.getRemainingLives() - 1);
+			}
+		}
 		player.updateLocationFBySpeed();
 		fixPlayerLocation();
+
 
 		// generate player bullet, move bullet and erase
 		updatePlayerBullet();
@@ -45,7 +57,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 			{
 				fallingObjects.erase(fallingObjects.begin() + i);
 				i--;
-				Power++;
+				player.setPower(player.getPower()+1);
 			}
 		}
 		// generate enemy, move enemy and erase enemy leave player area
@@ -313,11 +325,11 @@ void CGameStateRun::showGame() {
 	// number system
 	numberSystems[0].showNumber(1000000);
 	numberSystems[1].showNumber(0);
-	numberSystems[2].showNumber(Power);
+	numberSystems[2].showNumber(player.getPower());
 	numberSystems[3].showNumber(0);
 	numberSystems[4].showNumber(0);
 	// player star
-	for (int i = 0; i < RemainingLives; i++)
+	for (int i = 0; i < player.getRemainingLives(); i++)
 	{
 		RedStar.SetTopLeft(496 + i * RedStar.GetWidth(), 122);
 		RedStar.ShowBitmap();
@@ -464,7 +476,7 @@ void CGameStateRun::updatePlayerBullet()
 
 	// generate
 	if (fire) {
-		player.power = Power;
+		//player.setPower(Power);
 		vector<MovingObject> ms = player.attack();
 		playerBullets.insert(playerBullets.end(), ms.begin(), ms.end());//wave1.insert(wave1.end(), curve1Speeds.begin() + 1, curve1Speeds.end());
 	}

@@ -4,9 +4,12 @@
 class ReimuB:public Player
 {
 private:
-	int invincible = 0;//µL¼Ä´V
-	int firingInterval_RedBullet = 4;//fire CD
-	int firingInterval_IceBullet = 8;
+	
+	int firingIntervalRedBullet = 4;//fire CD
+	int firingIntervalIceBullet = 8;
+
+	int firingIntervalRedBulletCounter = 0;
+	int firingIntervalIceBulletCounter = 0;
 	
 public:
 

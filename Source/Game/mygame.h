@@ -141,9 +141,9 @@ namespace game_framework {
 		// 遊戲畫面的物件
 		MovingObject playerArea;
 		vector<CMovingBitmap> gameInterface;
-		int Power = 0;
+		int TestPower = 16;
 		int Bomb = 3;
-		int RemainingLives = 3;
+		
 		CMovingBitmap GreenStar;
 		CMovingBitmap RedStar;
 		vector<NumberSystem> numberSystems;
@@ -165,7 +165,7 @@ namespace game_framework {
 		void addFallingObject(MovingObject enemy);
 		void updatePlayerBullet();
 		void updateEnemy();
-		size_t frameCounter = 2399;
+		size_t frameCounter = 0;
 		std::shared_ptr<Boss> boss;
 		map<size_t, vector<MapData>> mapDatum;
 	};
