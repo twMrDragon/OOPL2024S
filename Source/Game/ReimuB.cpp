@@ -5,44 +5,62 @@ void ReimuB::onInit() {
 	LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite0.bmp" }, RGB(205, 205, 205));
 	//setLocationF(200, 400);
 	Player::onInit();
-	invincible = 0;
+	;
 	//ShowBitmap();
 }
 
 vector<MovingObject> ReimuB::attack()
 {
+	firingIntervalIceBulletCounter++;
+	firingIntervalRedBulletCounter++;
+
+	if (firingIntervalIceBulletCounter != firingIntervalIceBullet && firingIntervalRedBulletCounter != firingIntervalRedBullet) { return {}; }
+	
+
 	vector<MovingObject> totalBullets;
-
-
-
 	MovingObject bullet;
 	bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite69.bmp" }, RGB(205, 205, 205));
-	bullet.setLocationF(getCenter().x + bullet.GetWidth() / 2.0f, getCenter().y + bullet.GetHeight() / 2.0f);
+	bullet.setLocationF(getCenter().x - bullet.GetWidth() / 2.0f, getCenter().y - bullet.GetHeight() / 2.0f);
 	bullet.setSpeedY((float)-15);
 
-	if (power < 8) {
-		totalBullets.push_back(bullet);
+	if (getPower() < 8) {
+		if (firingIntervalRedBullet==firingIntervalRedBulletCounter)
+		{
+			totalBullets.push_back(bullet);
+			firingIntervalRedBulletCounter = 0;
+		}
 	}
-	else if (power < 16)
+	else if (getPower() < 16)
 	{
-		totalBullets.push_back(bullet);
+		if (firingIntervalRedBullet == firingIntervalRedBulletCounter)
+		{
+			totalBullets.push_back(bullet);
+			firingIntervalRedBulletCounter = 0;
+		}
+	}
+	else if (getPower() < 32)//
+	{
+		if (firingIntervalRedBullet == firingIntervalRedBulletCounter)
+		{
+			MovingObject bullet;
+			bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite69.bmp" }, RGB(205, 205, 205));
+			bullet.setLocationF(-0.5f+getCenter().x - bullet.GetWidth() / 2.0f, getCenter().y - bullet.GetHeight() / 2.0f);
+			bullet.setSpeedX((float)-0.45);
+			bullet.setSpeedY((float)-15);
+			totalBullets.push_back(bullet);
+
+			bullet.setSpeedX((float)0.45);
+			bullet.setLocationF(0.5f+getCenter().x - bullet.GetWidth() / 2.0f, getCenter().y - bullet.GetHeight() / 2.0f);
+			totalBullets.push_back(bullet);
+			firingIntervalRedBulletCounter = 0;
+		}
+	}
+	else if (getPower() < 48)
+	{
+
 
 	}
-	else if (power < 32)//
-	{
-		totalBullets.push_back(bullet);
-		for (int i = -10; i < 11; i=i+20)
-		{
-			MovingObject bullet;
-			bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite69.bmp" }, RGB(205, 205, 205));
-			bullet.setLocationF(getCenter().x + bullet.GetWidth() / 2.0f, getCenter().y + bullet.GetHeight() / 2.0f);
-			bullet.setSpeedY((float)-15);
-			bullet.setSpeedX((float)i);
-			totalBullets.push_back(bullet);
-		}
-
-	}
-	else if (power < 48)
+	else if (getPower() < 64)
 	{
 		totalBullets.push_back(bullet);
 		for (int i = -10; i < 11; i = i + 20)
@@ -55,7 +73,7 @@ vector<MovingObject> ReimuB::attack()
 			totalBullets.push_back(bullet);
 		}
 	}
-	else if (power < 64)
+	else if (getPower() < 80)
 	{
 		totalBullets.push_back(bullet);
 		for (int i = -10; i < 11; i = i + 20)
@@ -68,7 +86,7 @@ vector<MovingObject> ReimuB::attack()
 			totalBullets.push_back(bullet);
 		}
 	}
-	else if (power < 80)
+	else if (getPower() < 96)
 	{
 		totalBullets.push_back(bullet);
 		for (int i = -10; i < 11; i = i + 20)
@@ -81,20 +99,7 @@ vector<MovingObject> ReimuB::attack()
 			totalBullets.push_back(bullet);
 		}
 	}
-	else if (power < 96)
-	{
-		totalBullets.push_back(bullet);
-		for (int i = -10; i < 11; i = i + 20)
-		{
-			MovingObject bullet;
-			bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite69.bmp" }, RGB(205, 205, 205));
-			bullet.setLocationF(getCenter().x + bullet.GetWidth() / 2.0f, getCenter().y + bullet.GetHeight() / 2.0f);
-			bullet.setSpeedY((float)-15);
-			bullet.setSpeedX((float)i);
-			totalBullets.push_back(bullet);
-		}
-	}
-	else if (power < 129)//
+	else if (getPower() < 129)//
 	{
 		for (int i = -20; i < 21; i = i + 10)
 		{
@@ -117,6 +122,7 @@ vector<MovingObject> ReimuB::attack()
 			totalBullets.push_back(bullet);
 		}
 	}
+
 	return totalBullets;
 }
 

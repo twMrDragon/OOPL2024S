@@ -4,11 +4,15 @@
 #include "Enemy.h"
 #include "MapData.h"
 #include "BulletCreator.h"
+#include "Boss.h"
+#include "RumiaFirst.h"
+#include <memory>
 
 class MapCreator
 {
 public:
-	static void init(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum);
+	static void onInit(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum);
+	static std::shared_ptr<Boss> getCurrentBoss(size_t frame, MovingObject playerArea);
 
 private:
 	// stage 1
@@ -27,11 +31,6 @@ private:
 	static void initStage1Type6Wave(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum, int startFrame);
 	// 藍色小怪 一次兩條 左上進場 路徑彎曲
 	static void initStage1Type7Wave(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum, int startFrame);
-	// TODO:stage 1 魔王
-	// 第一關 boss 第一階段 
-	static void initStage1Boss1(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum);
-	// 第一關 boss 第二階段
-	static void initStage1Boss2(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum);
 
 	// stage 2
 	static void initStage2(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum);

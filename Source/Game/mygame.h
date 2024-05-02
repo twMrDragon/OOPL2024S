@@ -42,10 +42,14 @@
 #include "NumberSystem.h"
 #include "Bezier.h"
 #include "Enemy.h"
+#include "MapCreator.h"
 #include "MapData.h"
 #include "BulletCreator.h"
 #include "Player.h"
 #include "ReimuB.h"
+#include "Boss.h"
+#include <memory>
+
 
 namespace game_framework {
 	/////////////////////////////////////////////////////////////////////////////
@@ -137,13 +141,14 @@ namespace game_framework {
 		// 遊戲畫面的物件
 		MovingObject playerArea;
 		vector<CMovingBitmap> gameInterface;
-		int Power = 0;
+		int TestPower = 16;
 		int Bomb = 3;
-		int RemainingLives = 3;
+		
 		CMovingBitmap GreenStar;
 		CMovingBitmap RedStar;
 		vector<NumberSystem> numberSystems;
 		vector<CMovingBitmap> interfaceBackgroundResource;
+
 		// 玩家可交互物件
 		int playerDelta = 7;
 		bool fire = false;
@@ -161,6 +166,7 @@ namespace game_framework {
 		void updatePlayerBullet();
 		void updateEnemy();
 		size_t frameCounter = 0;
+		std::shared_ptr<Boss> boss;
 		map<size_t, vector<MapData>> mapDatum;
 	};
 
