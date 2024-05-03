@@ -15,6 +15,8 @@ public:
 	void setSpeedY(float y) { this->speed.y = y; };
 	void setLocationF(POINTF location);
 	void setLocationF(float x, float y);
+	void setCenter(POINTF location);
+	void setCenter(float x, float y);
 
 	// getter
 	POINTF getSpeed() { return this->speed; };
