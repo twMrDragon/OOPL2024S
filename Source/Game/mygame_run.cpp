@@ -35,7 +35,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		{
 			if (player.isDeath(enemyBullets[i]))
 			{
-				
+
 				player.setInvincible(120);
 				player.setPower(1);
 				player.setRemainingLives(player.getRemainingLives() - 1);
@@ -57,7 +57,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 			{
 				fallingObjects.erase(fallingObjects.begin() + i);
 				i--;
-				player.setPower(player.getPower()+1);
+				player.setPower(player.getPower() + 1);
 			}
 		}
 		// generate enemy, move enemy and erase enemy leave player area
@@ -73,8 +73,11 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		if (this->boss != nullptr)
 		{
 			this->boss->update(player, &enemyBullets);
+			if (this->boss->onLeave(playerArea))
+			{
+				this->boss = nullptr;
+			}
 		}
-
 		frameCounter += 1;
 	}
 }
@@ -244,7 +247,7 @@ void CGameStateRun::initGame() {
 	playerArea.LoadEmptyBitmap(448, 384);
 	playerArea.setLocationF(32.0f, 16.0f);
 	// interface background
-	for (int filename : {5, 6, 7, 23}) {
+	for (const int filename : {5, 6, 7, 23}) {
 		CMovingBitmap interfaceBackgound;
 		interfaceBackgound.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite" + to_string(filename) + ".bmp" });
 		interfaceBackgroundResource.push_back(interfaceBackgound);
@@ -282,6 +285,7 @@ void CGameStateRun::initGame() {
 	// show score and player data
 	for (int i = 0; i < 5; i++) {
 		NumberSystem numberSystem;
+		numberSystem.onInit();
 		numberSystems.push_back(numberSystem);
 	}
 	numberSystems[0].setMinDigit(9);
@@ -291,6 +295,11 @@ void CGameStateRun::initGame() {
 	numberSystems[2].setXY(496, 186);
 	numberSystems[3].setXY(496, 206);
 	numberSystems[4].setXY(496, 226);
+
+	// boss timer
+	bossTimer.onInit();
+	bossTimer.setMinDigit(2);
+	bossTimer.setXY(playerArea.GetLeft() + playerArea.GetWidth() - 32, playerArea.GetTop());
 
 	MapCreator::onInit(&playerArea, &mapDatum);
 }
@@ -313,6 +322,7 @@ void CGameStateRun::showGame() {
 	// boss
 	if (this->boss != nullptr) {
 		boss->show();
+		bossTimer.showNumber(boss->getTimer() / 30);
 	}
 
 
