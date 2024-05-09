@@ -48,7 +48,7 @@ void MovingObject::updateLocationFBySpeed()
 	updateCMovingBitmapLocation();
 }
 
-MovingObject::MovingObject():CMovingBitmap()
+MovingObject::MovingObject() :CMovingBitmap()
 {
 	CoCreateGuid(&guid);
 }
@@ -63,6 +63,20 @@ void MovingObject::setLocationF(float x, float y)
 {
 	this->locationF.x = x;
 	this->locationF.y = y;
+	updateCMovingBitmapLocation();
+}
+
+void MovingObject::setCenter(POINTF location)
+{
+	this->locationF.x = location.x - this->GetWidth() / 2.0f;
+	this->locationF.y = location.y - this->GetHeight() / 2.0f;
+	updateCMovingBitmapLocation();
+}
+
+void MovingObject::setCenter(float x, float y)
+{
+	this->locationF.x = x - this->GetWidth() / 2.0f;
+	this->locationF.y = y - this->GetHeight() / 2.0f;
 	updateCMovingBitmapLocation();
 }
 
