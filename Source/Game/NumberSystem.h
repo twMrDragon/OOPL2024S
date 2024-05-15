@@ -14,7 +14,7 @@ class NumberSystem
 	vector<CMovingBitmap> nums;
 
 public:
-	NumberSystem();
+	NumberSystem() = default;
 
 	// getter
 	int getX() { return this->x; };
@@ -25,5 +25,6 @@ public:
 	void setMinDigit(int digit);
 
 	void showNumber(int value);
+	void onInit();
 };
 

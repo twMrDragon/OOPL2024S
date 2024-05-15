@@ -147,6 +147,7 @@ namespace game_framework {
 		CMovingBitmap GreenStar;
 		CMovingBitmap RedStar;
 		vector<NumberSystem> numberSystems;
+		NumberSystem bossTimer;
 		vector<CMovingBitmap> interfaceBackgroundResource;
 
 		// 玩家可交互物件

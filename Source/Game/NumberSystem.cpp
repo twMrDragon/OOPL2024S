@@ -1,27 +1,6 @@
 #include "stdafx.h"
 #include "NumberSystem.h"
 
-NumberSystem::NumberSystem() {
-	vector<vector<string>> numbersImagePath = {
-		{"Resources\\Image\\IN\\ascii\\Sprite27.bmp"},
-		{"Resources\\Image\\IN\\ascii\\Sprite28.bmp"},
-		{"Resources\\Image\\IN\\ascii\\Sprite29.bmp"},
-		{"Resources\\Image\\IN\\ascii\\Sprite30.bmp"},
-		{"Resources\\Image\\IN\\ascii\\Sprite31.bmp"},
-		{"Resources\\Image\\IN\\ascii\\Sprite32.bmp"},
-		{"Resources\\Image\\IN\\ascii\\Sprite33.bmp"},
-		{"Resources\\Image\\IN\\ascii\\Sprite34.bmp"},
-		{"Resources\\Image\\IN\\ascii\\Sprite35.bmp"},
-		{"Resources\\Image\\IN\\ascii\\Sprite36.bmp"},
-	};
-
-	for (size_t i = 0; i < numbersImagePath.size(); i++)
-	{
-		CMovingBitmap num;
-		num.LoadBitmapByString(numbersImagePath[i], RGB(0, 0, 0));
-		this->nums.push_back(num);
-	}
-}
 
 void NumberSystem::setXY(int x, int y) {
 	this->x = x;
@@ -53,5 +32,28 @@ void NumberSystem::showNumber(int value) {
 		}
 
 		dividend /= 10;
+	}
+}
+
+void NumberSystem::onInit()
+{
+	vector<vector<string>> numbersImagePath = {
+		{"Resources\\Image\\IN\\ascii\\Sprite27.bmp"},
+		{"Resources\\Image\\IN\\ascii\\Sprite28.bmp"},
+		{"Resources\\Image\\IN\\ascii\\Sprite29.bmp"},
+		{"Resources\\Image\\IN\\ascii\\Sprite30.bmp"},
+		{"Resources\\Image\\IN\\ascii\\Sprite31.bmp"},
+		{"Resources\\Image\\IN\\ascii\\Sprite32.bmp"},
+		{"Resources\\Image\\IN\\ascii\\Sprite33.bmp"},
+		{"Resources\\Image\\IN\\ascii\\Sprite34.bmp"},
+		{"Resources\\Image\\IN\\ascii\\Sprite35.bmp"},
+		{"Resources\\Image\\IN\\ascii\\Sprite36.bmp"},
+	};
+
+	for (size_t i = 0; i < numbersImagePath.size(); i++)
+	{
+		CMovingBitmap num;
+		num.LoadBitmapByString(numbersImagePath[i], RGB(0, 0, 0));
+		this->nums.push_back(num);
 	}
 }
