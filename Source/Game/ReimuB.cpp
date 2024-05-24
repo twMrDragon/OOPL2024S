@@ -2,11 +2,24 @@
 #include "ReimuB.h"
 
 void ReimuB::onInit() {
-	LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite0.bmp" }, RGB(205, 205, 205));
+	this->LoadBitmapByString(
+		{ "Resources\\Image\\CM\\player00\\unshow.bmp",
+		"Resources\\Image\\CM\\player00\\Sprite0.bmp",
+		"Resources\\Image\\CM\\player00\\Sprite1.bmp" ,
+		"Resources\\Image\\CM\\player00\\Sprite2.bmp" ,
+		"Resources\\Image\\CM\\player00\\Sprite3.bmp" ,
+		"Resources\\Image\\CM\\player00\\Sprite4.bmp" ,//4-10 left
+		"Resources\\Image\\CM\\player00\\Sprite5.bmp" ,
+		"Resources\\Image\\CM\\player00\\Sprite6.bmp" ,
+		"Resources\\Image\\CM\\player00\\Sprite7.bmp" ,
+		"Resources\\Image\\CM\\player00\\Sprite8.bmp" ,
+		"Resources\\Image\\CM\\player00\\Sprite9.bmp" ,//	
+		"Resources\\Image\\CM\\player00\\Sprite10.bmp" }, RGB(205, 205, 205));
+	SetAnimation(100, false);//R L U D P
 	//setLocationF(200, 400);
 	Player::onInit();
-	;
-	//ShowBitmap();
+
+	ShowBitmap();
 }
 
 vector<MovingObject> ReimuB::attack()
@@ -15,7 +28,7 @@ vector<MovingObject> ReimuB::attack()
 	firingIntervalRedBulletCounter++;
 
 	if (firingIntervalIceBulletCounter != firingIntervalIceBullet && firingIntervalRedBulletCounter != firingIntervalRedBullet) { return {}; }
-	
+
 
 	vector<MovingObject> totalBullets;
 	MovingObject bullet;
@@ -24,7 +37,7 @@ vector<MovingObject> ReimuB::attack()
 	bullet.setSpeedY((float)-15);
 
 	if (getPower() < 8) {
-		if (firingIntervalRedBullet==firingIntervalRedBulletCounter)
+		if (firingIntervalRedBullet == firingIntervalRedBulletCounter)
 		{
 			totalBullets.push_back(bullet);
 			firingIntervalRedBulletCounter = 0;
@@ -44,13 +57,13 @@ vector<MovingObject> ReimuB::attack()
 		{
 			MovingObject bullet;
 			bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite69.bmp" }, RGB(205, 205, 205));
-			bullet.setLocationF(-0.5f+getCenter().x - bullet.GetWidth() / 2.0f, getCenter().y - bullet.GetHeight() / 2.0f);
+			bullet.setLocationF(-0.5f + getCenter().x - bullet.GetWidth() / 2.0f, getCenter().y - bullet.GetHeight() / 2.0f);
 			bullet.setSpeedX((float)-0.45);
 			bullet.setSpeedY((float)-15);
 			totalBullets.push_back(bullet);
 
 			bullet.setSpeedX((float)0.45);
-			bullet.setLocationF(0.5f+getCenter().x - bullet.GetWidth() / 2.0f, getCenter().y - bullet.GetHeight() / 2.0f);
+			bullet.setLocationF(0.5f + getCenter().x - bullet.GetWidth() / 2.0f, getCenter().y - bullet.GetHeight() / 2.0f);
 			totalBullets.push_back(bullet);
 			firingIntervalRedBulletCounter = 0;
 		}

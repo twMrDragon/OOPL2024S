@@ -37,8 +37,13 @@ void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 			{
 
 				player.setInvincible(120);
-				player.setPower(1);
+				player.setPower(0);
 				player.setRemainingLives(player.getRemainingLives() - 1);
+				player.setRangeAnimation(0, 3, 100, false);//not enough
+				
+			}
+			if (player.getInvincible() == 1) {
+				player.setRangeAnimation(1, 3, 10, false);
 			}
 		}
 		player.updateLocationFBySpeed();
@@ -95,6 +100,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		if (nChar == VK_UP) {
 			if (menuStage == MAIN_MENU)
 				setMainMenuSelection(-1);
+;
 		}
 		else if (nChar == VK_DOWN) {
 			if (menuStage == MAIN_MENU)
@@ -116,9 +122,13 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		}
 		else if (nChar == VK_LEFT) {
 			player.setSpeedX(player.getSpeedX() - playerDelta);
+			//4-10 513
+			//player.setRangeAnimation(4, 10, 100, true);
+			//player.ToggleAnimation();
 		}
 		else if (nChar == VK_RIGHT) {
 			player.setSpeedX(player.getSpeedX() + playerDelta);
+
 		}
 		else if (nChar == 0x5A) {
 			fire = true;
@@ -138,9 +148,13 @@ void CGameStateRun::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 		}
 		else if (nChar == VK_LEFT) {
 			player.setSpeedX(player.getSpeedX() + playerDelta);
+			//player.setRangeAnimation(1, 3, 100, true);
+			//player.startToggleAnimation();
 		}
 		else if (nChar == VK_RIGHT) {
 			player.setSpeedX(player.getSpeedX() - playerDelta);
+			/*
+			*/
 		}
 		else if (nChar == 0x5A) {
 			fire = false;
@@ -246,6 +260,9 @@ void CGameStateRun::initGame() {
 	// player moveing area
 	playerArea.LoadEmptyBitmap(448, 384);
 	playerArea.setLocationF(32.0f, 16.0f);
+
+	player.setRangeAnimation(1, 3, 150, false);
+	player.startToggleAnimation();
 	// interface background
 	for (const int filename : {5, 6, 7, 23}) {
 		CMovingBitmap interfaceBackgound;
@@ -306,7 +323,10 @@ void CGameStateRun::initGame() {
 
 void CGameStateRun::showGame() {
 	// player
-	player.ShowBitmap();
+	//player.SetAnimation(1, false);
+	player.handMadeShow();
+	
+	//player.ShowBitmap();
 	// player bullets
 	for (size_t i = 0; i < playerBullets.size(); i++)
 		playerBullets[i].ShowBitmap();

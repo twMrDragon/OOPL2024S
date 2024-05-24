@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MovingObject.h"
 
+
 POINTF MovingObject::getCenter()
 {
 	float centerX = this->locationF.x + this->GetWidth() / 2.0f;
@@ -37,6 +38,53 @@ bool MovingObject::operator<(const MovingObject& other) const
 	int result = (str1).compare((str2));
 	return result < 0;
 }
+
+void MovingObject::setRangeAnimation(int start, int end, int delay, bool isOneTime)
+{
+	if (!isOneTime) thisIsAnimation = true;
+	isOnce = isOneTime;
+	delayCount = delay;
+	this->start = start;
+	this->end = end;
+}
+
+void MovingObject::handMadeShow()
+{
+	//SetTopLeft(200, 400);
+	SetAnimation(delayCount, false);
+	isAnimation = false;
+	ShowBitmap();
+	settingBitmapbyShow();
+}
+
+
+void MovingObject::settingBitmapbyShow()
+{
+	if (thisIsAnimation == true && clock() - last_time >= delayCount) {
+		frameIndex += 1;
+		last_time = clock();
+		if (frameIndex == end + 1 && animationCount > 0) {
+			animationCount -= 1;
+		}
+		if (frameIndex == end + 1 && (isOnce || animationCount == 0)) {
+			thisIsAnimation = false;
+			isAnimationDone = true;
+			frameIndex = end;
+			return;
+		}
+		if (frameIndex == end + 1) {
+			frameIndex = start;
+		}
+	}
+
+}
+
+void MovingObject::startToggleAnimation() {
+	frameIndex = start;
+	thisIsAnimation = true;
+	isAnimationDone = false;
+}
+
 
 
 void MovingObject::updateLocationFBySpeed()
