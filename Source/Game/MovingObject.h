@@ -34,18 +34,20 @@ public:
 	bool MovingObject::operator<(const MovingObject& other) const;
 
 	//donglong
-	void setRangeAnimation(int start, int end,int delay,bool isOneTime);
+	void setRangeAnimation(int start, int end, int delay, bool isOneTime);
 	void handMadeShow();
 	void startToggleAnimation();
 
-private:
+protected:
 	POINTF speed{ 0,0 };
 	POINTF locationF{ 0,0 };
+
+private:
 	map<MovingObject, bool> touched;
 	GUID guid;
 	int start;
 	int end;
-	bool thisIsAnimation=false;
+	bool thisIsAnimation = false;
 
 	void updateCMovingBitmapLocation();
 	void settingBitmapbyShow();
