@@ -40,7 +40,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 				player.setPower(0);
 				player.setRemainingLives(player.getRemainingLives() - 1);
 				player.setRangeAnimation(0, 3, 100, false);//not enough
-				
+
 			}
 			if (player.getInvincible() == 1) {
 				player.setRangeAnimation(1, 3, 10, false);
@@ -77,7 +77,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		}
 		if (this->boss != nullptr)
 		{
-			this->boss->update(player, &enemyBullets);
+			this->boss->update(&player, &enemyBullets, &playerArea);
 			if (this->boss->onLeave(playerArea))
 			{
 				this->boss = nullptr;
@@ -100,7 +100,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		if (nChar == VK_UP) {
 			if (menuStage == MAIN_MENU)
 				setMainMenuSelection(-1);
-;
+			;
 		}
 		else if (nChar == VK_DOWN) {
 			if (menuStage == MAIN_MENU)
@@ -325,7 +325,7 @@ void CGameStateRun::showGame() {
 	// player
 	//player.SetAnimation(1, false);
 	player.handMadeShow();
-	
+
 	//player.ShowBitmap();
 	// player bullets
 	for (size_t i = 0; i < playerBullets.size(); i++)
@@ -426,7 +426,7 @@ void CGameStateRun::fixPlayerLocation() {
 void CGameStateRun::checkBulletHitEnemy() {
 	for (size_t i = 0; i < playerBullets.size(); i++) {
 		for (size_t j = 0; j < enemies.size(); j++) {
-			if (playerBullets[i].IsOverlap(playerBullets[i], enemies[j])) {
+			if (enemies[j].getHitable() && playerBullets[i].IsOverlap(playerBullets[i], enemies[j])) {
 				addFallingObject(enemies[j]);
 				playerBullets.erase(playerBullets.begin() + i);
 				enemies.erase(enemies.begin() + j);
@@ -446,6 +446,7 @@ void CGameStateRun::updateEnemy()
 			Enemy enemy;
 			enemy.LoadBitmapByString(iter->second[i].resource, iter->second[i].colorFilter);
 			enemy.setLocationF(iter->second[i].location.x, iter->second[i].location.y);
+			enemy.setHitable(iter->second[i].hitable);
 			if (iter->second[i].aimTarget == MapData::AIM_TARGET::NO) {
 				enemy.setSpeeds(iter->second[i].speeds);
 			}
