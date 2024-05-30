@@ -24,6 +24,7 @@
     <ClCompile Include="Source\Library\gameutil.cpp" />
     <ClCompile Include="Source\Game\Boss.cpp" />
     <ClCompile Include="Source\Game\RumiaFirst.cpp" />
+    <ClCompile Include="Source\Game\RumiaSecond.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Core\Game.h" />
@@ -49,6 +50,7 @@
     <ClInclude Include="Source\Library\gameutil.h" />
     <ClInclude Include="Source\Game\Boss.h" />
     <ClInclude Include="Source\Game\RumiaFirst.h" />
+    <ClInclude Include="Source\Game\RumiaSecond.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Source\Core\game.rc" />

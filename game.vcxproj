@@ -246,6 +246,7 @@
     <ClCompile Include="Source\Game\Bezier.cpp" />
     <ClCompile Include="Source\Game\Boss.cpp" />
     <ClCompile Include="Source\Game\BulletCreator.cpp" />
+    <ClCompile Include="Source\Game\Daiyousei.cpp" />
     <ClCompile Include="Source\Game\Enemy.cpp" />
     <ClCompile Include="Source\Game\MapCreator.cpp" />
     <ClCompile Include="Source\Game\MapData.cpp" />
@@ -258,6 +259,8 @@
     <ClCompile Include="Source\Game\ReimuA.cpp" />
     <ClCompile Include="Source\Game\ReimuB.cpp" />
     <ClCompile Include="Source\Game\RumiaFirst.cpp" />
+    <ClCompile Include="Source\Game\RumiaSecond.cpp" />
+    <ClCompile Include="Source\Game\Utils.cpp" />
     <ClCompile Include="Source\Library\audio.cpp" />
     <ClCompile Include="Source\Library\gamecore.cpp" />
     <ClCompile Include="Source\Library\gameutil.cpp" />
@@ -273,6 +276,7 @@
     <ClInclude Include="Source\Game\Boss.h" />
     <ClInclude Include="Source\Game\BulletCreator.h" />
     <ClInclude Include="Source\Game\config.h" />
+    <ClInclude Include="Source\Game\Daiyousei.h" />
     <ClInclude Include="Source\Game\Enemy.h" />
     <ClInclude Include="Source\Game\MapCreator.h" />
     <ClInclude Include="Source\Game\MapData.h" />
@@ -283,6 +287,8 @@
     <ClInclude Include="Source\Game\ReimuA.h" />
     <ClInclude Include="Source\Game\ReimuB.h" />
     <ClInclude Include="Source\Game\RumiaFirst.h" />
+    <ClInclude Include="Source\Game\RumiaSecond.h" />
+    <ClInclude Include="Source\Game\Utils.h" />
     <ClInclude Include="Source\Library\audio.h" />
     <ClInclude Include="Source\Library\gamecore.h" />
     <ClInclude Include="Source\Library\gameutil.h" />
