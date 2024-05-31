@@ -40,10 +40,10 @@ public:
 
 protected:
 	POINTF speed{ 0,0 };
-	POINTF locationF{ 0,0 };
 
 private:
 	map<MovingObject, bool> touched;
+	POINTF locationF{ 0,0 };
 	GUID guid;
 	int start;
 	int end;

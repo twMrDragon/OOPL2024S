@@ -324,7 +324,7 @@ void RumiaSecond::onInit(MovingObject playerArea)
 	//this->timer = 30;
 	this->stage2Show = 1;
 	LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm2\\Sprite132.bmp" }, RGB(142, 142, 142));
-	this->locationF = POINTF{ playerArea.getCenter().x - this->GetWidth() / 2.0f, (float)(playerArea.GetTop() - this->GetHeight()) };
+	this->setLocationF(playerArea.getCenter().x - this->GetWidth() / 2.0f, (float)(playerArea.GetTop() - this->GetHeight()));
 
 	//enter action
 	for (int i = 0; i < 40; i++)
