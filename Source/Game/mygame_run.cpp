@@ -301,17 +301,17 @@ void CGameStateRun::initGame() {
 	// number system
 	// show score and player data
 	for (int i = 0; i < 5; i++) {
-		NumberSystem numberSystem;
-		numberSystem.onInit();
-		numberSystems.push_back(numberSystem);
+		NumberDisplay numberDisplay;
+		numberDisplay.onInit();
+		numberDisplays.push_back(numberDisplay);
 	}
-	numberSystems[0].setMinDigit(9);
-	numberSystems[0].setXY(496, 58);
-	numberSystems[1].setMinDigit(9);
-	numberSystems[1].setXY(496, 82);
-	numberSystems[2].setXY(496, 186);
-	numberSystems[3].setXY(496, 206);
-	numberSystems[4].setXY(496, 226);
+	numberDisplays[0].setMinDigit(9);
+	numberDisplays[0].setXY(496, 58);
+	numberDisplays[1].setMinDigit(9);
+	numberDisplays[1].setXY(496, 82);
+	numberDisplays[2].setXY(496, 186);
+	numberDisplays[3].setXY(496, 206);
+	numberDisplays[4].setXY(496, 226);
 
 	// boss timer
 	bossTimer.onInit();
@@ -353,11 +353,11 @@ void CGameStateRun::showGame() {
 	for (size_t i = 0; i < gameInterface.size(); i++)
 		gameInterface[i].ShowBitmap();
 	// number system
-	numberSystems[0].showNumber(1000000);
-	numberSystems[1].showNumber(0);
-	numberSystems[2].showNumber(player.getPower());
-	numberSystems[3].showNumber(0);
-	numberSystems[4].showNumber(0);
+	numberDisplays[0].showNumber(1000000);
+	numberDisplays[1].showNumber(0);
+	numberDisplays[2].showNumber(player.getPower());
+	numberDisplays[3].showNumber(0);
+	numberDisplays[4].showNumber(0);
 	// player star
 	for (int i = 0; i < player.getRemainingLives(); i++)
 	{

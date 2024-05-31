@@ -6,7 +6,7 @@
 using namespace game_framework;
 using namespace std;
 
-class NumberSystem
+class NumberDisplay
 {
 	int x = 0;
 	int y = 0;
@@ -14,7 +14,7 @@ class NumberSystem
 	vector<CMovingBitmap> nums;
 
 public:
-	NumberSystem() = default;
+	NumberDisplay() = default;
 
 	// getter
 	int getX() { return this->x; };
