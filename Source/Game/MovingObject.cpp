@@ -103,7 +103,7 @@ MovingObject::MovingObject() :CMovingBitmap()
 
 void MovingObject::setLocationF(POINTF location)
 {
-	this->locationF = locationF;
+	this->locationF = location;
 	updateCMovingBitmapLocation();
 }
 
