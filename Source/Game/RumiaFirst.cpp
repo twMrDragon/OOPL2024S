@@ -61,12 +61,13 @@ void RumiaFirst::onInit(MovingObject playerArea)
 {
 	this->timer = 740;
 	LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm2\\Sprite132.bmp" }, RGB(142, 142, 142));
-	this->setLocationF(playerArea.getCenter().x - this->GetWidth() / 2.0f, (float)-this->getHealth());
+	this->setLocationF(playerArea.getCenter().x - this->GetWidth() / 2.0f, (float)-this->GetHeight());
+	this->initDisplay(playerArea);
 
 	// enter
-	for (size_t i = 0; i < 30; i++)
+	for (size_t i = 0; i < 40; i++)
 	{
-		this->enterSpeeds.push_back(POINTF{ 4.5f,4 });
+		this->enterSpeeds.push_back(POINTF{ 3.0f,4.0f });
 	}
 
 	// attack
@@ -81,7 +82,7 @@ void RumiaFirst::onInit(MovingObject playerArea)
 		}
 		for (size_t j = 0; j < 30; j++)
 		{
-			this->attackSpeeds.push_back(POINTF{ xDirection[i] * 4.5f,yDirection[i] * 2.5f });
+			this->attackSpeeds.push_back(POINTF{ xDirection[i] * 4.0f,yDirection[i] * 2.5f });
 		}
 	}
 

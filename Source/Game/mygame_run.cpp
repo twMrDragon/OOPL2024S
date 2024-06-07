@@ -313,11 +313,6 @@ void CGameStateRun::initGame() {
 	numberDisplays[3].setXY(496, 206);
 	numberDisplays[4].setXY(496, 226);
 
-	// boss timer
-	bossTimer.onInit();
-	bossTimer.setMinDigit(2);
-	bossTimer.setXY(playerArea.GetLeft() + playerArea.GetWidth() - 32, playerArea.GetTop());
-
 	MapCreator::onInit(&playerArea, &mapDatum);
 }
 
@@ -342,9 +337,8 @@ void CGameStateRun::showGame() {
 	// boss
 	if (this->boss != nullptr) {
 		boss->show();
-		bossTimer.showNumber(boss->getTimer() / 30);
+		boss->showDisplay();
 	}
-
 
 	// interface
 	// interface border

@@ -143,11 +143,10 @@ namespace game_framework {
 		vector<CMovingBitmap> gameInterface;
 		int TestPower = 16;
 		int Bomb = 3;
-		
+
 		CMovingBitmap GreenStar;
 		CMovingBitmap RedStar;
 		vector<NumberDisplay> numberDisplays;
-		NumberDisplay bossTimer;
 		vector<CMovingBitmap> interfaceBackgroundResource;
 
 		// 玩家可交互物件
