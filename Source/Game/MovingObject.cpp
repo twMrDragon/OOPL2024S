@@ -39,7 +39,7 @@ bool MovingObject::operator<(const MovingObject& other) const
 	return result < 0;
 }
 
-void MovingObject::setRangeAnimation(int start, int end, int delay, bool isOneTime)
+void MovingObject::setRangeAnimation(int start, int end, int delay, bool isOneTime)//°O±otoggle
 {
 	if (!isOneTime) thisIsAnimation = true;
 	isOnce = isOneTime;
@@ -52,6 +52,7 @@ void MovingObject::handMadeShow()
 {
 	//SetTopLeft(200, 400);
 	SetAnimation(delayCount, false);
+
 	isAnimation = false;
 	ShowBitmap();
 	settingBitmapbyShow();

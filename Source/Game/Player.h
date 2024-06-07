@@ -4,7 +4,7 @@ class Player:public MovingObject
 {
 private:
 	int invincible = 0;//NO Enemy ³o¬OµL¼Ä´V
-	
+	int damage = 0;
 	int bomb=3;
 	int remainingLives=3;
 	bool fire = false;//get set
@@ -18,7 +18,7 @@ public:
 	void setRemainingLives(int remainingLives);
 	int getRemainingLives();
 	void setInvincible(int invincible);
-	int getInvincible();
+	int getInvincible();//player show
 
 
 	virtual vector<MovingObject> attack() = 0;

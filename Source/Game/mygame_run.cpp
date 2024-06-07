@@ -28,26 +28,38 @@ void CGameStateRun::OnBeginState()
 
 void CGameStateRun::OnMove()							// 移動遊戲元素
 {
+	//player.setPower(15);
 	if (mainStage == GAME_STAGE) {
+		if (isPause||isDead)
+			return;
+		
 		player.reduceInvincible();
 		// player
 		for (size_t i = 0; i < enemyBullets.size(); i++)
 		{
 			if (player.isDeath(enemyBullets[i]))
 			{
-
+				//被射中的時候
 				player.setInvincible(120);
 				player.setPower(0);
 				player.setRemainingLives(player.getRemainingLives() - 1);
 				player.setRangeAnimation(0, 3, 100, false);//not enough
+				isInvincibleCount = true;
 
-			}
-			if (player.getInvincible() == 1) {
-				player.setRangeAnimation(1, 3, 10, false);
 			}
 		}
 		player.updateLocationFBySpeed();
 		fixPlayerLocation();
+		//換回正常模式動畫
+		if (isInvincibleCount == true) {
+			if (player.getInvincible() == 0) {
+				player.setRangeAnimation(1, 3, 100, false);
+				isInvincibleCount = false;
+			}
+		}
+		if (player.getRemainingLives() == 0)
+			isDead=true;
+		
 
 
 		// generate player bullet, move bullet and erase
@@ -68,7 +80,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		// generate enemy, move enemy and erase enemy leave player area
 		// same of enemy bullet
 		updateEnemy();
-
+		
 		// boss
 		std::shared_ptr<Boss> bossCreated = MapCreator::getCurrentBoss(frameCounter, playerArea);
 		if (bossCreated != nullptr)
@@ -100,11 +112,12 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		if (nChar == VK_UP) {
 			if (menuStage == MAIN_MENU)
 				setMainMenuSelection(-1);
-			;
+;
 		}
 		else if (nChar == VK_DOWN) {
 			if (menuStage == MAIN_MENU)
 				setMainMenuSelection(1);
+
 		}
 		// key z
 		else if (nChar == 0x5A) {
@@ -116,15 +129,20 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	else {
 		if (nChar == VK_UP) {
 			player.setSpeedY(player.getSpeedY() - playerDelta);
+			if (isPause)
+				setPauseButtionSelection(-1);
+			if (isDead)
+				setDeadButtionSelection(-1);
 		}
 		else if (nChar == VK_DOWN) {
 			player.setSpeedY(player.getSpeedY() + playerDelta);
+			if (isPause)
+				setPauseButtionSelection(1);
+			if (isDead)
+				setDeadButtionSelection(1);
 		}
 		else if (nChar == VK_LEFT) {
 			player.setSpeedX(player.getSpeedX() - playerDelta);
-			//4-10 513
-			//player.setRangeAnimation(4, 10, 100, true);
-			//player.ToggleAnimation();
 		}
 		else if (nChar == VK_RIGHT) {
 			player.setSpeedX(player.getSpeedX() + playerDelta);
@@ -132,9 +150,45 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		}
 		else if (nChar == 0x5A) {
 			fire = true;
+			if (isPause) {
+				if (pauseButtionIndex == 0)
+					isPause = false;
+				if (pauseButtionIndex == 1) {
+					mainStage = MENU_STAGE;
+					resetGame();
+				}				
+			}
+			if (isDead)
+			{
+				if (deadButtionIndex == 0) {
+					//continue
+				}
+				if (deadButtionIndex == 1) {
+					mainStage = MENU_STAGE;
+					resetGame();
+				}
+
+			}
+		}
+		else if (nChar == VK_ESCAPE) {
+			if (isPause)
+				isPause = false;
+			else
+				isPause = true;
 		}
 	}
 
+}
+void CGameStateRun::resetGame() {
+	isPause = false;
+	isDead = false;
+	player = ReimuB();////////////
+	playerBullets.clear();
+	enemies.clear();
+	enemyBullets.clear();
+	fallingObjects.clear();
+	frameCounter = 0;
+	player.onInit();
 }
 
 void CGameStateRun::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -182,6 +236,7 @@ void CGameStateRun::OnRButtonUp(UINT nFlags, CPoint point)	// 處理滑鼠的動作
 {
 }
 
+
 void CGameStateRun::OnShow()
 {
 	if (mainStage == MENU_STAGE) {
@@ -189,6 +244,17 @@ void CGameStateRun::OnShow()
 		showMainMenuButtons();
 	}
 	else {
+		if (isPause) {
+			pauseTitle.ShowBitmap();
+			showPauseButtion();
+		}
+		if (isDead) {
+			deadTitle_01.ShowBitmap();
+			deadTitle_02.ShowBitmap();
+			deadLivesShower.showNumber(player.getRemainingLives());
+			showDeadButtion();
+		}
+			
 		showGame();
 	}
 }
@@ -203,6 +269,39 @@ void CGameStateRun::showMainMenuButtons() {
 			button.SetFrameIndexOfBitmap(1);
 		}
 		else if (button.GetFrameIndexOfBitmap() == 1 && mainMenuButtonSelectIndex != i) {
+			button.SetTopLeft(button.GetLeft() + d, button.GetTop() + d);
+			button.SetFrameIndexOfBitmap(0);
+		}
+		button.ShowBitmap();
+	}
+}
+
+void CGameStateRun::showPauseButtion() {
+	int d = 3;
+	for (size_t i = 0; i < pauseButtons.size(); i++)
+	{
+		CMovingBitmap button = pauseButtons[i];
+		if (button.GetFrameIndexOfBitmap() == 0 && pauseButtionIndex == i) {
+			button.SetTopLeft(button.GetLeft() - d, button.GetTop() - d);
+			button.SetFrameIndexOfBitmap(1);
+		}
+		else if (button.GetFrameIndexOfBitmap() == 1 && pauseButtionIndex != i) {
+			button.SetTopLeft(button.GetLeft() + d, button.GetTop() + d);
+			button.SetFrameIndexOfBitmap(0);
+		}
+		button.ShowBitmap();
+	}
+}
+void CGameStateRun::showDeadButtion() {
+	int d = 3;
+	for (size_t i = 0; i < deadButtons.size(); i++)
+	{
+		CMovingBitmap button = deadButtons[i];
+		if (button.GetFrameIndexOfBitmap() == 0 && deadButtionIndex == i) {
+			button.SetTopLeft(button.GetLeft() - d, button.GetTop() - d);
+			button.SetFrameIndexOfBitmap(1);
+		}
+		else if (button.GetFrameIndexOfBitmap() == 1 && deadButtionIndex != i) {
 			button.SetTopLeft(button.GetLeft() + d, button.GetTop() + d);
 			button.SetFrameIndexOfBitmap(0);
 		}
@@ -242,7 +341,44 @@ void CGameStateRun::initMenu() {
 		button.SetTopLeft(buttonLocations[i][0], buttonLocations[i][1]);
 		mainMenuButtons.push_back(button);
 	}
+	//stop manu 
+	//"Resources\\Image\\IN\\ascii\\Sprite111.bmp" //遊戲暫停
+
+	vector<vector<string>> pauseButtonPaths = {
+		{ "Resources\\Image\\IN\\ascii\\Sprite112.bmp","Resources\\Image\\IN\\asciis\\Sprite111.bmp" },//解除暫停
+		{ "Resources\\Image\\IN\\ascii\\Sprite113.bmp","Resources\\Image\\IN\\asciis\\Sprite112.bmp" },//返回標題
+	};
+	vector<vector<int>> pauseButtonLocations = {
+		{180,230},
+		{180,250},
+	};
+	for (size_t i = 0; i < pauseButtonPaths.size(); i++)
+	{
+		CMovingBitmap button;
+		button.LoadBitmapByString(pauseButtonPaths[i], RGB(0, 0, 0));
+		button.SetTopLeft(pauseButtonLocations[i][0], pauseButtonLocations[i][1]);
+		pauseButtons.push_back(button);
+	}
+
+	vector<vector<string>> deadButtonPaths = {
+		{ "Resources\\Image\\IN\\ascii\\Sprite115.bmp","Resources\\Image\\IN\\asciis\\Sprite114.bmp" },//是
+		{ "Resources\\Image\\IN\\ascii\\Sprite116.bmp","Resources\\Image\\IN\\asciis\\Sprite115.bmp" },//否
+	};
+
+	vector<vector<int>> deadButtonLocations = {
+	{200,230},
+	{200,250},
+	};
+
+	for (size_t i = 0; i < deadButtonPaths.size(); i++)
+	{
+		CMovingBitmap button;
+		button.LoadBitmapByString(deadButtonPaths[i], RGB(0, 0, 0));
+		button.SetTopLeft(deadButtonLocations[i][0], deadButtonLocations[i][1]);
+		deadButtons.push_back(button);
+	}
 }
+
 
 void CGameStateRun::setMainMenuSelection(int direction) {
 	mainMenuButtonSelectIndex += direction;
@@ -251,18 +387,46 @@ void CGameStateRun::setMainMenuSelection(int direction) {
 	else if (mainMenuButtonSelectIndex == mainMenuButtons.size())
 		mainMenuButtonSelectIndex = mainMenuButtons.size() - 1;
 }
+void CGameStateRun::setPauseButtionSelection(int direction) {
+	pauseButtionIndex += direction;
+	if (pauseButtionIndex < 0)
+		pauseButtionIndex = 0;
+	else if (pauseButtionIndex == pauseButtons.size())
+		pauseButtionIndex = pauseButtons.size() - 1;
+}
+void CGameStateRun::setDeadButtionSelection(int direction) {
+	deadButtionIndex += direction;
+	if (deadButtionIndex < 0)
+		deadButtionIndex = 0;
+	else if (deadButtionIndex == deadButtons.size())
+		deadButtionIndex = deadButtons.size() - 1;
+}
+
 
 void CGameStateRun::initGame() {
 	// player
 	//player.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite0.bmp" }, RGB(205, 205, 205));
+	pauseTitle.LoadBitmapByString({ "Resources\\Image\\IN\\ascii\\Sprite111.bmp" }, RGB(0, 0, 0));
+	pauseTitle.SetTopLeft(195, 186);
+
+
+
+
+	deadTitle_01.LoadBitmapByString({ "Resources\\Image\\IN\\ascii\\Sprite117.bmp" }, RGB(0, 0, 0));
+	deadTitle_01.SetTopLeft(150,186);
+
+	deadTitle_02.LoadBitmapByString({ "Resources\\Image\\IN\\ascii\\Sprite118.bmp" }, RGB(0, 0, 0));
+	deadTitle_02.SetTopLeft(220, 206);
+
+
 	player.onInit();
-	player.setLocationF(200, 400);
+	
 	// player moveing area
 	playerArea.LoadEmptyBitmap(448, 384);
 	playerArea.setLocationF(32.0f, 16.0f);
 
-	player.setRangeAnimation(1, 3, 150, false);
-	player.startToggleAnimation();
+	//player
+	//player.startToggleAnimation();
 	// interface background
 	for (const int filename : {5, 6, 7, 23}) {
 		CMovingBitmap interfaceBackgound;
@@ -313,6 +477,18 @@ void CGameStateRun::initGame() {
 	numberDisplays[3].setXY(496, 206);
 	numberDisplays[4].setXY(496, 226);
 
+<<<<<<< Updated upstream
+=======
+	// boss timer
+	bossTimer.onInit();
+	bossTimer.setMinDigit(2);
+	bossTimer.setXY(playerArea.GetLeft() + playerArea.GetWidth() - 32, playerArea.GetTop());
+
+	//dead reLives shower
+	deadLivesShower.onInit();
+	deadLivesShower.setXY(252,206);
+
+>>>>>>> Stashed changes
 	MapCreator::onInit(&playerArea, &mapDatum);
 }
 
@@ -363,6 +539,9 @@ void CGameStateRun::showGame() {
 	{
 		GreenStar.SetTopLeft(496 + i * GreenStar.GetWidth(), 146);
 		GreenStar.ShowBitmap();
+	}
+	if (player.getPower() >= 8) {
+		player.showBall();
 	}
 }
 
@@ -501,7 +680,7 @@ void CGameStateRun::updatePlayerBullet()
 
 	// generate
 	if (fire) {
-		//player.setPower(Power);
+		player.setPower(70);
 		vector<MovingObject> ms = player.attack();
 		playerBullets.insert(playerBullets.end(), ms.begin(), ms.end());//wave1.insert(wave1.end(), curve1Speeds.begin() + 1, curve1Speeds.end());
 	}
