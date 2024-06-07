@@ -1,17 +1,17 @@
 #include "stdafx.h"
-#include "NumberSystem.h"
+#include "NumberDisplay.h"
 
 
-void NumberSystem::setXY(int x, int y) {
+void NumberDisplay::setXY(int x, int y) {
 	this->x = x;
 	this->y = y;
 }
 
-void NumberSystem::setMinDigit(int digit) {
+void NumberDisplay::setMinDigit(int digit) {
 	this->minDigit = digit;
 }
 
-void NumberSystem::showNumber(int value) {
+void NumberDisplay::showNumber(int value) {
 	bool flag = false;
 	int dx = -2;
 	int dividend = 1;
@@ -35,7 +35,7 @@ void NumberSystem::showNumber(int value) {
 	}
 }
 
-void NumberSystem::onInit()
+void NumberDisplay::onInit()
 {
 	vector<vector<string>> numbersImagePath = {
 		{"Resources\\Image\\IN\\ascii\\Sprite27.bmp"},

@@ -15,7 +15,7 @@
     <ClCompile Include="Source\Game\mygame_initialize.cpp" />
     <ClCompile Include="Source\Game\mygame_over.cpp" />
     <ClCompile Include="Source\Game\mygame_run.cpp" />
-    <ClCompile Include="Source\Game\NumberSystem.cpp" />
+    <ClCompile Include="Source\Game\NumberDisplay.cpp" />
     <ClCompile Include="Source\Game\Player.cpp" />
     <ClCompile Include="Source\Game\ReimuA.cpp" />
     <ClCompile Include="Source\Game\ReimuB.cpp" />
@@ -24,6 +24,7 @@
     <ClCompile Include="Source\Library\gameutil.cpp" />
     <ClCompile Include="Source\Game\Boss.cpp" />
     <ClCompile Include="Source\Game\RumiaFirst.cpp" />
+    <ClCompile Include="Source\Game\RumiaSecond.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Core\Game.h" />
@@ -40,7 +41,7 @@
     <ClInclude Include="Source\Game\MapData.h" />
     <ClInclude Include="Source\Game\MovingObject.h" />
     <ClInclude Include="Source\Game\mygame.h" />
-    <ClInclude Include="Source\Game\NumberSystem.h" />
+    <ClInclude Include="Source\Game\NumberDisplay.h" />
     <ClInclude Include="Source\Game\Player.h" />
     <ClInclude Include="Source\Game\ReimuA.h" />
     <ClInclude Include="Source\Game\ReimuB.h" />
@@ -49,6 +50,7 @@
     <ClInclude Include="Source\Library\gameutil.h" />
     <ClInclude Include="Source\Game\Boss.h" />
     <ClInclude Include="Source\Game\RumiaFirst.h" />
+    <ClInclude Include="Source\Game\RumiaSecond.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Source\Core\game.rc" />

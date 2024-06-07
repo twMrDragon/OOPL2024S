@@ -244,8 +244,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Source\Game\Bezier.cpp" />
+    <ClCompile Include="Source\Game\BloodDisplay.cpp" />
     <ClCompile Include="Source\Game\Boss.cpp" />
     <ClCompile Include="Source\Game\BulletCreator.cpp" />
+    <ClCompile Include="Source\Game\Daiyousei.cpp" />
     <ClCompile Include="Source\Game\Enemy.cpp" />
     <ClCompile Include="Source\Game\MapCreator.cpp" />
     <ClCompile Include="Source\Game\MapData.cpp" />
@@ -253,11 +255,13 @@
     <ClCompile Include="Source\Game\mygame_initialize.cpp" />
     <ClCompile Include="Source\Game\mygame_over.cpp" />
     <ClCompile Include="Source\Game\mygame_run.cpp" />
-    <ClCompile Include="Source\Game\NumberSystem.cpp" />
+    <ClCompile Include="Source\Game\NumberDisplay.cpp" />
     <ClCompile Include="Source\Game\Player.cpp" />
     <ClCompile Include="Source\Game\ReimuA.cpp" />
     <ClCompile Include="Source\Game\ReimuB.cpp" />
     <ClCompile Include="Source\Game\RumiaFirst.cpp" />
+    <ClCompile Include="Source\Game\RumiaSecond.cpp" />
+    <ClCompile Include="Source\Game\Utils.cpp" />
     <ClCompile Include="Source\Library\audio.cpp" />
     <ClCompile Include="Source\Library\gamecore.cpp" />
     <ClCompile Include="Source\Library\gameutil.cpp" />
@@ -270,19 +274,23 @@
     <ClInclude Include="Source\Core\Resource.h" />
     <ClInclude Include="Source\Core\StdAfx.h" />
     <ClInclude Include="Source\Game\Bezier.h" />
+    <ClInclude Include="Source\Game\BloodDisplay.h" />
     <ClInclude Include="Source\Game\Boss.h" />
     <ClInclude Include="Source\Game\BulletCreator.h" />
     <ClInclude Include="Source\Game\config.h" />
+    <ClInclude Include="Source\Game\Daiyousei.h" />
     <ClInclude Include="Source\Game\Enemy.h" />
     <ClInclude Include="Source\Game\MapCreator.h" />
     <ClInclude Include="Source\Game\MapData.h" />
     <ClInclude Include="Source\Game\MovingObject.h" />
     <ClInclude Include="Source\Game\mygame.h" />
-    <ClInclude Include="Source\Game\NumberSystem.h" />
+    <ClInclude Include="Source\Game\NumberDisplay.h" />
     <ClInclude Include="Source\Game\Player.h" />
     <ClInclude Include="Source\Game\ReimuA.h" />
     <ClInclude Include="Source\Game\ReimuB.h" />
     <ClInclude Include="Source\Game\RumiaFirst.h" />
+    <ClInclude Include="Source\Game\RumiaSecond.h" />
+    <ClInclude Include="Source\Game\Utils.h" />
     <ClInclude Include="Source\Library\audio.h" />
     <ClInclude Include="Source\Library\gamecore.h" />
     <ClInclude Include="Source\Library\gameutil.h" />

@@ -40,7 +40,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 				player.setPower(0);
 				player.setRemainingLives(player.getRemainingLives() - 1);
 				player.setRangeAnimation(0, 3, 100, false);//not enough
-				
+
 			}
 			if (player.getInvincible() == 1) {
 				player.setRangeAnimation(1, 3, 10, false);
@@ -77,7 +77,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		}
 		if (this->boss != nullptr)
 		{
-			this->boss->update(player, &enemyBullets);
+			this->boss->update(&player, &enemyBullets, &playerArea);
 			if (this->boss->onLeave(playerArea))
 			{
 				this->boss = nullptr;
@@ -100,7 +100,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		if (nChar == VK_UP) {
 			if (menuStage == MAIN_MENU)
 				setMainMenuSelection(-1);
-;
+			;
 		}
 		else if (nChar == VK_DOWN) {
 			if (menuStage == MAIN_MENU)
@@ -301,17 +301,17 @@ void CGameStateRun::initGame() {
 	// number system
 	// show score and player data
 	for (int i = 0; i < 5; i++) {
-		NumberSystem numberSystem;
-		numberSystem.onInit();
-		numberSystems.push_back(numberSystem);
+		NumberDisplay numberDisplay;
+		numberDisplay.onInit();
+		numberDisplays.push_back(numberDisplay);
 	}
-	numberSystems[0].setMinDigit(9);
-	numberSystems[0].setXY(496, 58);
-	numberSystems[1].setMinDigit(9);
-	numberSystems[1].setXY(496, 82);
-	numberSystems[2].setXY(496, 186);
-	numberSystems[3].setXY(496, 206);
-	numberSystems[4].setXY(496, 226);
+	numberDisplays[0].setMinDigit(9);
+	numberDisplays[0].setXY(496, 58);
+	numberDisplays[1].setMinDigit(9);
+	numberDisplays[1].setXY(496, 82);
+	numberDisplays[2].setXY(496, 186);
+	numberDisplays[3].setXY(496, 206);
+	numberDisplays[4].setXY(496, 226);
 
 	// boss timer
 	bossTimer.onInit();
@@ -325,7 +325,7 @@ void CGameStateRun::showGame() {
 	// player
 	//player.SetAnimation(1, false);
 	player.handMadeShow();
-	
+
 	//player.ShowBitmap();
 	// player bullets
 	for (size_t i = 0; i < playerBullets.size(); i++)
@@ -353,11 +353,11 @@ void CGameStateRun::showGame() {
 	for (size_t i = 0; i < gameInterface.size(); i++)
 		gameInterface[i].ShowBitmap();
 	// number system
-	numberSystems[0].showNumber(1000000);
-	numberSystems[1].showNumber(0);
-	numberSystems[2].showNumber(player.getPower());
-	numberSystems[3].showNumber(0);
-	numberSystems[4].showNumber(0);
+	numberDisplays[0].showNumber(1000000);
+	numberDisplays[1].showNumber(0);
+	numberDisplays[2].showNumber(player.getPower());
+	numberDisplays[3].showNumber(0);
+	numberDisplays[4].showNumber(0);
 	// player star
 	for (int i = 0; i < player.getRemainingLives(); i++)
 	{
@@ -426,7 +426,7 @@ void CGameStateRun::fixPlayerLocation() {
 void CGameStateRun::checkBulletHitEnemy() {
 	for (size_t i = 0; i < playerBullets.size(); i++) {
 		for (size_t j = 0; j < enemies.size(); j++) {
-			if (playerBullets[i].IsOverlap(playerBullets[i], enemies[j])) {
+			if (enemies[j].getHitable() && playerBullets[i].IsOverlap(playerBullets[i], enemies[j])) {
 				addFallingObject(enemies[j]);
 				playerBullets.erase(playerBullets.begin() + i);
 				enemies.erase(enemies.begin() + j);
@@ -446,6 +446,7 @@ void CGameStateRun::updateEnemy()
 			Enemy enemy;
 			enemy.LoadBitmapByString(iter->second[i].resource, iter->second[i].colorFilter);
 			enemy.setLocationF(iter->second[i].location.x, iter->second[i].location.y);
+			enemy.setHitable(iter->second[i].hitable);
 			if (iter->second[i].aimTarget == MapData::AIM_TARGET::NO) {
 				enemy.setSpeeds(iter->second[i].speeds);
 			}

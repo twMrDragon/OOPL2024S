@@ -6,6 +6,7 @@
 #include "BulletCreator.h"
 #include "Boss.h"
 #include "RumiaFirst.h"
+#include "RumiaSecond.h"
 #include <memory>
 
 class MapCreator

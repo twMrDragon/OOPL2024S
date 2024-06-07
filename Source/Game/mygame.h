@@ -39,7 +39,7 @@
 */
 
 #include "MovingObject.h"
-#include "NumberSystem.h"
+#include "NumberDisplay.h"
 #include "Bezier.h"
 #include "Enemy.h"
 #include "MapCreator.h"
@@ -146,8 +146,8 @@ namespace game_framework {
 		
 		CMovingBitmap GreenStar;
 		CMovingBitmap RedStar;
-		vector<NumberSystem> numberSystems;
-		NumberSystem bossTimer;
+		vector<NumberDisplay> numberDisplays;
+		NumberDisplay bossTimer;
 		vector<CMovingBitmap> interfaceBackgroundResource;
 
 		// 玩家可交互物件
