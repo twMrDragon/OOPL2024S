@@ -477,18 +477,10 @@ void CGameStateRun::initGame() {
 	numberDisplays[3].setXY(496, 206);
 	numberDisplays[4].setXY(496, 226);
 
-<<<<<<< Updated upstream
-=======
-	// boss timer
-	bossTimer.onInit();
-	bossTimer.setMinDigit(2);
-	bossTimer.setXY(playerArea.GetLeft() + playerArea.GetWidth() - 32, playerArea.GetTop());
-
 	//dead reLives shower
 	deadLivesShower.onInit();
 	deadLivesShower.setXY(252,206);
 
->>>>>>> Stashed changes
 	MapCreator::onInit(&playerArea, &mapDatum);
 }
 

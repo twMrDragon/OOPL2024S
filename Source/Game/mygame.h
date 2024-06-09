@@ -156,15 +156,9 @@ namespace game_framework {
 
 		MovingObject playerArea;
 		vector<CMovingBitmap> gameInterface;
-<<<<<<< Updated upstream
 		int TestPower = 16;
 		int Bomb = 3;
-
-=======
-		
-		int Bomb = 3;
 		bool isDead = false;
->>>>>>> Stashed changes
 		CMovingBitmap GreenStar;
 		CMovingBitmap RedStar;
 		vector<NumberDisplay> numberDisplays;
