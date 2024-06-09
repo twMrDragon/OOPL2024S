@@ -9,19 +9,19 @@ void MapCreator::onInit(MovingObject* playerArea, map<size_t, vector<MapData>>* 
 
 std::shared_ptr<Boss> MapCreator::getCurrentBoss(size_t frame, MovingObject playerArea)
 {
-	if (frame == 1450) {
-		RumiaFirst boss = RumiaFirst();
-		boss.onInit(playerArea);
-		boss.show();
-		return std::make_shared<RumiaFirst>(boss);
-	}
-	else if (frame == 3510) {
-		RumiaSecond boss = RumiaSecond();
-		boss.onInit(playerArea);
-		boss.show();
-		return std::make_shared<RumiaSecond>(boss);
-	}
-	return nullptr;
+	std::shared_ptr<Boss> boss = nullptr;
+
+	if (frame == 1450)
+		boss = std::make_shared<RumiaFirst>(RumiaFirst());
+	else if (frame == 3510)
+		boss = std::make_shared<RumiaSecond>(RumiaSecond());
+	else if (frame == 7250)
+		boss = std::make_shared<Daiyousei>(Daiyousei());
+
+	if (boss != nullptr)
+		boss->onInit(playerArea);
+
+	return boss;
 }
 
 void MapCreator::initStage1(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum)
@@ -334,7 +334,7 @@ void MapCreator::initStage2(MovingObject* playerArea, map<size_t, vector<MapData
 {
 	int startFrame = 5500;
 	MapCreator::initStage2Type1Wave(playerArea, mapDatum, startFrame);
-	MapCreator::initStage2Type2Wave(playerArea, mapDatum, startFrame+500);
+	MapCreator::initStage2Type2Wave(playerArea, mapDatum, startFrame + 500);
 	MapCreator::initStage2Type3Wave(playerArea, mapDatum, startFrame + 780);
 	MapCreator::initStage2Type2Wave(playerArea, mapDatum, startFrame + 1060);
 	MapCreator::initStage2Type3Wave(playerArea, mapDatum, startFrame + 1360);

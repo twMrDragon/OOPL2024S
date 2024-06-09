@@ -7,6 +7,7 @@
 #include "Boss.h"
 #include "RumiaFirst.h"
 #include "RumiaSecond.h"
+#include "Daiyousei.h"
 #include <memory>
 
 class MapCreator
