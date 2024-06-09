@@ -30,9 +30,9 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 {
 	//player.setPower(15);
 	if (mainStage == GAME_STAGE) {
-		if (isPause||isDead)
+		if (isPause || isDead)
 			return;
-		
+
 		player.reduceInvincible();
 		// player
 		for (size_t i = 0; i < enemyBullets.size(); i++)
@@ -58,8 +58,8 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 			}
 		}
 		if (player.getRemainingLives() == 0)
-			isDead=true;
-		
+			isDead = true;
+
 
 
 		// generate player bullet, move bullet and erase
@@ -80,7 +80,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		// generate enemy, move enemy and erase enemy leave player area
 		// same of enemy bullet
 		updateEnemy();
-		
+
 		// boss
 		std::shared_ptr<Boss> bossCreated = MapCreator::getCurrentBoss(frameCounter, playerArea);
 		if (bossCreated != nullptr)
@@ -112,7 +112,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		if (nChar == VK_UP) {
 			if (menuStage == MAIN_MENU)
 				setMainMenuSelection(-1);
-;
+			;
 		}
 		else if (nChar == VK_DOWN) {
 			if (menuStage == MAIN_MENU)
@@ -156,7 +156,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				if (pauseButtionIndex == 1) {
 					mainStage = MENU_STAGE;
 					resetGame();
-				}				
+				}
 			}
 			if (isDead)
 			{
@@ -254,7 +254,7 @@ void CGameStateRun::OnShow()
 			deadLivesShower.showNumber(player.getRemainingLives());
 			showDeadButtion();
 		}
-			
+
 		showGame();
 	}
 }
@@ -413,14 +413,14 @@ void CGameStateRun::initGame() {
 
 
 	deadTitle_01.LoadBitmapByString({ "Resources\\Image\\IN\\ascii\\Sprite117.bmp" }, RGB(0, 0, 0));
-	deadTitle_01.SetTopLeft(150,186);
+	deadTitle_01.SetTopLeft(150, 186);
 
 	deadTitle_02.LoadBitmapByString({ "Resources\\Image\\IN\\ascii\\Sprite118.bmp" }, RGB(0, 0, 0));
 	deadTitle_02.SetTopLeft(220, 206);
 
 
 	player.onInit();
-	
+
 	// player moveing area
 	playerArea.LoadEmptyBitmap(448, 384);
 	playerArea.setLocationF(32.0f, 16.0f);
@@ -479,7 +479,7 @@ void CGameStateRun::initGame() {
 
 	//dead reLives shower
 	deadLivesShower.onInit();
-	deadLivesShower.setXY(252,206);
+	deadLivesShower.setXY(252, 206);
 
 	MapCreator::onInit(&playerArea, &mapDatum);
 }
@@ -616,7 +616,7 @@ void CGameStateRun::updateEnemy()
 				enemy.setSpeeds(iter->second[i].speeds);
 			}
 			else {
-				double angle2Player = enemy.angle2Target(player);
+				double angle2Player = enemy.angleToTarget(&player);
 				float speed = 3;
 				float x = (float)cos(angle2Player * M_PI / 180) * speed;
 				float y = (float)sin(angle2Player * M_PI / 180) * speed;

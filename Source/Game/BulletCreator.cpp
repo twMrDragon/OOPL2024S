@@ -12,7 +12,7 @@ void BulletCreator::createStage1PinkEnemyBullet(Enemy* enemy, MovingObject* play
 	bullet.setCenter(enemy->getCenter());
 
 	double deltaAngle = 20;
-	double emeny2playerAngle = enemy->angle2Target(*player);
+	double emeny2playerAngle = enemy->angleToTarget(player);
 	int speed = 2;
 	for (int i = -3; i < 4; i++)
 	{
