@@ -385,12 +385,12 @@ void MapCreator::initStage2Type2Wave(MovingObject* playerArea, map<size_t, vecto
 {
 	// 用於觀測
 	Enemy mesaureEnemy;
-	mesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" }, RGB(254, 254, 254));
+	mesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg2enm\\Sprite0.bmp" }, RGB(140, 150, 141));
 
 	int startX = playerArea->GetLeft() + mesaureEnemy.GetWidth();
 
 	MapData mapData;
-	mapData.resource = { "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" };
+	mapData.resource = { "Resources\\Image\\ST\\stg2enm\\Sprite0.bmp" };
 	mapData.colorFilter = RGB(254, 254, 254);
 	mapData.aimTarget = MapData::AIM_TARGET::PLAYER;
 
@@ -407,12 +407,12 @@ void MapCreator::initStage2Type3Wave(MovingObject* playerArea, map<size_t, vecto
 {
 	// 用於觀測
 	Enemy mesaureEnemy;
-	mesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" }, RGB(254, 254, 254));
+	mesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg2enm\\Sprite0.bmp" }, RGB(140, 150, 141));
 
 	int startX = playerArea->GetLeft() + playerArea->GetWidth() - 2 * mesaureEnemy.GetWidth();
 
 	MapData mapData;
-	mapData.resource = { "Resources\\Image\\ST\\stg1enm\\Sprite0.bmp" };
+	mapData.resource = { "Resources\\Image\\ST\\stg2enm\\Sprite0.bmp" };
 	mapData.colorFilter = RGB(254, 254, 254);
 	mapData.aimTarget = MapData::AIM_TARGET::PLAYER;
 
