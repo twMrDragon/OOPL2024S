@@ -310,6 +310,7 @@ void RumiaSecond::update(MovingObject* player, vector<MovingObject>* enemyBullet
 		this->countdownTimer();
 		break;
 	case Action::LEAVE:
+		this->speed = this->leaveSpeed;
 		this->updateLocationFBySpeed();
 		break;
 	default:

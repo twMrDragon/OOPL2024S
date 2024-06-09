@@ -23,9 +23,6 @@ private:
 	// only one stage
 	vector<POINTF> attackSpeeds;
 
-	// leave
-	vector<POINTF> leaveSpeeds;
-
 	// 招式 1
 	// 發射 3 層同色子彈，一層 16 顆
 	void fire3LevelBullets(MovingObject* player, vector<string> resource, vector<MovingObject>* enemyBullets);

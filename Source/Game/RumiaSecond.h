@@ -41,10 +41,6 @@ private:
 	vector<POINTF> stage2AttackSpeeds;
 	// substage 3, Εγ¥ά stage 0 ΄έ¦ε¶¥¬q
 
-
-	// leave
-	vector<POINTF> leaveSpeeds;
-
 	int subStage = 0;
 
 

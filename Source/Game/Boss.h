@@ -31,6 +31,7 @@ protected:
 	int stage2Show = 0;
 	size_t frameCounter = 0;
 	Action currentAction = Action::ENTER;
+	POINTF leaveSpeed = POINTF{ 0.0f,-3.0f };
 
 	// for display boss detail
 	// 黃色 enemy 字
@@ -43,7 +44,7 @@ protected:
 	BloodDisplay bloodDisplay;
 
 	void initDisplay(MovingObject playerArea);
-	
+
 
 	void countdownTimer();
 	// 發射 n 個子彈

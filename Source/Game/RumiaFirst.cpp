@@ -40,16 +40,11 @@ void RumiaFirst::update(MovingObject* player, vector<MovingObject>* enemyBullets
 		{
 			// change to leave action
 			this->currentAction = Action::LEAVE;
-			enemyBullets->clear();
 			frameCounter = 0;
 		}
 		break;
 	case Action::LEAVE:
-		if (frameCounter < leaveSpeeds.size())
-		{
-			this->setSpeed(leaveSpeeds[frameCounter]);
-			frameCounter += 1;
-		}
+		this->speed = this->leaveSpeed;
 		updateLocationFBySpeed();
 		break;
 	default:
@@ -85,13 +80,6 @@ void RumiaFirst::onInit(MovingObject playerArea)
 			this->attackSpeeds.push_back(POINTF{ xDirection[i] * 4.0f,yDirection[i] * 2.5f });
 		}
 	}
-
-	// leave
-	for (int i = 0; i < 10; i++)
-	{
-		this->leaveSpeeds.push_back(POINTF{ 0,0 });
-	}
-	this->leaveSpeeds.push_back(POINTF{ -3,-3 });
 }
 
 void RumiaFirst::show()
