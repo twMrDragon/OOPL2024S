@@ -17,17 +17,23 @@ private:
 	// enter
 	vector<POINTF> enterSpeeds;
 
+
 	// attack
 	// move up and loop
 	vector<POINTF> attackSpeeds;
 
-	//
+	// this boss will flash
 	size_t flashIndex = 0;
 	vector<float> flashLocationFPosX;
 
-	// leave
-	vector<POINTF> leaveSpeeds;
-
-	void fireCircleBullets(vector<string> resource,bool clockwise,vector<MovingObject>* enemyBullets);
+	void fireCircleBullets(vector<string> resource, bool clockwise, vector<MovingObject>* enemyBullets);
+	void fireWhiteBullets(MovingObject* player, vector<MovingObject>* enemyBullets);
 	POINTF fireCenter;
+	enum BulletType {
+		GREEN_CIRCLE,
+		RED_CIRCLE,
+		WHITE_AIM_PLAYER
+	};
+	vector<BulletType> bulletTypes = { GREEN_CIRCLE,RED_CIRCLE,WHITE_AIM_PLAYER,GREEN_CIRCLE,RED_CIRCLE,WHITE_AIM_PLAYER,GREEN_CIRCLE };
+	size_t currentFireBulletIndex = 0;
 };

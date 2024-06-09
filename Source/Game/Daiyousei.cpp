@@ -13,12 +13,18 @@ void Daiyousei::update(MovingObject* player, vector<MovingObject>* enemyBullets,
 			this->frameCounter += 1;
 		}
 		else {
-			this->currentAction = Action::ATTACK;
+			this->fireCenter = this->getCenter();
 			this->frameCounter = 0;
+			this->currentAction = Action::ATTACK;
 		}
 		break;
 
 	case Action::ATTACK:
+		if (this->timer == 0)
+		{
+			this->frameCounter = 0;
+			this->currentAction = Action::LEAVE;
+		}
 		if (frameCounter < this->attackSpeeds.size())
 		{
 			setSpeed(attackSpeeds[frameCounter]);
@@ -28,8 +34,8 @@ void Daiyousei::update(MovingObject* player, vector<MovingObject>* enemyBullets,
 		else {
 			if (this->flashIndex < this->flashLocationFPosX.size())
 			{
-				POINTF c1 = this->getLocationF();
 				this->setLocationF(POINTF{ flashLocationFPosX[flashIndex], this->getLocationF().y });
+				this->fireCenter = this->getCenter();
 				this->flashIndex += 1;
 			}
 			this->frameCounter = 0;
@@ -38,6 +44,8 @@ void Daiyousei::update(MovingObject* player, vector<MovingObject>* enemyBullets,
 		attack(player, enemyBullets);
 		break;
 	case Action::LEAVE:
+		this->speed = this->leaveSpeed;
+		this->updateLocationFBySpeed();
 		break;
 	default:
 		break;
@@ -46,7 +54,7 @@ void Daiyousei::update(MovingObject* player, vector<MovingObject>* enemyBullets,
 
 void Daiyousei::onInit(MovingObject playerArea)
 {
-	this->timer = 960;
+	this->timer = 900;
 	LoadBitmapByString({ "Resources\\Image\\ST\\stg2enm\\Sprite33.bmp" }, RGB(140, 150, 141));
 	this->setLocationF(playerArea.getCenter().x - this->GetWidth() / 2.0f, (float)-this->GetHeight());
 	this->initDisplay(playerArea);
@@ -86,14 +94,31 @@ void Daiyousei::show()
 
 void Daiyousei::attack(MovingObject* player, vector<MovingObject>* enemyBullets)
 {
-	fireCircleBullets({ "Resources\\Image\\CM\\etama3\\Sprite87.bmp" }, true, enemyBullets);
+	if (currentFireBulletIndex < bulletTypes.size() - 1 && frameCounter == attackSpeeds.size())
+	{
+		currentFireBulletIndex += 1;
+	}
+	else {
+		switch (bulletTypes[currentFireBulletIndex])
+		{
+		case GREEN_CIRCLE:
+			fireCircleBullets({ "Resources\\Image\\CM\\etama3\\Sprite87.bmp" }, true, enemyBullets);
+			break;
+		case RED_CIRCLE:
+			fireCircleBullets({ "Resources\\Image\\CM\\etama3\\Sprite79.bmp" }, false, enemyBullets);
+			break;
+		case WHITE_AIM_PLAYER:
+			fireWhiteBullets(player, enemyBullets);
+			break;
+		default:
+			break;
+		}
+	}
+
 }
 
 void Daiyousei::fireCircleBullets(vector<string> resource, bool clockwise, vector<MovingObject>* enemyBullets)
 {
-	if (this->frameCounter == 60)
-		this->fireCenter = this->getCenter();
-
 	if (this->frameCounter > 60 && this->frameCounter <= 108)
 	{
 		MovingObject bullet;
@@ -114,3 +139,24 @@ void Daiyousei::fireCircleBullets(vector<string> resource, bool clockwise, vecto
 	}
 }
 
+void Daiyousei::fireWhiteBullets(MovingObject* player, vector<MovingObject>* enemyBullets)
+{
+	if (this->frameCounter > 30 && this->frameCounter <= 110)
+	{
+		if (frameCounter % 5 == 1)
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				MovingObject bullet;
+				bullet.LoadBitmapByString({ "Resources\\Image\\CM\\etama3\\Sprite109.bmp" }, RGB(67, 54, 54));
+				bullet.setCenter(fireCenter);
+
+				double angle = Utils::angleToTarget(fireCenter, player->getCenter()) + 30 * (i - 1);
+				POINTF speed = Utils::calculateXYSpeed(angle, 3.0f);
+				bullet.setSpeed(speed);
+
+				enemyBullets->push_back(bullet);
+			}
+		}
+	}
+}
