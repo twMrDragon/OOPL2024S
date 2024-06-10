@@ -247,8 +247,10 @@
     <ClCompile Include="Source\Game\BloodDisplay.cpp" />
     <ClCompile Include="Source\Game\Boss.cpp" />
     <ClCompile Include="Source\Game\BulletCreator.cpp" />
+    <ClCompile Include="Source\Game\Cirno.cpp" />
     <ClCompile Include="Source\Game\Daiyousei.cpp" />
     <ClCompile Include="Source\Game\Enemy.cpp" />
+    <ClCompile Include="Source\Game\EnemyBullet.cpp" />
     <ClCompile Include="Source\Game\MapCreator.cpp" />
     <ClCompile Include="Source\Game\MapData.cpp" />
     <ClCompile Include="Source\Game\MovingObject.cpp" />
@@ -277,9 +279,11 @@
     <ClInclude Include="Source\Game\BloodDisplay.h" />
     <ClInclude Include="Source\Game\Boss.h" />
     <ClInclude Include="Source\Game\BulletCreator.h" />
+    <ClInclude Include="Source\Game\Cirno.h" />
     <ClInclude Include="Source\Game\config.h" />
     <ClInclude Include="Source\Game\Daiyousei.h" />
     <ClInclude Include="Source\Game\Enemy.h" />
+    <ClInclude Include="Source\Game\EnemyBullet.h" />
     <ClInclude Include="Source\Game\MapCreator.h" />
     <ClInclude Include="Source\Game\MapData.h" />
     <ClInclude Include="Source\Game\MovingObject.h" />

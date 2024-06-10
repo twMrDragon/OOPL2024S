@@ -25,6 +25,11 @@
     <ClCompile Include="Source\Game\Boss.cpp" />
     <ClCompile Include="Source\Game\RumiaFirst.cpp" />
     <ClCompile Include="Source\Game\RumiaSecond.cpp" />
+    <ClCompile Include="Source\Game\BloodDisplay.cpp" />
+    <ClCompile Include="Source\Game\Daiyousei.cpp" />
+    <ClCompile Include="Source\Game\Utils.cpp" />
+    <ClCompile Include="Source\Game\Cirno.cpp" />
+    <ClCompile Include="Source\Game\EnemyBullet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Core\Game.h" />
@@ -51,6 +56,11 @@
     <ClInclude Include="Source\Game\Boss.h" />
     <ClInclude Include="Source\Game\RumiaFirst.h" />
     <ClInclude Include="Source\Game\RumiaSecond.h" />
+    <ClInclude Include="Source\Game\BloodDisplay.h" />
+    <ClInclude Include="Source\Game\Daiyousei.h" />
+    <ClInclude Include="Source\Game\Utils.h" />
+    <ClInclude Include="Source\Game\Cirno.h" />
+    <ClInclude Include="Source\Game\EnemyBullet.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Source\Core\game.rc" />
