@@ -1,5 +1,6 @@
 #pragma once
 #include "../Library/gameutil.h"
+#include "Utils.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
 
@@ -28,7 +29,7 @@ public:
 	void updateLocationFBySpeed();
 	POINTF getCenter();
 	bool onLeave(MovingObject target);
-	double angle2Target(MovingObject target);
+	double angleToTarget(MovingObject *target);
 
 	// operate
 	bool MovingObject::operator<(const MovingObject& other) const;

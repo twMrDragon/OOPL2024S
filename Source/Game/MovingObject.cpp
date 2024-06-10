@@ -18,14 +18,11 @@ bool MovingObject::onLeave(MovingObject target)
 	if (lastState && !currentState)
 		return true;
 	return false;
-}
+} 
 
-double MovingObject::angle2Target(MovingObject target)
+double MovingObject::angleToTarget(MovingObject* target)
 {
-	POINTF fromCenter = this->getCenter();
-	POINTF targetCenter = target.getCenter();
-	double angle2Target = 180 - atan2(targetCenter.y - fromCenter.y, fromCenter.x - targetCenter.x) * 180 / M_PI;
-	return angle2Target;
+	return Utils::angleToTarget(this->getCenter(), target->getCenter());
 }
 
 bool MovingObject::operator<(const MovingObject& other) const
@@ -39,7 +36,7 @@ bool MovingObject::operator<(const MovingObject& other) const
 	return result < 0;
 }
 
-void MovingObject::setRangeAnimation(int start, int end, int delay, bool isOneTime)
+void MovingObject::setRangeAnimation(int start, int end, int delay, bool isOneTime)//°O±otoggle
 {
 	if (!isOneTime) thisIsAnimation = true;
 	isOnce = isOneTime;
@@ -52,6 +49,7 @@ void MovingObject::handMadeShow()
 {
 	//SetTopLeft(200, 400);
 	SetAnimation(delayCount, false);
+
 	isAnimation = false;
 	ShowBitmap();
 	settingBitmapbyShow();
@@ -103,7 +101,7 @@ MovingObject::MovingObject() :CMovingBitmap()
 
 void MovingObject::setLocationF(POINTF location)
 {
-	this->locationF = locationF;
+	this->locationF = location;
 	updateCMovingBitmapLocation();
 }
 

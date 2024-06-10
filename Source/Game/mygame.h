@@ -130,7 +130,7 @@ namespace game_framework {
 
 		MainStage mainStage = MENU_STAGE;
 		MenuStage menuStage = MAIN_MENU;
-
+		bool isPause = false;
 		/// 主選單
 		vector<CMovingBitmap> mainMenuButtons;
 		int mainMenuButtonSelectIndex = 0;
@@ -138,22 +138,37 @@ namespace game_framework {
 		void setMainMenuSelection(int direction);
 		void showMainMenuButtons();
 
+		void setPauseButtionSelection(int direction);
+		void showPauseButtion();
+		void setDeadButtionSelection(int direction);
+		void showDeadButtion();
+		void resetGame();
+
+		int pauseButtionIndex = 0;
+		int deadButtionIndex = 0;
 		// 遊戲畫面的物件
+		vector<CMovingBitmap> pauseButtons;
+		vector<CMovingBitmap> deadButtons;
+
+		CMovingBitmap pauseTitle;//遊戲暫停標題
+		CMovingBitmap deadTitle_01;
+		CMovingBitmap deadTitle_02;
+
 		MovingObject playerArea;
 		vector<CMovingBitmap> gameInterface;
 		int TestPower = 16;
 		int Bomb = 3;
-		
+		bool isDead = false;
 		CMovingBitmap GreenStar;
 		CMovingBitmap RedStar;
 		vector<NumberDisplay> numberDisplays;
-		NumberDisplay bossTimer;
 		vector<CMovingBitmap> interfaceBackgroundResource;
-
+		NumberDisplay deadLivesShower;
 		// 玩家可交互物件
 		int playerDelta = 7;
 		bool fire = false;
 		ReimuB player;
+		bool isInvincibleCount = false;
 		vector<MovingObject> playerBullets;
 		vector<Enemy> enemies;
 		vector<MovingObject> enemyBullets;
@@ -166,7 +181,7 @@ namespace game_framework {
 		void addFallingObject(MovingObject enemy);
 		void updatePlayerBullet();
 		void updateEnemy();
-		size_t frameCounter = 0;
+		size_t frameCounter = 1;
 		std::shared_ptr<Boss> boss;
 		map<size_t, vector<MapData>> mapDatum;
 	};

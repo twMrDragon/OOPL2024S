@@ -10,10 +10,12 @@ private:
 
 	int firingIntervalRedBulletCounter = 0;
 	int firingIntervalIceBulletCounter = 0;
+	CMovingBitmap ballL;
+	CMovingBitmap ballR;
 	
 public:
 
-
+	void showBall();
 	//showplayer
 	void onInit();
 	vector<MovingObject> attack() override;

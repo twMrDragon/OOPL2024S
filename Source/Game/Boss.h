@@ -1,5 +1,7 @@
 #pragma once
 #include "MovingObject.h"
+#include "NumberDisplay.h"
+#include "BloodDisplay.h"
 class Boss : public MovingObject
 {
 public:
@@ -9,7 +11,8 @@ public:
 		LEAVE
 	};
 
-	int getHealth();
+	int getCurrentHealth();
+	int getMaxHealth();
 	int getTimer();
 	int getStage2Show();
 
@@ -17,12 +20,31 @@ public:
 	virtual void onInit(MovingObject playerArea) = 0;
 	virtual void show() = 0;
 
+	void showDisplay();
+
 protected:
-	int health = 0;
+	// member
+	float demagedRatio = 1.0f;
+	int maxHealth = 10000;
+	int currentHealth = 10000;
 	int timer = 0;
 	int stage2Show = 0;
 	size_t frameCounter = 0;
 	Action currentAction = Action::ENTER;
+	POINTF leaveSpeed = POINTF{ 0.0f,-3.0f };
+
+	// for display boss detail
+	// 黃色 enemy 字
+	CMovingBitmap enemyWordDisplay;
+	// enemy 字旁的數字
+	NumberDisplay stageDisplay;
+	// 倒數計時
+	NumberDisplay countdownDisplay;
+	// 血量
+	BloodDisplay bloodDisplay;
+
+	void initDisplay(MovingObject playerArea);
+
 
 	void countdownTimer();
 	// 發射 n 個子彈

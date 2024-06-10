@@ -92,7 +92,7 @@ void RumiaSecond::fireRedLine(MovingObject* player, vector<MovingObject>* enemyB
 		bullet.LoadBitmapByString({ "Resources\\Image\\CM\\etama3\\Sprite64.bmp" }, RGB(67, 54, 54));
 		bullet.setCenter(this->getCenter());
 
-		double angle = this->angle2Target(*player);
+		double angle = this->angleToTarget(player);
 		for (int i = 0; i < 10; i++)
 		{
 			POINTF speed = Utils::calculateXYSpeed(angle, 2.5f + 0.2f * i);
@@ -112,7 +112,7 @@ void RumiaSecond::fireGreenCurve(MovingObject* player, vector<MovingObject>* ene
 		bullet.LoadBitmapByString({ "Resources\\Image\\CM\\etama3\\Sprite71.bmp" }, RGB(67, 54, 54));
 		bullet.setCenter(this->getCenter());
 
-		double angle = this->angle2Target(*player) + (frameCounter - 6.0) * 6;
+		double angle = this->angleToTarget(player) + (frameCounter - 6.0) * 6;
 		POINTF speed = Utils::calculateXYSpeed(angle, 2.0f + 0.1f * frameCounter);
 		bullet.setSpeed(speed);
 
@@ -124,7 +124,7 @@ void RumiaSecond::fireBlueCircle(MovingObject* player, vector<MovingObject>* ene
 {
 	// 大顆有 4 波 12 顆
 	// 小顆有 3 波 16 顆
-	double angle = this->angle2Target(*player);
+	double angle = this->angleToTarget(player);
 	// 大
 	if (this->frameCounter == SUBSTAGE_0_MOVE_FRAME)
 	{
@@ -158,7 +158,7 @@ void RumiaSecond::fireBlueCircle(MovingObject* player, vector<MovingObject>* ene
 
 void RumiaSecond::fireBlueCircleWith3RedLine(MovingObject* player, vector<MovingObject>* enemyBullets)
 {
-	double angle = this->angle2Target(*player);
+	double angle = this->angleToTarget(player);
 	// 三道 16 顆紅色子彈
 	if (this->frameCounter == SUBSTAGE_0_MOVE_FRAME + 10)
 	{
@@ -310,6 +310,7 @@ void RumiaSecond::update(MovingObject* player, vector<MovingObject>* enemyBullet
 		this->countdownTimer();
 		break;
 	case Action::LEAVE:
+		this->speed = this->leaveSpeed;
 		this->updateLocationFBySpeed();
 		break;
 	default:
@@ -325,6 +326,8 @@ void RumiaSecond::onInit(MovingObject playerArea)
 	this->stage2Show = 1;
 	LoadBitmapByString({ "Resources\\Image\\ST\\stg1enm2\\Sprite132.bmp" }, RGB(142, 142, 142));
 	this->setLocationF(playerArea.getCenter().x - this->GetWidth() / 2.0f, (float)(playerArea.GetTop() - this->GetHeight()));
+
+	initDisplay(playerArea);
 
 	//enter action
 	for (int i = 0; i < 40; i++)
