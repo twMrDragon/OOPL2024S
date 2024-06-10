@@ -36,12 +36,13 @@ private:
 
 	// stage 2
 	static void initStage2(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum);
-	// TODO stage 2 敵人 天女散花
 	// 白色圓點 黃色飛鏢 天女散花
 	static void initStage2Type1Wave(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum, int startFrame);
 	// 藍色小怪 尿尿路徑 由左向右撇
 	static void initStage2Type2Wave(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum, int startFrame);
 	// 藍色小怪 尿尿路徑 由右向左撇
 	static void initStage2Type3Wave(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum, int startFrame);
+	// 粉色小怪 左到右再從右到左依序進場 會發射子彈
+	static void initStage2Type4Wave(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum, int startFrame);
 };
 

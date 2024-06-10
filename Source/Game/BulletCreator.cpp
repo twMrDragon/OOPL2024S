@@ -39,3 +39,23 @@ void BulletCreator::createStage2YelloEnemyBullet(Enemy* enemy, MovingObject* pla
 		randomAngle += 90;
 	}
 }
+
+void BulletCreator::createStage2PinkEnemyBullet(Enemy* enemy, MovingObject* player, vector<MovingObject>* bullets)
+{
+	MovingObject bullet;
+	bullet.LoadBitmapByString({ "Resources\\Image\\CM\\etama3\\Sprite31.bmp" }, RGB(67, 54, 54));
+	bullet.setCenter(enemy->getCenter());
+
+	double aimAngle = enemy->angleToTarget(player);
+
+	for (int i = -3; i < 4; i++)
+	{
+		double currentAngle = aimAngle + i * 36;
+		POINTF speed = Utils::calculateXYSpeed(currentAngle, 1.5f);
+		bullet.setSpeed(speed);
+		bullets->push_back(bullet);
+		speed = Utils::calculateXYSpeed(currentAngle, 2.0f);
+		bullet.setSpeed(speed);
+		bullets->push_back(bullet);
+	}
+}
