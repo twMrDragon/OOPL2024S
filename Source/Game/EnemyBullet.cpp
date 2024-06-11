@@ -6,18 +6,17 @@ void EnemyBullet::update(std::shared_ptr<Player> player)
 	if (this->frameCounter < speeds.size())
 	{
 		this->speed = this->speeds[frameCounter];
-		this->frameCounter += 1;
 	}
 	else {
 		if (this->action == ActionAfterFinish::AIM_PLAYER)
 		{
-			float noDirectionSpeed = sqrtf(this->speed.x * this->speed.x + this->speed.y * this->speed.y);
 			double angle = this->angleToTarget(player.get());
-			POINTF speed = Utils::calculateXYSpeed(angle, noDirectionSpeed);
+			POINTF speed = Utils::calculateXYSpeed(angle, actionSpeed);
 			this->speed = speed;
 			this->action = ActionAfterFinish::KEEP_GOING;
 		}
 	}
+	this->frameCounter += 1;
 	this->updateLocationFBySpeed();
 }
 
@@ -29,4 +28,14 @@ void EnemyBullet::setSpeeds(vector<POINTF> speeds)
 void EnemyBullet::setAction(ActionAfterFinish action)
 {
 	this->action = action;
+}
+
+void EnemyBullet::setActionSpeed(float speed)
+{
+	this->actionSpeed = speed;
+}
+
+bool EnemyBullet::isRemovable()
+{
+	return this->frameCounter > this->speeds.size() * 2;
 }

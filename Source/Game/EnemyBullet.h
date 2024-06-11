@@ -14,11 +14,14 @@ public:
 	void update(std::shared_ptr<Player> player);
 	void setSpeeds(vector<POINTF> speeds);
 	void setAction(ActionAfterFinish action);
+	void setActionSpeed(float speed);
+	bool isRemovable();
 
 private:
 	size_t frameCounter = 0;
 	vector<POINTF> speeds;
 	ActionAfterFinish action = ActionAfterFinish::KEEP_GOING;
+	float actionSpeed = 0.0f;
 
 };
 
