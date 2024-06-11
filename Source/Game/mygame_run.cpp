@@ -642,14 +642,14 @@ void CGameStateRun::updateEnemy()
 
 	// enemy bullets
 	for (size_t i = 0; i < enemyBullets.size(); i++) {
-		if (!enemyBullets[i].IsOverlap(enemyBullets[i], playerArea))
+		if (!enemyBullets[i].IsOverlap(enemyBullets[i], playerArea) && enemyBullets[i].isRemovable())
 		{
 			enemyBullets.erase(enemyBullets.begin() + i);
 			i--;
 			continue;
 		}
 		else {
-			enemyBullets[i].updateLocationFBySpeed();
+			enemyBullets[i].update(std::make_shared<ReimuB>(player));
 		}
 	}
 }
