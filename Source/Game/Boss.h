@@ -2,6 +2,7 @@
 #include "MovingObject.h"
 #include "NumberDisplay.h"
 #include "BloodDisplay.h"
+#include "EnemyBullet.h"
 class Boss : public MovingObject
 {
 public:
@@ -16,7 +17,7 @@ public:
 	int getTimer();
 	int getStage2Show();
 
-	virtual void update(MovingObject* player, vector<MovingObject>* enemyBullets, MovingObject* playerArea) = 0;
+	virtual void update(MovingObject* player, vector<EnemyBullet>* enemyBullets, MovingObject* playerArea) = 0;
 	virtual void onInit(MovingObject playerArea) = 0;
 	virtual void show() = 0;
 
@@ -48,6 +49,6 @@ protected:
 
 	void countdownTimer();
 	// µo®g n ­Ó¤l¼u
-	void fireCircleShpaeNBullets(double angle, int n, vector<string> resource, float speed, vector<MovingObject>* enemyBullets);
+	void fireCircleShpaeNBullets(double angle, int n, vector<string> resource, float speed, vector<EnemyBullet>* enemyBullets);
 };
 

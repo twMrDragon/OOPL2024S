@@ -23,18 +23,18 @@ private:
 	vector<POINTF> subStage0AttackSpeeds;
 	bool subStage0IsLeave = false;
 	void subStage0Moving();
-	void subStage0Attack(MovingObject* player, vector<MovingObject>* enemyBullets);
+	void subStage0Attack(MovingObject* player, vector<EnemyBullet>* enemyBullets);
 	int subStage0FireWayIndex = 0;
-	void fireRedLine(MovingObject* player, vector<MovingObject>* enemyBullets);
-	void fireGreenCurve(MovingObject* player, vector<MovingObject>* enemyBullets);
-	void fireBlueCircle(MovingObject* player, vector<MovingObject>* enemyBullets);
-	void fireBlueCircleWith3RedLine(MovingObject* player, vector<MovingObject>* enemyBullets);
+	void fireRedLine(MovingObject* player, vector<EnemyBullet>* enemyBullets);
+	void fireGreenCurve(MovingObject* player, vector<EnemyBullet>* enemyBullets);
+	void fireBlueCircle(MovingObject* player, vector<EnemyBullet>* enemyBullets);
+	void fireBlueCircleWith3RedLine(MovingObject* player, vector<EnemyBullet>* enemyBullets);
 
 	// substage 1, 顯示 stage 1, 殘血階段
 	vector<POINTF> subStage1AttackSpeeds;
-	void fireBlueHalfCircle(MovingObject* player, vector<MovingObject>* enemyBullets);
-	void fireLightBlueHalfCircle(MovingObject* player, vector<MovingObject>* enemyBullets);
-	void subStage1Attack(MovingObject* player, vector<MovingObject>* enemyBullets);
+	void fireBlueHalfCircle(MovingObject* player, vector<EnemyBullet>* enemyBullets);
+	void fireLightBlueHalfCircle(MovingObject* player, vector<EnemyBullet>* enemyBullets);
+	void subStage1Attack(MovingObject* player, vector<EnemyBullet>* enemyBullets);
 	void subStage1Moving();
 
 	// substage 2, 顯示 stage 0
@@ -45,7 +45,7 @@ private:
 
 
 public:
-	void update(MovingObject* player, vector<MovingObject>* enemyBullets, MovingObject* playerArea) override;
+	void update(MovingObject* player, vector<EnemyBullet>* enemyBullets, MovingObject* playerArea) override;
 	void onInit(MovingObject playerArea) override;
 	void show() override;
 };

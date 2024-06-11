@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Daiyousei.h"
 
-void Daiyousei::update(MovingObject* player, vector<MovingObject>* enemyBullets, MovingObject* playerArea)
+void Daiyousei::update(MovingObject* player, vector<EnemyBullet>* enemyBullets, MovingObject* playerArea)
 {
 	switch (this->currentAction)
 	{
@@ -92,7 +92,7 @@ void Daiyousei::show()
 	this->ShowBitmap();
 }
 
-void Daiyousei::attack(MovingObject* player, vector<MovingObject>* enemyBullets)
+void Daiyousei::attack(MovingObject* player, vector<EnemyBullet>* enemyBullets)
 {
 	if (currentFireBulletIndex < bulletTypes.size() - 1 && frameCounter == attackSpeeds.size())
 	{
@@ -117,11 +117,11 @@ void Daiyousei::attack(MovingObject* player, vector<MovingObject>* enemyBullets)
 
 }
 
-void Daiyousei::fireCircleBullets(vector<string> resource, bool clockwise, vector<MovingObject>* enemyBullets)
+void Daiyousei::fireCircleBullets(vector<string> resource, bool clockwise, vector<EnemyBullet>* enemyBullets)
 {
 	if (this->frameCounter > 60 && this->frameCounter <= 108)
 	{
-		MovingObject bullet;
+		EnemyBullet bullet;
 		bullet.LoadBitmapByString(resource, RGB(67, 54, 54));
 		bullet.setCenter(fireCenter);
 
@@ -139,7 +139,7 @@ void Daiyousei::fireCircleBullets(vector<string> resource, bool clockwise, vecto
 	}
 }
 
-void Daiyousei::fireWhiteBullets(MovingObject* player, vector<MovingObject>* enemyBullets)
+void Daiyousei::fireWhiteBullets(MovingObject* player, vector<EnemyBullet>* enemyBullets)
 {
 	if (this->frameCounter > 30 && this->frameCounter <= 110)
 	{
@@ -147,7 +147,7 @@ void Daiyousei::fireWhiteBullets(MovingObject* player, vector<MovingObject>* ene
 		{
 			for (int i = 0; i < 3; i++)
 			{
-				MovingObject bullet;
+				EnemyBullet bullet;
 				bullet.LoadBitmapByString({ "Resources\\Image\\CM\\etama3\\Sprite109.bmp" }, RGB(67, 54, 54));
 				bullet.setCenter(fireCenter);
 

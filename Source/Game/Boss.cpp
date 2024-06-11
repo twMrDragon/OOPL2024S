@@ -55,10 +55,10 @@ void Boss::countdownTimer()
 	}
 }
 
-void Boss::fireCircleShpaeNBullets(double angle, int n, vector<string> resource, float speed, vector<MovingObject>* enemyBullets)
+void Boss::fireCircleShpaeNBullets(double angle, int n, vector<string> resource, float speed, vector<EnemyBullet>* enemyBullets)
 {
 	double deltaAngle = 360.0 / n;
-	MovingObject bullet;
+	EnemyBullet bullet;
 	bullet.LoadBitmapByString(resource, RGB(67, 54, 54));
 	bullet.setCenter(this->getCenter());
 	for (int i = 0; i < n; i++)

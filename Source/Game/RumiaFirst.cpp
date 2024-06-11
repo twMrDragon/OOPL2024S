@@ -5,7 +5,7 @@ RumiaFirst::RumiaFirst()
 {
 }
 
-void RumiaFirst::update(MovingObject* player, vector<MovingObject>* enemyBullets, MovingObject* playerArea)
+void RumiaFirst::update(MovingObject* player, vector<EnemyBullet>* enemyBullets, MovingObject* playerArea)
 {
 	switch (this->currentAction)
 	{
@@ -87,7 +87,7 @@ void RumiaFirst::show()
 	this->ShowBitmap();
 }
 
-void RumiaFirst::attack(MovingObject* player, vector<MovingObject>* enemyBullets)
+void RumiaFirst::attack(MovingObject* player, vector<EnemyBullet>* enemyBullets)
 {
 	// ©Û¦¡ 1 (¬õ¦â)
 	if (this->frameCounter == 355)
@@ -143,7 +143,7 @@ void RumiaFirst::attack(MovingObject* player, vector<MovingObject>* enemyBullets
 	}
 }
 
-void RumiaFirst::fire3LevelBullets(MovingObject* player, vector<string> resource, vector<MovingObject>* enemyBullets)
+void RumiaFirst::fire3LevelBullets(MovingObject* player, vector<string> resource, vector<EnemyBullet>* enemyBullets)
 {
 	double angle = this->angleToTarget(player);
 	fireCircleShpaeNBullets(angle, 16, resource, 3.8f, enemyBullets);
@@ -151,7 +151,7 @@ void RumiaFirst::fire3LevelBullets(MovingObject* player, vector<string> resource
 	fireCircleShpaeNBullets(angle, 16, resource, 3.0f, enemyBullets);
 }
 
-void RumiaFirst::fire5ColorBullets(MovingObject* player, vector<MovingObject>* enemyBullets)
+void RumiaFirst::fire5ColorBullets(MovingObject* player, vector<EnemyBullet>* enemyBullets)
 {
 	double angle = this->angleToTarget(player);
 	fireCircleShpaeNBullets(angle, 14, { "Resources\\Image\\CM\\etama3\\Sprite137.bmp" }, 4.6f, enemyBullets);

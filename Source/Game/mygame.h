@@ -48,6 +48,7 @@
 #include "Player.h"
 #include "ReimuB.h"
 #include "Boss.h"
+#include "EnemyBullet.h"
 #include <memory>
 
 
@@ -171,7 +172,7 @@ namespace game_framework {
 		bool isInvincibleCount = false;
 		vector<MovingObject> playerBullets;
 		vector<Enemy> enemies;
-		vector<MovingObject> enemyBullets;
+		vector<EnemyBullet> enemyBullets;
 		vector<MovingObject> fallingObjects;
 		void initGame();
 		void showGame();
@@ -181,7 +182,7 @@ namespace game_framework {
 		void addFallingObject(MovingObject enemy);
 		void updatePlayerBullet();
 		void updateEnemy();
-		size_t frameCounter = 1;
+		size_t frameCounter = 0;
 		std::shared_ptr<Boss> boss;
 		map<size_t, vector<MapData>> mapDatum;
 	};
