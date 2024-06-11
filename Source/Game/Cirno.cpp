@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Cirno.h"
 
-void Cirno::update(MovingObject* player, vector<MovingObject>* enemyBullets, MovingObject* playerArea)
+void Cirno::update(MovingObject* player, vector<EnemyBullet>* enemyBullets, MovingObject* playerArea)
 {
 	switch (this->currentAction)
 	{
@@ -13,24 +13,18 @@ void Cirno::update(MovingObject* player, vector<MovingObject>* enemyBullets, Mov
 			this->frameCounter += 1;
 		}
 		else {
-			this->frameCounter = 0;
-			this->currentAction = Action::ATTACK;
+			changeNextStage();
 		}
 		break;
 	case Action::ATTACK:
-		if (this->frameCounter < this->subStage0AttackSpeeds.size())
-		{
-			this->speed = subStage0AttackSpeeds[frameCounter];
-			this->updateLocationFBySpeed();
-			attack(player, enemyBullets);
-			this->frameCounter += 1;
-		}
-		else {
-			this->frameCounter = 0;
-		}
+
+		attack(player, enemyBullets);
+		move();
+		this->frameCounter += 1;
+
 		this->countdownTimer();
 		if (this->timer == 0)
-			this->currentAction = Action::LEAVE;
+			changeNextStage();
 
 		break;
 	case Action::LEAVE:
@@ -90,24 +84,45 @@ void Cirno::show()
 	this->ShowBitmap();
 }
 
-void Cirno::attack(MovingObject* player, vector<MovingObject>* enemyBullets)
+void Cirno::attack(MovingObject* player, vector<EnemyBullet>* enemyBullets)
 {
-	if ((frameCounter / 150) % 2 == 0)
+	if (subStage == 0)
 	{
-		fireBlueBulletWithBellShape(player, enemyBullets);
+		if ((frameCounter / 150) % 2 == 0)
+		{
+			fireBlueBulletWithBellShape(player, enemyBullets);
+		}
+		else {
+			fireCircleBulletWithAimPlayer(player, enemyBullets);
+		}
 	}
-	else {
-		fireCircleBulletWithAimPlayer(player, enemyBullets);
+	else if (subStage == 1) {
+		fireBlueBulletTrunDirection(player, enemyBullets);
+		fireYellowBullet(player, enemyBullets);
 	}
-
 }
 
-void Cirno::fireBlueBulletWithBellShape(MovingObject* player, vector<MovingObject>* enemyBullets)
+void Cirno::move()
+{
+	if (subStage == 0)
+	{
+		if (this->frameCounter < this->subStage0AttackSpeeds.size())
+		{
+			this->speed = subStage0AttackSpeeds[frameCounter];
+			this->updateLocationFBySpeed();
+		}
+		else {
+			this->frameCounter = 0;
+		}
+	}
+}
+
+void Cirno::fireBlueBulletWithBellShape(MovingObject* player, vector<EnemyBullet>* enemyBullets)
 {
 	if (this->frameCounter % 50 != 0)
 		return;
 
-	MovingObject bullet;
+	EnemyBullet bullet;
 	bullet.LoadBitmapByString({ "Resources\\Image\\CM\\etama3\\Sprite100.bmp" }, RGB(67, 54, 54));
 	bullet.setCenter(this->getCenter());
 
@@ -127,13 +142,94 @@ void Cirno::fireBlueBulletWithBellShape(MovingObject* player, vector<MovingObjec
 	}
 }
 
-void Cirno::fireCircleBulletWithAimPlayer(MovingObject* player, vector<MovingObject>* enemyBullets)
+void Cirno::fireCircleBulletWithAimPlayer(MovingObject* player, vector<EnemyBullet>* enemyBullets)
 {
 	if (frameCounter % 50 == 9 || frameCounter % 50 == 29) {
 		double angle = this->angleToTarget(player);
 		fireCircleShpaeNBullets(angle, 15, { "Resources\\Image\\CM\\etama3\\Sprite35.bmp" }, 3.0f, enemyBullets);
 	}
-	else {
+	else if (frameCounter % 50 == 19) {
+		EnemyBullet bullet;
+		bullet.LoadBitmapByString({ "Resources\\Image\\CM\\etama3\\Sprite109.bmp" }, RGB(67, 54, 54));
+		bullet.setCenter(this->getCenter());
+		bullet.setAction(EnemyBullet::ActionAfterFinish::AIM_PLAYER);
+		bullet.setActionSpeed(3.0f);
 
+		double aimAngle = this->angleToTarget(player);
+		double deltaAngle = 360.0 / 33;
+		for (int i = 0; i < 36; i++)
+		{
+			double currentAngle = aimAngle + i * deltaAngle;
+			POINTF speed = Utils::calculateXYSpeed(currentAngle, 3.0f);
+			vector<POINTF> speeds(30, speed);
+			speeds.insert(speeds.end(), 10, POINTF{ 0.0f,0.0f });
+			bullet.setSpeeds(speeds);
+			enemyBullets->push_back(bullet);
+		}
+	}
+}
+
+void Cirno::fireYellowBullet(MovingObject* player, vector<EnemyBullet>* enemyBullets)
+{
+	if (frameCounter % 180 == 32 || frameCounter % 180 == 80 || frameCounter % 180 == 128)
+	{
+		EnemyBullet bullet;
+		bullet.LoadBitmapByString({ "Resources\\Image\\CM\\etama3\\Sprite74.bmp" }, RGB(67, 54, 54));
+		bullet.setCenter(this->getCenter());
+
+		double aimAngle = this->angleToTarget(player);
+		double deltaAngle = 15.0;
+		for (int i = -2; i < 3; i++)
+		{
+			double currentAngle = aimAngle + deltaAngle * i;
+			POINTF speed = Utils::calculateXYSpeed(currentAngle, 2.5f);
+			bullet.setSpeed(speed);
+
+			enemyBullets->push_back(bullet);
+		}
+	}
+}
+
+void Cirno::fireBlueBulletTrunDirection(MovingObject* player, vector<EnemyBullet>* enemyBullets)
+{
+	if (frameCounter % 180 % 16 == 0) {
+		EnemyBullet bullet;
+		bullet.LoadBitmapByString({ "Resources\\Image\\CM\\etama3\\Sprite100.bmp" }, RGB(67, 54, 54));
+		bullet.setCenter(this->getCenter());
+
+		int wave = frameCounter % 180 / 16;
+		double angle = -10 + (5.5) * wave;
+		for (int i = 1; i > -2; i -= 2)
+		{
+			for (int j = 0; j < 4; j++) {
+				POINTF speed = Utils::calculateXYSpeed(angle, 2.0f + 1.5f * j);
+				vector<POINTF> speeds(30, speed);
+				speeds.insert(speeds.end(), 10, POINTF{ 0.0f,0.0f });
+				speed = Utils::calculateXYSpeed(angle + 90 * i, 2.5f);
+				speeds.push_back(speed);
+				bullet.setSpeeds(speeds);
+				enemyBullets->push_back(bullet);
+			}
+			angle = 180 - angle;
+		}
+	}
+}
+
+void Cirno::changeNextStage()
+{
+	if (currentAction == Action::ENTER)
+	{
+		this->frameCounter = 0;
+		this->currentAction = Action::ATTACK;
+	}
+	else if (currentAction == Action::ATTACK) {
+		if (subStage == 0) {
+			this->subStage = 1;
+			this->timer = 900;
+			this->frameCounter = 0;
+		}
+		else if (subStage == 1) {
+			this->currentAction = Action::LEAVE;
+		}
 	}
 }
