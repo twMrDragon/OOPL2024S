@@ -8,6 +8,7 @@
 #include "RumiaFirst.h"
 #include "RumiaSecond.h"
 #include "Daiyousei.h"
+#include "Cirno.h"
 #include <memory>
 
 class MapCreator

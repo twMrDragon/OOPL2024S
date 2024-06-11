@@ -17,6 +17,8 @@ std::shared_ptr<Boss> MapCreator::getCurrentBoss(size_t frame, MovingObject play
 		boss = std::make_shared<RumiaSecond>(RumiaSecond());
 	else if (frame == 7250)
 		boss = std::make_shared<Daiyousei>(Daiyousei());
+	else if (frame == 9000)
+		boss = std::make_shared<Cirno>(Cirno());
 
 	if (boss != nullptr)
 		boss->onInit(playerArea);
