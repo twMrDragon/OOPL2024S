@@ -11,7 +11,10 @@ void EnemyBullet::update(std::shared_ptr<Player> player)
 	else {
 		if (this->action == ActionAfterFinish::AIM_PLAYER)
 		{
-			float speed = this->speed.x * this->speed.x + this->speed.y * this->speed.y;
+			float noDirectionSpeed = sqrtf(this->speed.x * this->speed.x + this->speed.y * this->speed.y);
+			double angle = this->angleToTarget(player.get());
+			POINTF speed = Utils::calculateXYSpeed(angle, noDirectionSpeed);
+			this->speed = speed;
 			this->action = ActionAfterFinish::KEEP_GOING;
 		}
 	}
