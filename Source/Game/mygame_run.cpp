@@ -35,6 +35,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 
 		player.reduceInvincible();
 		// player
+		//if (false)
 		for (size_t i = 0; i < enemyBullets.size(); i++)
 		{
 			if (player.isDeath(enemyBullets[i]))
@@ -65,6 +66,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		// generate player bullet, move bullet and erase
 		updatePlayerBullet();
 		checkBulletHitEnemy();
+		checkBulletHitBoss();
 
 		// falling object
 		for (size_t i = 0; i < fallingObjects.size(); i++)
@@ -92,6 +94,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 			this->boss->update(&player, &enemyBullets, &playerArea);
 			if (this->boss->onLeave(playerArea))
 			{
+				boss->fixFrame(&frameCounter);
 				this->boss = nullptr;
 			}
 		}
@@ -183,12 +186,13 @@ void CGameStateRun::resetGame() {
 	isPause = false;
 	isDead = false;
 	player = ReimuB();////////////
+	player.onInit();
 	playerBullets.clear();
 	enemies.clear();
 	enemyBullets.clear();
+	boss = nullptr;
 	fallingObjects.clear();
 	frameCounter = 0;
-	player.onInit();
 }
 
 void CGameStateRun::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -601,6 +605,26 @@ void CGameStateRun::checkBulletHitEnemy() {
 	}
 }
 
+void game_framework::CGameStateRun::checkBulletHitBoss()
+{
+	if (boss == nullptr)
+		return;
+	for (size_t i = 0; i < playerBullets.size(); i++)
+	{
+		if (playerBullets[i].IsOverlap(playerBullets[i], *boss.get())) {
+			boss->hurted(100);
+			playerBullets.erase(playerBullets.begin() + i);
+			break;
+		}
+	}
+
+	// boss dead
+	if (boss->isDead()) {
+		boss->fixFrame(&frameCounter);
+		boss = nullptr;
+	}
+}
+
 void CGameStateRun::updateEnemy()
 {
 	// generate emeny
@@ -679,6 +703,9 @@ void CGameStateRun::updatePlayerBullet()
 }
 
 void CGameStateRun::addFallingObject(MovingObject enemy) {
+	bool drop = ((double)rand() / RAND_MAX) > 0.5;
+	if (!drop)
+		return;
 	MovingObject falling;
 	falling.LoadBitmapByString({ "Resources\\Image\\CM\\etama3\\Sprite0.bmp" }, RGB(65, 52, 52));
 	float left = enemy.getLocationF().x + (enemy.GetWidth() - falling.GetWidth()) / 2.0f;
