@@ -340,7 +340,9 @@ void MapCreator::initStage2(MovingObject* playerArea, map<size_t, vector<MapData
 	MapCreator::initStage2Type3Wave(playerArea, mapDatum, startFrame + 780);
 	MapCreator::initStage2Type2Wave(playerArea, mapDatum, startFrame + 1060);
 	MapCreator::initStage2Type3Wave(playerArea, mapDatum, startFrame + 1360);
+	// Daiyousei
 	MapCreator::initStage2Type4Wave(playerArea, mapDatum, startFrame + 2750);
+	// Cirno
 }
 
 void MapCreator::initStage2Type1Wave(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum, int startFrame)
