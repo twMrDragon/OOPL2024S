@@ -270,6 +270,7 @@ void RumiaSecond::changeNextStage()
 	else if (subStage == 0 && currentAction == Action::ATTACK) {
 		subStage = 1;
 		currentAction = Action::ENTER;
+		timeLeft += timer;
 	}
 	else if (subStage == 1 && currentAction == Action::ENTER) {
 		currentAction = Action::ATTACK;
@@ -383,7 +384,7 @@ bool RumiaSecond::isDead()
 	return currentHealth == 0 && subStage == 1;
 }
 
-void RumiaSecond::fixFrame(size_t* gameFrameCounter)
+int RumiaSecond::getFinishFrame()
 {
-	*gameFrameCounter = 5450;
+	return 5450;
 }

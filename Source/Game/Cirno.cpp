@@ -100,9 +100,9 @@ bool Cirno::isDead()
 	return subStage == 1 && currentHealth == 0;
 }
 
-void Cirno::fixFrame(size_t* gameFrameCounter)
+int Cirno::getFinishFrame()
 {
-	//
+	return 100000;
 }
 
 void Cirno::attack(MovingObject* player, vector<EnemyBullet>* enemyBullets)
@@ -252,6 +252,7 @@ void Cirno::changeNextStage()
 		this->currentHealth = (int)(this->maxHealth * 0.3);
 		this->frameCounter = 0;
 		this->damagedRatio = 0.2f;
+		timeLeft += timer;
 		currentAction = Action::ENTER;
 	}
 	else if (subStage == 1 && currentAction == Action::ATTACK) {

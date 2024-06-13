@@ -8,7 +8,7 @@ public:
 	void onInit(MovingObject playerArea) override;
 	void show() override;
 	bool isDead() override;
-	void fixFrame(size_t* gameFrameCounter) override;
+	int getFinishFrame() override;
 
 private:
 	// enter

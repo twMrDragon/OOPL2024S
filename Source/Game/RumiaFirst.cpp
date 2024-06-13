@@ -88,9 +88,9 @@ bool RumiaFirst::isDead()
 	return this->currentHealth <= 0;
 }
 
-void RumiaFirst::fixFrame(size_t* gameFrameCounter)
+int RumiaFirst::getFinishFrame()
 {
-	*gameFrameCounter = 2240;
+	return  2240;
 }
 
 void RumiaFirst::attack(MovingObject* player, vector<EnemyBullet>* enemyBullets)

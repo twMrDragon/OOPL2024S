@@ -97,9 +97,9 @@ bool Daiyousei::isDead()
 	return currentHealth == 0;
 }
 
-void Daiyousei::fixFrame(size_t* gameFrameCounter)
+int Daiyousei::getFinishFrame()
 {
-	*gameFrameCounter = 8200;
+	return 8200;
 }
 
 void Daiyousei::attack(MovingObject* player, vector<EnemyBullet>* enemyBullets)
