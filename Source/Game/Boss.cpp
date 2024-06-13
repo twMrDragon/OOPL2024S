@@ -21,6 +21,13 @@ int Boss::getStage2Show()
 	return this->stage2Show;
 }
 
+void Boss::hurted(int damaged)
+{
+	this->currentHealth -= (int)(damaged * damagedRatio);
+	if (this->currentHealth < 0)
+		this->currentHealth = 0;
+}
+
 void Boss::initDisplay(MovingObject playerArea)
 {
 	enemyWordDisplay.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite12.bmp" }, RGB(0, 0, 0));

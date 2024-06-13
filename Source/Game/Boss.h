@@ -20,12 +20,16 @@ public:
 	virtual void update(MovingObject* player, vector<EnemyBullet>* enemyBullets, MovingObject* playerArea) = 0;
 	virtual void onInit(MovingObject playerArea) = 0;
 	virtual void show() = 0;
+	virtual bool isDead() = 0;
+	virtual void fixFrame(size_t* gameFrameCounter) = 0;
 
 	void showDisplay();
 
+	void hurted(int damaged);
+
 protected:
 	// member
-	float demagedRatio = 1.0f;
+	float damagedRatio = 1.0f;
 	int maxHealth = 10000;
 	int currentHealth = 10000;
 	int timer = 0;
