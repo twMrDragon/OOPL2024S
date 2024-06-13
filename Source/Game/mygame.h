@@ -163,12 +163,14 @@ namespace game_framework {
 		CMovingBitmap GreenStar;
 		CMovingBitmap RedStar;
 		vector<NumberDisplay> numberDisplays;
+		int currentScore = 0;
+		int maxScore = 1000000;
 		vector<CMovingBitmap> interfaceBackgroundResource;
 		NumberDisplay deadLivesShower;
 		// 玩家可交互物件
 		int playerDelta = 7;
 		bool fire = false;
-		ReimuB player;
+		std::shared_ptr<Player> player;
 		bool isInvincibleCount = false;
 		vector<MovingObject> playerBullets;
 		vector<Enemy> enemies;
@@ -183,6 +185,7 @@ namespace game_framework {
 		void addFallingObject(MovingObject enemy);
 		void updatePlayerBullet();
 		void updateEnemy();
+		void updateScore(int deltaScore);
 		size_t frameCounter = 0;
 		std::shared_ptr<Boss> boss;
 		map<size_t, vector<MapData>> mapDatum;
