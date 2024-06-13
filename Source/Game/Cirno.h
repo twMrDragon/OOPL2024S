@@ -1,11 +1,14 @@
 #pragma once
 #include "Boss.h"
+#include "Bezier.h"
 class Cirno : public Boss
 {
 public:
 	void update(MovingObject* player, vector<EnemyBullet>* enemyBullets, MovingObject* playerArea) override;
 	void onInit(MovingObject playerArea) override;
 	void show() override;
+	bool isDead() override;
+	void fixFrame(size_t* gameFrameCounter) override;
 
 private:
 	// enter

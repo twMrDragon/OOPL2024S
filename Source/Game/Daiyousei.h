@@ -10,8 +10,8 @@ public:
 	void update(MovingObject* player, vector<EnemyBullet>* enemyBullets, MovingObject* playerArea) override;
 	void onInit(MovingObject playerArea) override;
 	void show() override;
-	void attack(MovingObject* player, vector<EnemyBullet>* enemyBullets);
-
+	bool isDead() override;
+	void fixFrame(size_t* gameFrameCounter) override;
 
 private:
 	// enter
@@ -19,6 +19,7 @@ private:
 
 
 	// attack
+	void attack(MovingObject* player, vector<EnemyBullet>* enemyBullets);
 	// move up and loop
 	vector<POINTF> attackSpeeds;
 

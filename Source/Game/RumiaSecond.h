@@ -42,10 +42,13 @@ private:
 	// substage 3, Εγ¥ά stage 0 ΄έ¦ε¶¥¬q
 
 	int subStage = 0;
+	void changeNextStage();
 
 
 public:
 	void update(MovingObject* player, vector<EnemyBullet>* enemyBullets, MovingObject* playerArea) override;
 	void onInit(MovingObject playerArea) override;
 	void show() override;
+	bool isDead() override;
+	void fixFrame(size_t* gameFrameCounter) override;
 };

@@ -24,7 +24,7 @@ void RumiaSecond::subStageEnter()
 			SUBSTAGE_0_MOVE_FRAME + SUBSTAGE_0_WAIT_FRAME,
 			0
 		};
-		this->currentAction = Action::ATTACK;
+		changeNextStage();
 		this->frameCounter = frameCounterSelector[subStage];
 	}
 }
@@ -261,6 +261,24 @@ void RumiaSecond::subStage1Moving()
 	}
 }
 
+void RumiaSecond::changeNextStage()
+{
+	if (subStage == 0 && currentAction == Action::ENTER)
+	{
+		currentAction = Action::ATTACK;
+	}
+	else if (subStage == 0 && currentAction == Action::ATTACK) {
+		subStage = 1;
+		currentAction = Action::ENTER;
+	}
+	else if (subStage == 1 && currentAction == Action::ENTER) {
+		currentAction = Action::ATTACK;
+	}
+	else if (subStage == 1 && currentAction == Action::ATTACK) {
+		currentAction = Action::LEAVE;
+	}
+}
+
 void RumiaSecond::update(MovingObject* player, vector<EnemyBullet>* enemyBullets, MovingObject* playerArea)
 {
 	switch (this->currentAction)
@@ -272,12 +290,13 @@ void RumiaSecond::update(MovingObject* player, vector<EnemyBullet>* enemyBullets
 		switch (subStage)
 		{
 		case 0:
-			if (timer == 0)
+			if (timer == 0 || currentHealth < maxHealth * 0.3)
 			{
 				// change to sub-stage 1
-				this->currentAction = Action::ENTER;
+				changeNextStage();
+				this->damagedRatio = 0.2f;
+				this->currentHealth = (int)(maxHealth * 0.3);
 				this->frameCounter = 0;
-				this->subStage = 1;
 				this->timer = 30 * 24 + 1;
 				POINTF targetPointf{ playerArea->getCenter().x,playerArea->GetTop() + 100.0f };
 				Bezier bezier({ this->getCenter(), targetPointf });
@@ -293,8 +312,7 @@ void RumiaSecond::update(MovingObject* player, vector<EnemyBullet>* enemyBullets
 			break;
 		case 1:
 			if (timer == 0) {
-				this->currentAction = Action::LEAVE;
-				this->speed = POINTF{ 0.0f, -2.0f };
+				changeNextStage();
 				break;
 			}
 			subStage1Moving();
@@ -358,4 +376,14 @@ void RumiaSecond::onInit(MovingObject playerArea)
 void RumiaSecond::show()
 {
 	this->ShowBitmap();
+}
+
+bool RumiaSecond::isDead()
+{
+	return currentHealth == 0 && subStage == 1;
+}
+
+void RumiaSecond::fixFrame(size_t* gameFrameCounter)
+{
+	*gameFrameCounter = 5450;
 }

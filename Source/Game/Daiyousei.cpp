@@ -92,6 +92,16 @@ void Daiyousei::show()
 	this->ShowBitmap();
 }
 
+bool Daiyousei::isDead()
+{
+	return currentHealth == 0;
+}
+
+void Daiyousei::fixFrame(size_t* gameFrameCounter)
+{
+	*gameFrameCounter = 8200;
+}
+
 void Daiyousei::attack(MovingObject* player, vector<EnemyBullet>* enemyBullets)
 {
 	if (currentFireBulletIndex < bulletTypes.size() - 1 && frameCounter == attackSpeeds.size())

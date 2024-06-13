@@ -8,19 +8,21 @@
 class RumiaFirst :public Boss
 {
 public:
-	RumiaFirst();
+	RumiaFirst() = default;
+	~RumiaFirst() = default;
 
 	void update(MovingObject* player, vector<EnemyBullet>* enemyBullets, MovingObject* playerArea) override;
 	void onInit(MovingObject playerArea) override;
 	void show() override;
-	void attack(MovingObject* player, vector<EnemyBullet>* enemyBullets);
-
+	bool isDead() override;
+	void fixFrame(size_t* gameFrameCounter) override;
 
 private:
 	// enter
 	vector<POINTF> enterSpeeds;
 
 	// attack
+	void attack(MovingObject* player, vector<EnemyBullet>* enemyBullets);
 	// only one stage
 	vector<POINTF> attackSpeeds;
 

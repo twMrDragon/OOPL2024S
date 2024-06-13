@@ -1,10 +1,6 @@
 #include "stdafx.h"
 #include "RumiaFirst.h"
 
-RumiaFirst::RumiaFirst()
-{
-}
-
 void RumiaFirst::update(MovingObject* player, vector<EnemyBullet>* enemyBullets, MovingObject* playerArea)
 {
 	switch (this->currentAction)
@@ -85,6 +81,16 @@ void RumiaFirst::onInit(MovingObject playerArea)
 void RumiaFirst::show()
 {
 	this->ShowBitmap();
+}
+
+bool RumiaFirst::isDead()
+{
+	return this->currentHealth <= 0;
+}
+
+void RumiaFirst::fixFrame(size_t* gameFrameCounter)
+{
+	*gameFrameCounter = 2240;
 }
 
 void RumiaFirst::attack(MovingObject* player, vector<EnemyBullet>* enemyBullets)

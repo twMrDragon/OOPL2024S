@@ -15,6 +15,7 @@ void Cirno::update(MovingObject* player, vector<EnemyBullet>* enemyBullets, Movi
 		else {
 			changeNextStage();
 		}
+
 		break;
 	case Action::ATTACK:
 
@@ -23,8 +24,18 @@ void Cirno::update(MovingObject* player, vector<EnemyBullet>* enemyBullets, Movi
 		this->frameCounter += 1;
 
 		this->countdownTimer();
-		if (this->timer == 0)
-			changeNextStage();
+		if (subStage == 0) {
+			if (timer == 0 || currentHealth < maxHealth * 0.3) {
+				POINTF targetPoint = POINTF{ playerArea->getCenter().x,playerArea->GetTop() + 100.0f };
+				Bezier bezier({ this->getCenter(), targetPoint });
+				enterSpeeds = bezier.getEachSpeed(30);
+				changeNextStage();
+			}
+		}
+		else if (subStage == 1) {
+			if (this->timer == 0)
+				changeNextStage();
+		}
 
 		break;
 	case Action::LEAVE:
@@ -82,6 +93,16 @@ void Cirno::onInit(MovingObject playerArea)
 void Cirno::show()
 {
 	this->ShowBitmap();
+}
+
+bool Cirno::isDead()
+{
+	return subStage == 1 && currentHealth == 0;
+}
+
+void Cirno::fixFrame(size_t* gameFrameCounter)
+{
+	//
 }
 
 void Cirno::attack(MovingObject* player, vector<EnemyBullet>* enemyBullets)
@@ -217,19 +238,23 @@ void Cirno::fireBlueBulletTrunDirection(MovingObject* player, vector<EnemyBullet
 
 void Cirno::changeNextStage()
 {
-	if (currentAction == Action::ENTER)
-	{
+	if (subStage == 0 && currentAction == Action::ENTER) {
 		this->frameCounter = 0;
 		this->currentAction = Action::ATTACK;
 	}
-	else if (currentAction == Action::ATTACK) {
-		if (subStage == 0) {
-			this->subStage = 1;
-			this->timer = 900;
-			this->frameCounter = 0;
-		}
-		else if (subStage == 1) {
-			this->currentAction = Action::LEAVE;
-		}
+	else if (subStage == 1 && currentAction == Action::ENTER)
+	{
+		this->timer = 900;
+		currentAction = Action::ATTACK;
+	}
+	else if (subStage == 0 && currentAction == Action::ATTACK) {
+		this->subStage = 1;
+		this->currentHealth = (int)(this->maxHealth * 0.3);
+		this->frameCounter = 0;
+		this->damagedRatio = 0.2f;
+		currentAction = Action::ENTER;
+	}
+	else if (subStage == 1 && currentAction == Action::ATTACK) {
+		this->currentAction = Action::LEAVE;
 	}
 }
