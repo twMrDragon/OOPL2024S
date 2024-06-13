@@ -1,10 +1,10 @@
 #pragma once
 #include "Player.h"
 #include <xkeycheck.h>
-class ReimuB:public Player
+class ReimuB :public Player
 {
 private:
-	
+
 	int firingIntervalRedBullet = 4;//fire CD
 	int firingIntervalIceBullet = 8;
 
@@ -12,14 +12,12 @@ private:
 	int firingIntervalIceBulletCounter = 0;
 	CMovingBitmap ballL;
 	CMovingBitmap ballR;
-	
-public:
-
 	void showBall();
-	//showplayer
-	void onInit();
+
+public:
+	void onInit() override;
 	vector<MovingObject> attack() override;
 	void spellCard() override;
-
+	void onShow() override;
 };
 
