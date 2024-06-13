@@ -179,6 +179,7 @@ namespace game_framework {
 		void showBorder();
 		void fixPlayerLocation();
 		void checkBulletHitEnemy();
+		void checkBulletHitBoss();
 		void addFallingObject(MovingObject enemy);
 		void updatePlayerBullet();
 		void updateEnemy();
