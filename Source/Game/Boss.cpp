@@ -28,6 +28,11 @@ void Boss::hurted(int damaged)
 		this->currentHealth = 0;
 }
 
+int Boss::getTimeLeft()
+{
+	return this->timer + timeLeft;
+}
+
 void Boss::initDisplay(MovingObject playerArea)
 {
 	enemyWordDisplay.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite12.bmp" }, RGB(0, 0, 0));
