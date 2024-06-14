@@ -477,8 +477,8 @@ void CGameStateRun::initMenu() {
 		deadButtons.push_back(button);
 	}
 	if (!isMusicNow) {
-		MenuMusic->Load(2, "Resources\\stage.wav");
-		MenuMusic->Load(1, "Resources\\main.wav");
+		MenuMusic->Load(2, "Resources\\s.mp3");
+		MenuMusic->Load(1, "Resources\\m.mp3");
 		MenuMusic->Play(1, true);
 		isMusicNow = true;
 	}
