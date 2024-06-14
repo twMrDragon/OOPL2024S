@@ -28,6 +28,9 @@ void CGameStateRun::OnBeginState()
 
 void CGameStateRun::OnMove()							// 移動遊戲元素
 {
+	
+	
+	
 	//player->setPower(15);
 	if (mainStage == GAME_STAGE) {
 		if (isPause || isDead)
@@ -110,6 +113,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 
 void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 {
+	
 	initMenu();
 	initGame();
 	GotoGameState(GAME_STATE_RUN);
@@ -130,10 +134,13 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		}
 		// key z
 		else if (nChar == 0x5A) {
-			if (menuStage == MAIN_MENU)
+			if (menuStage == MAIN_MENU)///sssssss
 				if (mainMenuButtonSelectIndex == START) {
 					resetGame();
 					mainStage = GAME_STAGE;
+					MenuMusic->Stop(1);
+					MenuMusic->Play(2, true);
+					//MenuMusic->Open();
 				}
 		}
 	}
@@ -167,11 +174,13 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				if (pauseButtionIndex == 1) {
 					mainStage = MENU_STAGE;
 					resetGame();
+					MenuMusic->Stop(2);
+					MenuMusic->Play(1, true);
 				}
 			}
 			if (isDead)
 			{
-				if (player->getRemainingLives() != 0) {
+				if (player->getRemainingLives() > 0) {
 					if (deadButtionIndex == 0) {
 						//continue
 						player->setHP(3);
@@ -182,6 +191,8 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 					else if (deadButtionIndex == 1) {
 						mainStage = MENU_STAGE;
 						resetGame();
+						MenuMusic->Stop(2);
+						MenuMusic->Play(1, true);
 					}
 				}
 				else {
@@ -191,7 +202,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 			}
 		}
-		else if (nChar == VK_ESCAPE) {
+		else if (nChar == VK_ESCAPE&&!isDead) {
 			if (isPause)
 				isPause = false;
 			else
@@ -272,6 +283,7 @@ void CGameStateRun::OnShow()
 	if (mainStage == MENU_STAGE) {
 		background.ShowBitmap();
 		showMainMenuButtons();
+
 	}
 	else {
 		showGame();
@@ -357,9 +369,11 @@ void CGameStateRun::showEndResults(int score) {
 
 
 void CGameStateRun::initMenu() {
+	
 	// menu background
 	background.LoadBitmapByString({ "Resources\\Image\\TL\\title00\\Sprite0.bmp" });
 	background.SetTopLeft(0, 0);
+
 
 	// main menu
 	vector<vector<string>> buttonImagePaths = {
@@ -425,6 +439,13 @@ void CGameStateRun::initMenu() {
 		button.SetTopLeft(deadButtonLocations[i][0], deadButtonLocations[i][1]);
 		deadButtons.push_back(button);
 	}
+	if (!isMusicNow) {
+		MenuMusic->Load(2, "Resources\\stage.wav");
+		MenuMusic->Load(1, "Resources\\main.wav");
+		MenuMusic->Play(1, true);
+		isMusicNow = true;
+	}
+
 }
 
 

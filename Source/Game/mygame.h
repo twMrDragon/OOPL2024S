@@ -50,6 +50,7 @@
 #include "Boss.h"
 #include "EnemyBullet.h"
 #include <memory>
+#include "../Library/audio.h"
 
 
 namespace game_framework {
@@ -127,6 +128,10 @@ namespace game_framework {
 		void OnMove();									// 移動遊戲元素
 		void OnShow();									// 顯示這個狀態的遊戲畫面
 	private:
+		
+		bool isMusicNow = false;
+		CAudio* MenuMusic = CAudio::Instance();
+		
 		CMovingBitmap background;
 
 		MainStage mainStage = MENU_STAGE;
