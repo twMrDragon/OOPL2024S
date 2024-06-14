@@ -85,7 +85,7 @@ vector<MovingObject> ReimuB::attack()
 			totalBullets.push_back(bullet);
 			firingIntervalRedBulletCounter = 0;
 		}
-		if (firingIntervalIceBullet == firingIntervalIceBulletCounter) {
+		if (firingIntervalIceBullet <= firingIntervalIceBulletCounter) {
 
 			MovingObject bullet;
 			bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite68.bmp" }, RGB(205, 205, 205));
@@ -117,7 +117,7 @@ vector<MovingObject> ReimuB::attack()
 			firingIntervalRedBulletCounter = 0;
 		}
 
-		if (firingIntervalIceBullet == firingIntervalIceBulletCounter) {
+		if (firingIntervalIceBullet <= firingIntervalIceBulletCounter) {
 
 			MovingObject bullet;
 			bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite68.bmp" }, RGB(205, 205, 205));
@@ -149,7 +149,7 @@ vector<MovingObject> ReimuB::attack()
 			firingIntervalRedBulletCounter = 0;
 		}
 
-		if (firingIntervalIceBullet == firingIntervalIceBulletCounter) {
+		if (firingIntervalIceBullet <= firingIntervalIceBulletCounter) {
 
 			MovingObject bullet;
 			bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite68.bmp" }, RGB(205, 205, 205));
@@ -183,7 +183,7 @@ vector<MovingObject> ReimuB::attack()
 			firingIntervalRedBulletCounter = 0;
 		}
 
-		if (firingIntervalIceBullet == firingIntervalIceBulletCounter) {
+		if (firingIntervalIceBullet <= firingIntervalIceBulletCounter) {
 
 			MovingObject bullet;
 			bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite68.bmp" }, RGB(205, 205, 205));
@@ -218,7 +218,7 @@ vector<MovingObject> ReimuB::attack()
 			firingIntervalRedBulletCounter = 0;
 		}
 
-		if (firingIntervalIceBullet == firingIntervalIceBulletCounter) {
+		if (firingIntervalIceBullet <= firingIntervalIceBulletCounter) {
 
 			MovingObject bullet;
 			bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite68.bmp" }, RGB(205, 205, 205));
@@ -247,27 +247,102 @@ vector<MovingObject> ReimuB::attack()
 	}
 	else if (getPower() < 96)
 	{
-		totalBullets.push_back(bullet);
-		for (int i = -10; i < 11; i = i + 20)
+		firingIntervalIceBullet = 10;
+		if (firingIntervalRedBullet == firingIntervalRedBulletCounter)//3shoot
 		{
-			MovingObject bullet;
-			bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite69.bmp" }, RGB(0, 0, 0));
-			bullet.setLocationF(getCenter().x + bullet.GetWidth() / 2.0f, getCenter().y + bullet.GetHeight() / 2.0f);
-			bullet.setSpeedY((float)-15);
-			bullet.setSpeedX((float)i);
 			totalBullets.push_back(bullet);
+			MovingObject bullet;
+			bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite69.bmp" }, RGB(205, 205, 205));
+			bullet.setLocationF(-0.5f + getCenter().x - bullet.GetWidth() / 2.0f, getCenter().y - bullet.GetHeight() / 2.0f);
+			bullet.setSpeedX((float)-1.5);
+			bullet.setSpeedY((float)-15);
+			totalBullets.push_back(bullet);
+
+			bullet.setSpeedX((float)1.5);
+			bullet.setLocationF(0.5f + getCenter().x - bullet.GetWidth() / 2.0f, getCenter().y - bullet.GetHeight() / 2.0f);
+			totalBullets.push_back(bullet);
+			firingIntervalRedBulletCounter = 0;
+		}
+
+		if (firingIntervalIceBullet <= firingIntervalIceBulletCounter) {
+
+			MovingObject bullet;
+			bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite68.bmp" }, RGB(205, 205, 205));
+			bullet.setLocationF(getCenter().x - 35 + ballL.GetWidth() / 2 - bullet.GetWidth() - 2.5f, getCenter().y - 10);
+			bullet.setSpeedX(0);//30
+			bullet.setSpeedY((float)-15);
+			totalBullets.push_back(bullet);
+
+
+			//25
+			bullet.setLocationF(getCenter().x - 35 + ballL.GetWidth() / 2 + 2.5f, getCenter().y - 30);
+			totalBullets.push_back(bullet);
+
+			//yo
+			bullet.setLocationF(getCenter().x + 20 + ballR.GetWidth() / 2 + 2.5f, getCenter().y - 30);
+			totalBullets.push_back(bullet);//25
+
+
+			bullet.setLocationF(getCenter().x + 20 + ballR.GetWidth() / 2 - bullet.GetWidth() - 2.5f, getCenter().y - 10);
+			totalBullets.push_back(bullet);
+
+
+
+			firingIntervalIceBulletCounter = 0;
 		}
 	}
 	else if (getPower() < 129)//
 	{
-		for (int i = -20; i < 21; i = i + 10)
+		firingIntervalIceBullet = 10;
+		if (firingIntervalRedBullet == firingIntervalRedBulletCounter)
 		{
-			MovingObject bullet;
-			bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite69.bmp" }, RGB(0, 0, 0));
-			bullet.setLocationF(getCenter().x + bullet.GetWidth() / 2.0f, getCenter().y + bullet.GetHeight() / 2.0f);
-			bullet.setSpeedY((float)-15);
-			bullet.setSpeedX((float)i);
 			totalBullets.push_back(bullet);
+			MovingObject bullet;
+			bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite69.bmp" }, RGB(205, 205, 205));
+			bullet.setLocationF(-0.5f + getCenter().x - bullet.GetWidth() / 2.0f, getCenter().y - bullet.GetHeight() / 2.0f);
+			bullet.setSpeedX((float)-1.5);
+			bullet.setSpeedY((float)-15);
+			totalBullets.push_back(bullet);
+
+			bullet.setSpeedX((float)1.5);
+			bullet.setLocationF(0.5f + getCenter().x - bullet.GetWidth() / 2.0f, getCenter().y - bullet.GetHeight() / 2.0f);
+			totalBullets.push_back(bullet);
+
+			bullet.setSpeedX((float)3);
+			bullet.setLocationF(0.5f + getCenter().x - bullet.GetWidth() / 2.0f, getCenter().y - bullet.GetHeight() / 2.0f);
+			totalBullets.push_back(bullet);
+
+			bullet.setSpeedX((float)-3);
+			bullet.setLocationF(0.5f + getCenter().x - bullet.GetWidth() / 2.0f, getCenter().y - bullet.GetHeight() / 2.0f);
+			totalBullets.push_back(bullet);
+			firingIntervalRedBulletCounter = 0;
+		}
+
+		if (firingIntervalIceBullet <= firingIntervalIceBulletCounter) {
+
+			MovingObject bullet;
+			bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite68.bmp" }, RGB(205, 205, 205));
+			bullet.setLocationF(getCenter().x - 35 + ballL.GetWidth() / 2 - bullet.GetWidth() - 2.5f, getCenter().y - 10);
+			bullet.setSpeedX(0);//30
+			bullet.setSpeedY((float)-15);
+			totalBullets.push_back(bullet);
+
+
+			//25
+			bullet.setLocationF(getCenter().x - 35 + ballL.GetWidth() / 2 + 2.5f, getCenter().y - 30);
+			totalBullets.push_back(bullet);
+
+			//yo
+			bullet.setLocationF(getCenter().x + 20 + ballR.GetWidth() / 2 + 2.5f, getCenter().y - 30);
+			totalBullets.push_back(bullet);//25
+
+
+			bullet.setLocationF(getCenter().x + 20 + ballR.GetWidth() / 2 - bullet.GetWidth() - 2.5f, getCenter().y - 10);
+			totalBullets.push_back(bullet);
+
+
+
+			firingIntervalIceBulletCounter = 0;
 		}
 	}
 	else {//Power MAX
@@ -294,16 +369,37 @@ vector<MovingObject> ReimuB::attack()
 			totalBullets.push_back(bullet);
 			firingIntervalRedBulletCounter = 0;
 		}
-		if (firingIntervalIceBullet == firingIntervalIceBulletCounter) {
+		if (firingIntervalIceBullet <= firingIntervalIceBulletCounter) {
+
 			MovingObject bullet;
 			bullet.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite68.bmp" }, RGB(205, 205, 205));
-			bullet.setLocationF(getCenter().x - bullet.GetWidth() - 20, getCenter().y - 30);
-			bullet.setSpeedX(0);
+			bullet.setLocationF(getCenter().x - 35 + ballL.GetWidth() / 2 - bullet.GetWidth() - 2.5f, getCenter().y-30);
+			bullet.setSpeedX(0);//30
 			bullet.setSpeedY((float)-15);
 			totalBullets.push_back(bullet);
 
-			bullet.setLocationF(getCenter().x + bullet.GetWidth(), getCenter().y);
+
+			//25
+			bullet.setLocationF(getCenter().x - 35 + ballL.GetWidth() / 2 + 2.5f, getCenter().y - 30);
 			totalBullets.push_back(bullet);
+
+			//yo
+			bullet.setLocationF(getCenter().x + 20 + ballR.GetWidth() / 2 + 2.5f, getCenter().y - 30);
+			totalBullets.push_back(bullet);//25
+
+
+			bullet.setLocationF(getCenter().x + 20 + ballR.GetWidth() / 2 - bullet.GetWidth() - 2.5f, getCenter().y - 30);
+			totalBullets.push_back(bullet);
+
+			//center
+			bullet.setLocationF(getCenter().x - 35 , getCenter().y - 30);
+			totalBullets.push_back(bullet);
+
+			bullet.setLocationF(getCenter().x + 20 , getCenter().y - 30);
+			totalBullets.push_back(bullet);
+
+
+
 			firingIntervalIceBulletCounter = 0;
 		}
 	}

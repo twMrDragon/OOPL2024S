@@ -64,6 +64,16 @@ int Player::getInvincible() {
 	return this->invincible;
 }
 
+void Player::setHP(int HealthPoints)
+{
+	this->HP = HealthPoints;
+}
+
+int Player::getHP()
+{
+	return this->HP;
+}
+
 void Player::setInvincible(int invincible) {
 	this->invincible = invincible;
 }

@@ -35,20 +35,25 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 
 		player->reduceInvincible();
 		// player
-		if (false)
-			for (size_t i = 0; i < enemyBullets.size(); i++)
+		//if (false)
+		for (size_t i = 0; i < enemyBullets.size(); i++)
+		{
+			if (player->isDeath(enemyBullets[i]))
 			{
-				if (player->isDeath(enemyBullets[i]))
-				{
-					//被射中的時候
-					player->setInvincible(120);
+				//被射中的時候
+				player->setInvincible(120);
+				if (player->getPower() < 16) {
 					player->setPower(0);
-					player->setRemainingLives(player->getRemainingLives() - 1);
-					player->setRangeAnimation(0, 3, 100, false);//not enough
-					isInvincibleCount = true;
-
 				}
+				else
+				{
+					player->setPower(player->getPower() - 16);
+				}
+				player->setHP(player->getHP() - 1);
+				player->setRangeAnimation(0, 3, 100, false);//not enough
+				isInvincibleCount = true;
 			}
+		}
 		player->updateLocationFBySpeed();
 		fixPlayerLocation();
 		//換回正常模式動畫
@@ -58,8 +63,9 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 				isInvincibleCount = false;
 			}
 		}
-		if (player->getRemainingLives() == 0)
+		if (player->getHP() == 0)
 			isDead = true;
+
 
 
 
@@ -165,13 +171,23 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			}
 			if (isDead)
 			{
-				if (deadButtionIndex == 0) {
-					//continue
+				if (player->getRemainingLives() != 0) {
+					if (deadButtionIndex == 0) {
+						//continue
+						player->setHP(3);
+						player->setRemainingLives(player->getRemainingLives() - 1);
+						isPause = false;
+						isDead = false;
+					}
+					else if (deadButtionIndex == 1) {
+						mainStage = MENU_STAGE;
+						resetGame();
+					}
 				}
-				if (deadButtionIndex == 1) {
-					mainStage = MENU_STAGE;
-					resetGame();
+				else {
+
 				}
+
 
 			}
 		}
@@ -180,6 +196,9 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				isPause = false;
 			else
 				isPause = true;
+		}
+		else if (nChar == 0x49) {//for debug
+			player->setHP(10);
 		}
 	}
 
@@ -257,8 +276,11 @@ void CGameStateRun::OnShow()
 	else {
 		showGame();
 		if (isPause) {
+			
 			pauseTitle.ShowBitmap();
 			showPauseButtion();
+			
+			
 		}
 		if (isDead) {
 			deadTitle_01.ShowBitmap();
@@ -285,6 +307,7 @@ void CGameStateRun::showMainMenuButtons() {
 		button.ShowBitmap();
 	}
 }
+
 
 void CGameStateRun::showPauseButtion() {
 	int d = 3;
@@ -319,10 +342,25 @@ void CGameStateRun::showDeadButtion() {
 	}
 }
 
+void CGameStateRun::showStageEndResults(int score) {
+	stageEndResults.ShowBitmap(1.85);
+	stageEndTitle.ShowBitmap();
+	stageClearText.ShowBitmap();
+	stageEndBounsScores.showNumber(score);
+}
+
+void CGameStateRun::showEndResults(int score) {
+	endResults.ShowBitmap();
+	endTitle.ShowBitmap();
+	endScores.showNumber(score);
+}
+
+
 void CGameStateRun::initMenu() {
 	// menu background
 	background.LoadBitmapByString({ "Resources\\Image\\TL\\title00\\Sprite0.bmp" });
 	background.SetTopLeft(0, 0);
+
 	// main menu
 	vector<vector<string>> buttonImagePaths = {
 		{ "Resources\\Image\\TL\\title01\\Sprite10.bmp","Resources\\Image\\TL\\title01s\\Sprite10.bmp" },
@@ -428,9 +466,7 @@ void CGameStateRun::initGame() {
 	playerArea.LoadEmptyBitmap(448, 384);
 	playerArea.setLocationF(32.0f, 16.0f);
 
-	//player
-	//player->startToggleAnimation();
-	// interface background
+	
 	for (const int filename : {5, 6, 7, 23}) {
 		CMovingBitmap interfaceBackgound;
 		interfaceBackgound.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite" + to_string(filename) + ".bmp" });
@@ -485,6 +521,34 @@ void CGameStateRun::initGame() {
 	deadLivesShower.setXY(252, 206);
 
 	MapCreator::onInit(&playerArea, &mapDatum);
+
+
+	//end 
+	endResults.LoadBitmapByString({ "Resources\\Image\\TL\\result\\Sprite0.bmp" }, RGB(0, 0, 0));
+	endResults.SetTopLeft(0, 0);
+	endTitle.LoadBitmapByString({ "Resources\\Image\\TL\\result03\\Sprite1.bmp" },RGB(0, 0, 0));
+	endTitle.SetTopLeft(100, 200);
+
+	endScores.onInit();
+	endScores.setXY(225, 230);
+	endScores.setMinDigit(9);
+	//stage end
+	stageEndResults.LoadBitmapByString({ "Resources\\Image\\CM\\loading\\Sprite0.bmp" },RGB(0, 0, 0));
+	stageEndResults.SetTopLeft(-30, 0);
+
+	stageClearText.LoadBitmapByString({ "Resources\\Image\\stageclear.bmp" },RGB(0, 0, 0));
+	stageClearText.SetTopLeft(50, 200);
+
+	stageEndTitle.LoadBitmapByString({ "Resources\\Image\\bouns.bmp" },RGB(0, 0, 0));
+	stageEndTitle.SetTopLeft(50, 220);
+
+
+
+	
+	stageEndBounsScores.onInit();
+	stageEndBounsScores.setXY(200, 220);
+	stageEndBounsScores.setMinDigit(9);
+
 }
 
 void CGameStateRun::showGame() {
@@ -524,7 +588,7 @@ void CGameStateRun::showGame() {
 	numberDisplays[3].showNumber(0);
 	numberDisplays[4].showNumber(0);
 	// player star
-	for (int i = 0; i < player->getRemainingLives(); i++)
+	for (int i = 0; i < player->getHP(); i++)
 	{
 		RedStar.SetTopLeft(496 + i * RedStar.GetWidth(), 122);
 		RedStar.ShowBitmap();
@@ -701,7 +765,7 @@ void CGameStateRun::updatePlayerBullet()
 
 	// generate
 	if (fire) {
-		player->setPower(70);
+		//player->setPower(70);
 		vector<MovingObject> ms = player->attack();
 		playerBullets.insert(playerBullets.end(), ms.begin(), ms.end());//wave1.insert(wave1.end(), curve1Speeds.begin() + 1, curve1Speeds.end());
 	}

@@ -5,9 +5,10 @@ class Player :public MovingObject
 protected:
 	int invincible = 0;//NO Enemy ³o¬OµL¼Ä´V
 	int damage = 0;
-	int bomb = 3;
 	int power = 0;
-	int remainingLives = 3;
+	int bomb=3;
+	int HP = 3;
+	int remainingLives=3;
 	bool fire = false;//get set
 	MovingObject hitbox;
 
@@ -25,6 +26,10 @@ public:
 	void setPower(int power);
 	void setRemainingLives(int remainingLives);
 	void setInvincible(int invincible);
+	
+	void setHP(int HealthPoints);
+	int getHP();
+
 
 	// getter
 	int getPower();
