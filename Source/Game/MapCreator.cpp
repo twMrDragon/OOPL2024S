@@ -13,11 +13,11 @@ std::shared_ptr<Boss> MapCreator::getCurrentBoss(size_t frame, MovingObject play
 
 	if (frame == 1450)
 		boss = std::make_shared<RumiaFirst>(RumiaFirst());
-	else if (frame == 3510)
+	else if (frame == 3630)
 		boss = std::make_shared<RumiaSecond>(RumiaSecond());
-	else if (frame == 7250)
+	else if (frame == 7490)
 		boss = std::make_shared<Daiyousei>(Daiyousei());
-	else if (frame == 9000)
+	else if (frame == 9360)
 		boss = std::make_shared<Cirno>(Cirno());
 
 	if (boss != nullptr)
@@ -36,11 +36,11 @@ void MapCreator::initStage1(MovingObject* playerArea, map<size_t, vector<MapData
 	MapCreator::initStage1Type6Wave(playerArea, mapDatum, 1100);
 	MapCreator::initStage1Type7Wave(playerArea, mapDatum, 1180);
 	// rumia first
-	MapCreator::initStage1Type4Wave(playerArea, mapDatum, 2290);
-	MapCreator::initStage1Type7Wave(playerArea, mapDatum, 2910);
-	MapCreator::initStage1Type6Wave(playerArea, mapDatum, 3010);
-	MapCreator::initStage1Type7Wave(playerArea, mapDatum, 3110);
-	MapCreator::initStage1Type6Wave(playerArea, mapDatum, 3210);
+	MapCreator::initStage1Type4Wave(playerArea, mapDatum, 2410);
+	MapCreator::initStage1Type7Wave(playerArea, mapDatum, 3030);
+	MapCreator::initStage1Type6Wave(playerArea, mapDatum, 3130);
+	MapCreator::initStage1Type7Wave(playerArea, mapDatum, 3230);
+	MapCreator::initStage1Type6Wave(playerArea, mapDatum, 3330);
 	// rumia second
 }
 
@@ -334,14 +334,14 @@ void MapCreator::initStage1Type7Wave(MovingObject* playerArea, map<size_t, vecto
 
 void MapCreator::initStage2(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum)
 {
-	int startFrame = 5500;
+	int startFrame = 5740;
 	MapCreator::initStage2Type1Wave(playerArea, mapDatum, startFrame);
 	MapCreator::initStage2Type2Wave(playerArea, mapDatum, startFrame + 500);
 	MapCreator::initStage2Type3Wave(playerArea, mapDatum, startFrame + 780);
 	MapCreator::initStage2Type2Wave(playerArea, mapDatum, startFrame + 1060);
 	MapCreator::initStage2Type3Wave(playerArea, mapDatum, startFrame + 1360);
 	// Daiyousei
-	MapCreator::initStage2Type4Wave(playerArea, mapDatum, startFrame + 2750);
+	MapCreator::initStage2Type4Wave(playerArea, mapDatum, startFrame + 2870);
 	// Cirno
 }
 
