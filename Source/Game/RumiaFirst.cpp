@@ -90,7 +90,7 @@ bool RumiaFirst::isDead()
 
 int RumiaFirst::getFinishFrame()
 {
-	return  2240;
+	return  2410 - 120;
 }
 
 void RumiaFirst::attack(MovingObject* player, vector<EnemyBullet>* enemyBullets)

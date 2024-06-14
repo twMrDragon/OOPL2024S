@@ -15,6 +15,7 @@ void Daiyousei::update(MovingObject* player, vector<EnemyBullet>* enemyBullets, 
 		else {
 			this->fireCenter = this->getCenter();
 			this->frameCounter = 0;
+			this->damagedRatio = 0.8f;
 			this->currentAction = Action::ATTACK;
 		}
 		break;
@@ -99,7 +100,7 @@ bool Daiyousei::isDead()
 
 int Daiyousei::getFinishFrame()
 {
-	return 8200;
+	return 8610 - 120;
 }
 
 void Daiyousei::attack(MovingObject* player, vector<EnemyBullet>* enemyBullets)
@@ -124,7 +125,6 @@ void Daiyousei::attack(MovingObject* player, vector<EnemyBullet>* enemyBullets)
 			break;
 		}
 	}
-
 }
 
 void Daiyousei::fireCircleBullets(vector<string> resource, bool clockwise, vector<EnemyBullet>* enemyBullets)

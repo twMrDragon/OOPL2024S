@@ -386,5 +386,5 @@ bool RumiaSecond::isDead()
 
 int RumiaSecond::getFinishFrame()
 {
-	return 5450;
+	return 5740 - 120;
 }
