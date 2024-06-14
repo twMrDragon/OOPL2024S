@@ -150,6 +150,10 @@ namespace game_framework {
 		void showDeadButtion();
 		void resetGame();
 
+		int bounsPoint = 0;
+		int showFrame = 0;
+		bool isEnd = false;
+		void setShowResult();
 		void showStageEndResults(int score);//一小關卡結束，塞有提早打完的BOUNS分
 		void showEndResults(int score);//整個關卡結束，塞最終得分
 
@@ -175,7 +179,7 @@ namespace game_framework {
 		int maxScore = 1000000;
 		vector<CMovingBitmap> interfaceBackgroundResource;
 		NumberDisplay deadLivesShower;
-		
+
 		CMovingBitmap stageEndResults;//關卡結束畫面
 		CMovingBitmap stageEndTitle;
 		NumberDisplay stageEndBounsScores;
@@ -184,10 +188,10 @@ namespace game_framework {
 		CMovingBitmap endResults;//遊戲結束畫面
 		NumberDisplay endScores;
 		CMovingBitmap endTitle;
-		
+
 
 		// 玩家可交互物件
-		int playerDelta = 7;
+		float playerDelta = 7.0f;
 		bool fire = false;
 		std::shared_ptr<Player> player;
 		bool isInvincibleCount = false;

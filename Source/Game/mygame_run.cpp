@@ -28,9 +28,9 @@ void CGameStateRun::OnBeginState()
 
 void CGameStateRun::OnMove()							// 移動遊戲元素
 {
-	
-	
-	
+
+
+
 	//player->setPower(15);
 	if (mainStage == GAME_STAGE) {
 		if (isPause || isDead)
@@ -66,16 +66,19 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 				isInvincibleCount = false;
 			}
 		}
-		if (player->getHP() == 0)
+		if (player->getHP() == 0) {
 			isDead = true;
-
-
+			if (player->getRemainingLives() == 0) {
+				isDead = false;
+				frameCounter = 100000;
+				setShowResult();
+			}
+		}
 
 
 		// generate player bullet, move bullet and erase
 		updatePlayerBullet();
 		checkBulletHitEnemy();
-		checkBulletHitBoss();
 
 		// falling object
 		for (size_t i = 0; i < fallingObjects.size(); i++)
@@ -103,17 +106,27 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 			this->boss->update(player.get(), &enemyBullets, &playerArea);
 			if (this->boss->onLeave(playerArea))
 			{
+				setShowResult();
 				this->frameCounter = boss->getFinishFrame();
 				this->boss = nullptr;
 			}
 		}
+		checkBulletHitBoss();
+		if (showFrame > 0)
+			showFrame--;
+		else if (isEnd) {
+			mainStage = MENU_STAGE;
+			MenuMusic->Stop(2);
+			MenuMusic->Play(1, true);
+		}
+
 		frameCounter += 1;
 	}
 }
 
 void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 {
-	
+
 	initMenu();
 	initGame();
 	GotoGameState(GAME_STATE_RUN);
@@ -166,6 +179,9 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			player->setSpeedX(player->getSpeedX() + playerDelta);
 
 		}
+		else if (nChar == VK_SPACE) {
+			player->setSpeed(POINTF{ 0.0f,0.0f });
+		}
 		else if (nChar == 0x5A) {
 			fire = true;
 			if (isPause) {
@@ -189,27 +205,31 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 						isDead = false;
 					}
 					else if (deadButtionIndex == 1) {
-						mainStage = MENU_STAGE;
-						resetGame();
-						MenuMusic->Stop(2);
-						MenuMusic->Play(1, true);
+						isDead = false;
+						player->setRemainingLives(0);
+						frameCounter = 100000;
+						setShowResult();
+						//mainStage = MENU_STAGE;
+						//resetGame();
+						//MenuMusic->Stop(2);
+						//MenuMusic->Play(1, true);
 					}
 				}
-				else {
-
-				}
-
-
 			}
 		}
-		else if (nChar == VK_ESCAPE&&!isDead) {
+		else if (nChar == VK_ESCAPE && !isDead) {
 			if (isPause)
 				isPause = false;
 			else
 				isPause = true;
 		}
+		// I
 		else if (nChar == 0x49) {//for debug
-			player->setHP(10);
+			player->setHP(100);
+		}
+		// P
+		else if (nChar == 0x50) {
+			player->setPower(player->getPower() + 10);
 		}
 	}
 
@@ -217,6 +237,7 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 void CGameStateRun::resetGame() {
 	isPause = false;
 	isDead = false;
+	isEnd = false;
 
 	player = std::make_shared<ReimuB>(ReimuB());////////////
 	player->onInit();
@@ -288,11 +309,11 @@ void CGameStateRun::OnShow()
 	else {
 		showGame();
 		if (isPause) {
-			
+
 			pauseTitle.ShowBitmap();
 			showPauseButtion();
-			
-			
+
+
 		}
 		if (isDead) {
 			deadTitle_01.ShowBitmap();
@@ -354,6 +375,22 @@ void CGameStateRun::showDeadButtion() {
 	}
 }
 
+
+void game_framework::CGameStateRun::setShowResult()
+{
+	if (showFrame > 0)
+		return;
+	if (boss)
+		bounsPoint = boss->getTimeLeft() * 100;
+	showFrame = 120;
+	if (frameCounter > 9360) {
+		frameCounter = 100000;
+		showFrame = 150;
+		isEnd = true;
+	}
+
+}
+
 void CGameStateRun::showStageEndResults(int score) {
 	stageEndResults.ShowBitmap(1.85);
 	stageEndTitle.ShowBitmap();
@@ -369,7 +406,7 @@ void CGameStateRun::showEndResults(int score) {
 
 
 void CGameStateRun::initMenu() {
-	
+
 	// menu background
 	background.LoadBitmapByString({ "Resources\\Image\\TL\\title00\\Sprite0.bmp" });
 	background.SetTopLeft(0, 0);
@@ -487,7 +524,7 @@ void CGameStateRun::initGame() {
 	playerArea.LoadEmptyBitmap(448, 384);
 	playerArea.setLocationF(32.0f, 16.0f);
 
-	
+
 	for (const int filename : {5, 6, 7, 23}) {
 		CMovingBitmap interfaceBackgound;
 		interfaceBackgound.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite" + to_string(filename) + ".bmp" });
@@ -547,25 +584,25 @@ void CGameStateRun::initGame() {
 	//end 
 	endResults.LoadBitmapByString({ "Resources\\Image\\TL\\result\\Sprite0.bmp" }, RGB(0, 0, 0));
 	endResults.SetTopLeft(0, 0);
-	endTitle.LoadBitmapByString({ "Resources\\Image\\TL\\result03\\Sprite1.bmp" },RGB(0, 0, 0));
+	endTitle.LoadBitmapByString({ "Resources\\Image\\TL\\result03\\Sprite1.bmp" }, RGB(0, 0, 0));
 	endTitle.SetTopLeft(100, 200);
 
 	endScores.onInit();
 	endScores.setXY(225, 230);
 	endScores.setMinDigit(9);
 	//stage end
-	stageEndResults.LoadBitmapByString({ "Resources\\Image\\CM\\loading\\Sprite0.bmp" },RGB(0, 0, 0));
+	stageEndResults.LoadBitmapByString({ "Resources\\Image\\CM\\loading\\Sprite0.bmp" });
 	stageEndResults.SetTopLeft(-30, 0);
 
-	stageClearText.LoadBitmapByString({ "Resources\\Image\\stageclear.bmp" },RGB(0, 0, 0));
+	stageClearText.LoadBitmapByString({ "Resources\\Image\\stageclear.bmp" }, RGB(0, 0, 0));
 	stageClearText.SetTopLeft(50, 200);
 
-	stageEndTitle.LoadBitmapByString({ "Resources\\Image\\bouns.bmp" },RGB(0, 0, 0));
+	stageEndTitle.LoadBitmapByString({ "Resources\\Image\\bouns.bmp" }, RGB(0, 0, 0));
 	stageEndTitle.SetTopLeft(50, 220);
 
 
 
-	
+
 	stageEndBounsScores.onInit();
 	stageEndBounsScores.setXY(200, 220);
 	stageEndBounsScores.setMinDigit(9);
@@ -573,6 +610,10 @@ void CGameStateRun::initGame() {
 }
 
 void CGameStateRun::showGame() {
+	if (isEnd) {
+		showEndResults(currentScore);
+		return;
+	}
 	// player
 	//player->SetAnimation(1, false);
 	player->onShow();
@@ -595,6 +636,10 @@ void CGameStateRun::showGame() {
 		boss->show();
 		boss->showDisplay();
 	}
+
+	// 顯示結算
+	if (frameCounter < 100000 && showFrame > 0)
+		showStageEndResults(bounsPoint);
 
 	// interface
 	// interface border
@@ -702,6 +747,7 @@ void game_framework::CGameStateRun::checkBulletHitBoss()
 
 	// boss dead
 	if (boss->isDead()) {
+		setShowResult();
 		this->frameCounter = boss->getFinishFrame();
 		updateScore(boss->getTimeLeft() * 100);
 		boss = nullptr;
