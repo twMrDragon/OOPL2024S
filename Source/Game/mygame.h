@@ -48,7 +48,9 @@
 #include "Player.h"
 #include "ReimuB.h"
 #include "Boss.h"
+#include "EnemyBullet.h"
 #include <memory>
+#include "../Library/audio.h"
 
 
 namespace game_framework {
@@ -126,6 +128,10 @@ namespace game_framework {
 		void OnMove();									// 移動遊戲元素
 		void OnShow();									// 顯示這個狀態的遊戲畫面
 	private:
+		
+		bool isMusicNow = false;
+		CAudio* MenuMusic = CAudio::Instance();
+		
 		CMovingBitmap background;
 
 		MainStage mainStage = MENU_STAGE;
@@ -143,6 +149,13 @@ namespace game_framework {
 		void setDeadButtionSelection(int direction);
 		void showDeadButtion();
 		void resetGame();
+
+		int bounsPoint = 0;
+		int showFrame = 0;
+		bool isEnd = false;
+		void setShowResult();
+		void showStageEndResults(int score);//一小關卡結束，塞有提早打完的BOUNS分
+		void showEndResults(int score);//整個關卡結束，塞最終得分
 
 		int pauseButtionIndex = 0;
 		int deadButtionIndex = 0;
@@ -162,26 +175,41 @@ namespace game_framework {
 		CMovingBitmap GreenStar;
 		CMovingBitmap RedStar;
 		vector<NumberDisplay> numberDisplays;
+		int currentScore = 0;
+		int maxScore = 1000000;
 		vector<CMovingBitmap> interfaceBackgroundResource;
 		NumberDisplay deadLivesShower;
+
+		CMovingBitmap stageEndResults;//關卡結束畫面
+		CMovingBitmap stageEndTitle;
+		NumberDisplay stageEndBounsScores;
+		CMovingBitmap stageClearText;
+
+		CMovingBitmap endResults;//遊戲結束畫面
+		NumberDisplay endScores;
+		CMovingBitmap endTitle;
+
+
 		// 玩家可交互物件
-		int playerDelta = 7;
+		float playerDelta = 7.0f;
 		bool fire = false;
-		ReimuB player;
+		std::shared_ptr<Player> player;
 		bool isInvincibleCount = false;
 		vector<MovingObject> playerBullets;
 		vector<Enemy> enemies;
-		vector<MovingObject> enemyBullets;
+		vector<EnemyBullet> enemyBullets;
 		vector<MovingObject> fallingObjects;
 		void initGame();
 		void showGame();
 		void showBorder();
 		void fixPlayerLocation();
 		void checkBulletHitEnemy();
+		void checkBulletHitBoss();
 		void addFallingObject(MovingObject enemy);
 		void updatePlayerBullet();
 		void updateEnemy();
-		size_t frameCounter = 1;
+		void updateScore(int deltaScore);
+		size_t frameCounter = 0;
 		std::shared_ptr<Boss> boss;
 		map<size_t, vector<MapData>> mapDatum;
 	};

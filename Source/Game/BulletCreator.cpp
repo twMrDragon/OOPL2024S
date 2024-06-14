@@ -4,10 +4,10 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-void BulletCreator::createStage1PinkEnemyBullet(Enemy* enemy, MovingObject* player, vector<MovingObject>* bullets) {
+void BulletCreator::createStage1PinkEnemyBullet(Enemy* enemy, MovingObject* player, vector<EnemyBullet>* bullets) {
 	POINTF enemyCenter = enemy->getCenter();
 
-	MovingObject bullet;
+	EnemyBullet bullet;
 	bullet.LoadBitmapByString({ "Resources\\Image\\CM\\etama3\\Sprite31.bmp" }, RGB(67, 54, 54));
 	bullet.setCenter(enemy->getCenter());
 
@@ -24,18 +24,38 @@ void BulletCreator::createStage1PinkEnemyBullet(Enemy* enemy, MovingObject* play
 	}
 }
 
-void BulletCreator::createStage2YelloEnemyBullet(Enemy* enemy, MovingObject* player, vector<MovingObject>* bullets)
+void BulletCreator::createStage2YelloEnemyBullet(Enemy* enemy, MovingObject* player, vector<EnemyBullet>* bullets)
 {
-	MovingObject bullet;
+	EnemyBullet bullet;
 	bullet.LoadBitmapByString({ "Resources\\Image\\CM\\etama3\\Sprite90.bmp" }, RGB(67, 54, 54));
 	bullet.setCenter(enemy->getCenter());
-	double randomAngle = rand() / (RAND_MAX + 1.0) * 360;
+	double aimAngle = enemy->angleToTarget(player);
 
 	for (int i = 0; i < 4; i++)
 	{
-		POINTF speed = Utils::calculateXYSpeed(randomAngle, 2.0f);
+		POINTF speed = Utils::calculateXYSpeed(aimAngle, 2.0f);
 		bullet.setSpeed(speed);
 		bullets->push_back(bullet);
-		randomAngle += 90;
+		aimAngle += 90;
+	}
+}
+
+void BulletCreator::createStage2PinkEnemyBullet(Enemy* enemy, MovingObject* player, vector<EnemyBullet>* bullets)
+{
+	EnemyBullet bullet;
+	bullet.LoadBitmapByString({ "Resources\\Image\\CM\\etama3\\Sprite31.bmp" }, RGB(67, 54, 54));
+	bullet.setCenter(enemy->getCenter());
+
+	double aimAngle = enemy->angleToTarget(player);
+
+	for (int i = -3; i < 4; i++)
+	{
+		double currentAngle = aimAngle + i * 36;
+		POINTF speed = Utils::calculateXYSpeed(currentAngle, 1.5f);
+		bullet.setSpeed(speed);
+		bullets->push_back(bullet);
+		speed = Utils::calculateXYSpeed(currentAngle, 2.0f);
+		bullet.setSpeed(speed);
+		bullets->push_back(bullet);
 	}
 }

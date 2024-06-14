@@ -13,10 +13,12 @@ std::shared_ptr<Boss> MapCreator::getCurrentBoss(size_t frame, MovingObject play
 
 	if (frame == 1450)
 		boss = std::make_shared<RumiaFirst>(RumiaFirst());
-	else if (frame == 3510)
+	else if (frame == 3630)
 		boss = std::make_shared<RumiaSecond>(RumiaSecond());
-	else if (frame == 7250)
+	else if (frame == 7490)
 		boss = std::make_shared<Daiyousei>(Daiyousei());
+	else if (frame == 9360)
+		boss = std::make_shared<Cirno>(Cirno());
 
 	if (boss != nullptr)
 		boss->onInit(playerArea);
@@ -34,11 +36,11 @@ void MapCreator::initStage1(MovingObject* playerArea, map<size_t, vector<MapData
 	MapCreator::initStage1Type6Wave(playerArea, mapDatum, 1100);
 	MapCreator::initStage1Type7Wave(playerArea, mapDatum, 1180);
 	// rumia first
-	MapCreator::initStage1Type4Wave(playerArea, mapDatum, 2290);
-	MapCreator::initStage1Type7Wave(playerArea, mapDatum, 2910);
-	MapCreator::initStage1Type6Wave(playerArea, mapDatum, 3010);
-	MapCreator::initStage1Type7Wave(playerArea, mapDatum, 3110);
-	MapCreator::initStage1Type6Wave(playerArea, mapDatum, 3210);
+	MapCreator::initStage1Type4Wave(playerArea, mapDatum, 2410);
+	MapCreator::initStage1Type7Wave(playerArea, mapDatum, 3030);
+	MapCreator::initStage1Type6Wave(playerArea, mapDatum, 3130);
+	MapCreator::initStage1Type7Wave(playerArea, mapDatum, 3230);
+	MapCreator::initStage1Type6Wave(playerArea, mapDatum, 3330);
 	// rumia second
 }
 
@@ -332,12 +334,15 @@ void MapCreator::initStage1Type7Wave(MovingObject* playerArea, map<size_t, vecto
 
 void MapCreator::initStage2(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum)
 {
-	int startFrame = 5500;
+	int startFrame = 5740;
 	MapCreator::initStage2Type1Wave(playerArea, mapDatum, startFrame);
 	MapCreator::initStage2Type2Wave(playerArea, mapDatum, startFrame + 500);
 	MapCreator::initStage2Type3Wave(playerArea, mapDatum, startFrame + 780);
 	MapCreator::initStage2Type2Wave(playerArea, mapDatum, startFrame + 1060);
 	MapCreator::initStage2Type3Wave(playerArea, mapDatum, startFrame + 1360);
+	// Daiyousei
+	MapCreator::initStage2Type4Wave(playerArea, mapDatum, startFrame + 2870);
+	// Cirno
 }
 
 void MapCreator::initStage2Type1Wave(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum, int startFrame)
@@ -396,7 +401,7 @@ void MapCreator::initStage2Type2Wave(MovingObject* playerArea, map<size_t, vecto
 
 	for (size_t i = 0; i < 17; i++)
 	{
-		mapData.location = POINTF{ (float)startX, (float)-mesaureEnemy.GetHeight() };
+		mapData.location = POINTF{ (float)startX, (float)playerArea->GetTop() - mesaureEnemy.GetHeight() };
 		startX += 20;
 		(*mapDatum)[startFrame] = { mapData };
 		startFrame += 15;
@@ -418,9 +423,57 @@ void MapCreator::initStage2Type3Wave(MovingObject* playerArea, map<size_t, vecto
 
 	for (size_t i = 0; i < 17; i++)
 	{
-		mapData.location = POINTF{ (float)startX, (float)-mesaureEnemy.GetHeight() };
+		mapData.location = POINTF{ (float)startX, (float)playerArea->GetTop() - mesaureEnemy.GetHeight() };
 		startX -= 20;
 		(*mapDatum)[startFrame] = { mapData };
 		startFrame += 15;
+	}
+}
+
+void MapCreator::initStage2Type4Wave(MovingObject* playerArea, map<size_t, vector<MapData>>* mapDatum, int startFrame)
+{
+	Enemy mesaureEnemy;
+	mesaureEnemy.LoadBitmapByString({ "Resources\\Image\\ST\\stg2enm\\Sprite8.bmp" }, RGB(140, 150, 141));
+	int startX = playerArea->GetLeft() + mesaureEnemy.GetWidth();
+	int endX = playerArea->GetLeft() + playerArea->GetWidth() - mesaureEnemy.GetWidth() * 2;
+	float deltaX = (endX - startX) / 10.0f;
+
+	MapData mapData;
+	mapData.resource = { "Resources\\Image\\ST\\stg2enm\\Sprite8.bmp" };
+	mapData.colorFilter = RGB(140, 150, 141);
+
+	vector<POINTF> speeds;
+
+	for (int i = 0; i < 35; i++)
+		speeds.push_back(POINTF{ 0.0f,3.0f });
+	for (int i = 0; i < 40; i++)
+		speeds.push_back(POINTF{ 0.0f,0.0f });
+
+	Bezier curve({ POINTF{ 0.0f,0.0f }, POINTF{ -20.0f,20.0f } ,POINTF{-40.0f,0.0f} });
+	vector<POINTF> curveSpeed = curve.getEachSpeed(20);
+	speeds.insert(speeds.end(), curveSpeed.begin() + 1, curveSpeed.end());
+	speeds.push_back(POINTF{ 0.0f, -3.0f });
+
+	mapData.speeds = speeds;
+	mapData.enemyAction[50] = { &BulletCreator::createStage2PinkEnemyBullet };
+
+	// ¥ª¨ì¥k
+	for (int i = 0; i < 11; i++)
+	{
+		mapData.location = POINTF{ (float)startX, (float)playerArea->GetTop() - mesaureEnemy.GetHeight() };
+		startX += (int)deltaX;
+		(*mapDatum)[startFrame] = { mapData };
+		startFrame += 20;
+	}
+
+	//¥k¨ì¥ª
+	startX -= (int)deltaX;
+	startFrame += 100;
+	for (int i = 0; i < 11; i++)
+	{
+		mapData.location = POINTF{ (float)startX, (float)playerArea->GetTop() - mesaureEnemy.GetHeight() };
+		startX -= (int)deltaX;
+		(*mapDatum)[startFrame] = { mapData };
+		startFrame += 20;
 	}
 }

@@ -1,21 +1,16 @@
 #include "stdafx.h"
 #include "Player.h"
 
-void Player::onInit() {
-	body.LoadEmptyBitmap(4, 4);
-	updateBodyLaction();
-}
-
 bool Player::isDeath(MovingObject bullet) {
-	if (invincible>0)
+	if (invincible > 0)
 	{
 		return false;
 	}
-	return IsOverlap(body, bullet);
+	return IsOverlap(hitbox, bullet);
 }
 
 void Player::reduceInvincible() {
-	if (invincible>0)
+	if (invincible > 0)
 	{
 		invincible--;
 	}
@@ -24,25 +19,29 @@ void Player::reduceInvincible() {
 void Player::updateLocationFBySpeed()
 {
 	MovingObject::updateLocationFBySpeed();
-	updateBodyLaction();
+	updateHitboxLocation();
 }
 
 void Player::setLocationF(POINTF location)
 {
 	MovingObject::setLocationF(location);
-	updateBodyLaction();
+	updateHitboxLocation();
 }
 
 void Player::setLocationF(float x, float y)
 {
-	MovingObject::setLocationF(x,y);
-	updateBodyLaction();
+	MovingObject::setLocationF(x, y);
+	updateHitboxLocation();
 }
 
+void Player::initHitbox()
+{
+	hitbox.LoadEmptyBitmap(4, 4);
+}
 
-
-void Player::updateBodyLaction() {
-	body.setLocationF(getCenter().x + body.GetWidth() / 2, getCenter().y + body.GetHeight() / 2);
+void Player::updateHitboxLocation()
+{
+	hitbox.setCenter(this->getCenter());
 }
 
 void Player::setPower(int power) {
@@ -63,6 +62,16 @@ int Player::getRemainingLives() {
 
 int Player::getInvincible() {
 	return this->invincible;
+}
+
+void Player::setHP(int HealthPoints)
+{
+	this->HP = HealthPoints;
+}
+
+int Player::getHP()
+{
+	return this->HP;
 }
 
 void Player::setInvincible(int invincible) {

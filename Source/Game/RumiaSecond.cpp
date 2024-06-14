@@ -24,7 +24,7 @@ void RumiaSecond::subStageEnter()
 			SUBSTAGE_0_MOVE_FRAME + SUBSTAGE_0_WAIT_FRAME,
 			0
 		};
-		this->currentAction = Action::ATTACK;
+		changeNextStage();
 		this->frameCounter = frameCounterSelector[subStage];
 	}
 }
@@ -59,7 +59,7 @@ void RumiaSecond::subStage0Moving()
 	}
 }
 
-void RumiaSecond::subStage0Attack(MovingObject* player, vector<MovingObject>* enemyBullets)
+void RumiaSecond::subStage0Attack(MovingObject* player, vector<EnemyBullet>* enemyBullets)
 {
 	// 變換攻擊方式
 	if (frameCounter == SUBSTAGE_0_MOVE_FRAME + SUBSTAGE_0_WAIT_FRAME) {
@@ -83,12 +83,12 @@ void RumiaSecond::subStage0Attack(MovingObject* player, vector<MovingObject>* en
 	};
 }
 
-void RumiaSecond::fireRedLine(MovingObject* player, vector<MovingObject>* enemyBullets)
+void RumiaSecond::fireRedLine(MovingObject* player, vector<EnemyBullet>* enemyBullets)
 {
 	// 18 to 30 frame
 	// 移動時就會發射
 	if (this->frameCounter % 2 == 0 && this->frameCounter >= 18 && this->frameCounter <= 30) {
-		MovingObject bullet;
+		EnemyBullet bullet;
 		bullet.LoadBitmapByString({ "Resources\\Image\\CM\\etama3\\Sprite64.bmp" }, RGB(67, 54, 54));
 		bullet.setCenter(this->getCenter());
 
@@ -102,13 +102,13 @@ void RumiaSecond::fireRedLine(MovingObject* player, vector<MovingObject>* enemyB
 	}
 }
 
-void RumiaSecond::fireGreenCurve(MovingObject* player, vector<MovingObject>* enemyBullets)
+void RumiaSecond::fireGreenCurve(MovingObject* player, vector<EnemyBullet>* enemyBullets)
 {
 	// 總共 16 顆
 	// 移動時就會發射
 	if (frameCounter >= 2 && frameCounter <= 17)
 	{
-		MovingObject bullet;
+		EnemyBullet bullet;
 		bullet.LoadBitmapByString({ "Resources\\Image\\CM\\etama3\\Sprite71.bmp" }, RGB(67, 54, 54));
 		bullet.setCenter(this->getCenter());
 
@@ -120,7 +120,7 @@ void RumiaSecond::fireGreenCurve(MovingObject* player, vector<MovingObject>* ene
 	}
 }
 
-void RumiaSecond::fireBlueCircle(MovingObject* player, vector<MovingObject>* enemyBullets)
+void RumiaSecond::fireBlueCircle(MovingObject* player, vector<EnemyBullet>* enemyBullets)
 {
 	// 大顆有 4 波 12 顆
 	// 小顆有 3 波 16 顆
@@ -156,13 +156,13 @@ void RumiaSecond::fireBlueCircle(MovingObject* player, vector<MovingObject>* ene
 	}
 }
 
-void RumiaSecond::fireBlueCircleWith3RedLine(MovingObject* player, vector<MovingObject>* enemyBullets)
+void RumiaSecond::fireBlueCircleWith3RedLine(MovingObject* player, vector<EnemyBullet>* enemyBullets)
 {
 	double angle = this->angleToTarget(player);
 	// 三道 16 顆紅色子彈
 	if (this->frameCounter == SUBSTAGE_0_MOVE_FRAME + 10)
 	{
-		MovingObject bullet;
+		EnemyBullet bullet;
 		bullet.LoadBitmapByString({ "Resources\\Image\\CM\\etama3\\Sprite47.bmp" }, RGB(67, 54, 54));
 		bullet.setCenter(this->getCenter());
 
@@ -185,7 +185,7 @@ void RumiaSecond::fireBlueCircleWith3RedLine(MovingObject* player, vector<Moving
 	}
 }
 
-void RumiaSecond::fireBlueHalfCircle(MovingObject* player, vector<MovingObject>* enemyBullets)
+void RumiaSecond::fireBlueHalfCircle(MovingObject* player, vector<EnemyBullet>* enemyBullets)
 {
 	// from angle 45 to 180
 	// and angle 45 to 225
@@ -203,14 +203,17 @@ void RumiaSecond::fireBlueHalfCircle(MovingObject* player, vector<MovingObject>*
 			swipeAngle = 180.0;
 
 		double angle = 45.0 + (swipeAngle / 16) * (frameCounter % 17);
-		MovingObject bullet;
+		EnemyBullet bullet;
 		bullet.LoadBitmapByString({ "Resources\\Image\\CM\\etama3\\Sprite36.bmp" }, RGB(67, 54, 54));
 		bullet.setCenter(this->getCenter());
 		POINTF speed = Utils::calculateXYSpeed(angle, 2.5f + 0.2f * (frameCounter % 17));
 		bullet.setSpeed(speed);
 		enemyBullets->push_back(bullet);
 	}
+}
 
+void RumiaSecond::fireLightBlueHalfCircle(MovingObject* player, vector<EnemyBullet>* enemyBullets)
+{
 	if (
 		(frameCounter >= 17 && frameCounter < 33) ||
 		(frameCounter >= 51 && frameCounter < 67) ||
@@ -225,7 +228,7 @@ void RumiaSecond::fireBlueHalfCircle(MovingObject* player, vector<MovingObject>*
 			swipeAngle = -180.0;
 
 		double angle = 135.0 + (swipeAngle / 16) * (frameCounter % 17);
-		MovingObject bullet;
+		EnemyBullet bullet;
 		bullet.LoadBitmapByString({ "Resources\\Image\\CM\\etama3\\Sprite37.bmp" }, RGB(67, 54, 54));
 		bullet.setCenter(this->getCenter());
 		POINTF speed = Utils::calculateXYSpeed(angle, 2.5f + 0.2f * (frameCounter % 17));
@@ -234,13 +237,10 @@ void RumiaSecond::fireBlueHalfCircle(MovingObject* player, vector<MovingObject>*
 	}
 }
 
-void RumiaSecond::fireLightBlueHalfCircle(MovingObject* player, vector<MovingObject>* enemyBullets)
-{
-}
-
-void RumiaSecond::subStage1Attack(MovingObject* player, vector<MovingObject>* enemyBullets)
+void RumiaSecond::subStage1Attack(MovingObject* player, vector<EnemyBullet>* enemyBullets)
 {
 	fireBlueHalfCircle(player, enemyBullets);
+	fireLightBlueHalfCircle(player, enemyBullets);
 }
 
 void RumiaSecond::subStage1Moving()
@@ -261,7 +261,26 @@ void RumiaSecond::subStage1Moving()
 	}
 }
 
-void RumiaSecond::update(MovingObject* player, vector<MovingObject>* enemyBullets, MovingObject* playerArea)
+void RumiaSecond::changeNextStage()
+{
+	if (subStage == 0 && currentAction == Action::ENTER)
+	{
+		currentAction = Action::ATTACK;
+	}
+	else if (subStage == 0 && currentAction == Action::ATTACK) {
+		subStage = 1;
+		currentAction = Action::ENTER;
+		timeLeft += timer;
+	}
+	else if (subStage == 1 && currentAction == Action::ENTER) {
+		currentAction = Action::ATTACK;
+	}
+	else if (subStage == 1 && currentAction == Action::ATTACK) {
+		currentAction = Action::LEAVE;
+	}
+}
+
+void RumiaSecond::update(MovingObject* player, vector<EnemyBullet>* enemyBullets, MovingObject* playerArea)
 {
 	switch (this->currentAction)
 	{
@@ -272,12 +291,13 @@ void RumiaSecond::update(MovingObject* player, vector<MovingObject>* enemyBullet
 		switch (subStage)
 		{
 		case 0:
-			if (timer == 0)
+			if (timer == 0 || currentHealth < maxHealth * 0.3)
 			{
 				// change to sub-stage 1
-				this->currentAction = Action::ENTER;
+				changeNextStage();
+				this->damagedRatio = 0.2f;
+				this->currentHealth = (int)(maxHealth * 0.3);
 				this->frameCounter = 0;
-				this->subStage = 1;
 				this->timer = 30 * 24 + 1;
 				POINTF targetPointf{ playerArea->getCenter().x,playerArea->GetTop() + 100.0f };
 				Bezier bezier({ this->getCenter(), targetPointf });
@@ -293,8 +313,7 @@ void RumiaSecond::update(MovingObject* player, vector<MovingObject>* enemyBullet
 			break;
 		case 1:
 			if (timer == 0) {
-				this->currentAction = Action::LEAVE;
-				this->speed = POINTF{ 0.0f, -2.0f };
+				changeNextStage();
 				break;
 			}
 			subStage1Moving();
@@ -358,4 +377,14 @@ void RumiaSecond::onInit(MovingObject playerArea)
 void RumiaSecond::show()
 {
 	this->ShowBitmap();
+}
+
+bool RumiaSecond::isDead()
+{
+	return currentHealth == 0 && subStage == 1;
+}
+
+int RumiaSecond::getFinishFrame()
+{
+	return 5740 - 120;
 }

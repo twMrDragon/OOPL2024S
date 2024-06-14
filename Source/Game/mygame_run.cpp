@@ -28,38 +28,52 @@ void CGameStateRun::OnBeginState()
 
 void CGameStateRun::OnMove()							// 移動遊戲元素
 {
-	//player.setPower(15);
+
+
+
+	//player->setPower(15);
 	if (mainStage == GAME_STAGE) {
 		if (isPause || isDead)
 			return;
 
-		player.reduceInvincible();
+		player->reduceInvincible();
 		// player
+		//if (false)
 		for (size_t i = 0; i < enemyBullets.size(); i++)
 		{
-			if (player.isDeath(enemyBullets[i]))
+			if (player->isDeath(enemyBullets[i]))
 			{
 				//被射中的時候
-				player.setInvincible(120);
-				player.setPower(0);
-				player.setRemainingLives(player.getRemainingLives() - 1);
-				player.setRangeAnimation(0, 3, 100, false);//not enough
+				player->setInvincible(120);
+				if (player->getPower() < 16) {
+					player->setPower(0);
+				}
+				else
+				{
+					player->setPower(player->getPower() - 16);
+				}
+				player->setHP(player->getHP() - 1);
+				player->setRangeAnimation(0, 3, 100, false);//not enough
 				isInvincibleCount = true;
-
 			}
 		}
-		player.updateLocationFBySpeed();
+		player->updateLocationFBySpeed();
 		fixPlayerLocation();
 		//換回正常模式動畫
 		if (isInvincibleCount == true) {
-			if (player.getInvincible() == 0) {
-				player.setRangeAnimation(1, 3, 100, false);
+			if (player->getInvincible() == 0) {
+				player->setRangeAnimation(1, 3, 100, false);
 				isInvincibleCount = false;
 			}
 		}
-		if (player.getRemainingLives() == 0)
+		if (player->getHP() == 0) {
 			isDead = true;
-
+			if (player->getRemainingLives() == 0) {
+				isDead = false;
+				frameCounter = 100000;
+				setShowResult();
+			}
+		}
 
 
 		// generate player bullet, move bullet and erase
@@ -70,11 +84,11 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		for (size_t i = 0; i < fallingObjects.size(); i++)
 		{
 			fallingObjects[i].updateLocationFBySpeed();
-			if (fallingObjects[i].IsOverlap(fallingObjects[i], player))
+			if (fallingObjects[i].IsOverlap(fallingObjects[i], *player.get()))
 			{
 				fallingObjects.erase(fallingObjects.begin() + i);
 				i--;
-				player.setPower(player.getPower() + 1);
+				player->setPower(player->getPower() + 1);
 			}
 		}
 		// generate enemy, move enemy and erase enemy leave player area
@@ -89,18 +103,30 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		}
 		if (this->boss != nullptr)
 		{
-			this->boss->update(&player, &enemyBullets, &playerArea);
+			this->boss->update(player.get(), &enemyBullets, &playerArea);
 			if (this->boss->onLeave(playerArea))
 			{
+				setShowResult();
+				this->frameCounter = boss->getFinishFrame();
 				this->boss = nullptr;
 			}
 		}
+		checkBulletHitBoss();
+		if (showFrame > 0)
+			showFrame--;
+		else if (isEnd) {
+			mainStage = MENU_STAGE;
+			MenuMusic->Stop(2);
+			MenuMusic->Play(1, true);
+		}
+
 		frameCounter += 1;
 	}
 }
 
 void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 {
+
 	initMenu();
 	initGame();
 	GotoGameState(GAME_STATE_RUN);
@@ -121,32 +147,40 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		}
 		// key z
 		else if (nChar == 0x5A) {
-			if (menuStage == MAIN_MENU)
-				if (mainMenuButtonSelectIndex == START)
+			if (menuStage == MAIN_MENU)///sssssss
+				if (mainMenuButtonSelectIndex == START) {
+					resetGame();
 					mainStage = GAME_STAGE;
+					MenuMusic->Stop(1);
+					MenuMusic->Play(2, true);
+					//MenuMusic->Open();
+				}
 		}
 	}
 	else {
 		if (nChar == VK_UP) {
-			player.setSpeedY(player.getSpeedY() - playerDelta);
+			player->setSpeedY(player->getSpeedY() - playerDelta);
 			if (isPause)
 				setPauseButtionSelection(-1);
 			if (isDead)
 				setDeadButtionSelection(-1);
 		}
 		else if (nChar == VK_DOWN) {
-			player.setSpeedY(player.getSpeedY() + playerDelta);
+			player->setSpeedY(player->getSpeedY() + playerDelta);
 			if (isPause)
 				setPauseButtionSelection(1);
 			if (isDead)
 				setDeadButtionSelection(1);
 		}
 		else if (nChar == VK_LEFT) {
-			player.setSpeedX(player.getSpeedX() - playerDelta);
+			player->setSpeedX(player->getSpeedX() - playerDelta);
 		}
 		else if (nChar == VK_RIGHT) {
-			player.setSpeedX(player.getSpeedX() + playerDelta);
+			player->setSpeedX(player->getSpeedX() + playerDelta);
 
+		}
+		else if (nChar == VK_SPACE) {
+			player->setSpeed(POINTF{ 0.0f,0.0f });
 		}
 		else if (nChar == 0x5A) {
 			fire = true;
@@ -156,25 +190,46 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				if (pauseButtionIndex == 1) {
 					mainStage = MENU_STAGE;
 					resetGame();
+					MenuMusic->Stop(2);
+					MenuMusic->Play(1, true);
 				}
 			}
 			if (isDead)
 			{
-				if (deadButtionIndex == 0) {
-					//continue
+				if (player->getRemainingLives() > 0) {
+					if (deadButtionIndex == 0) {
+						//continue
+						player->setHP(3);
+						player->setRemainingLives(player->getRemainingLives() - 1);
+						isPause = false;
+						isDead = false;
+					}
+					else if (deadButtionIndex == 1) {
+						isDead = false;
+						player->setRemainingLives(0);
+						frameCounter = 100000;
+						setShowResult();
+						//mainStage = MENU_STAGE;
+						//resetGame();
+						//MenuMusic->Stop(2);
+						//MenuMusic->Play(1, true);
+					}
 				}
-				if (deadButtionIndex == 1) {
-					mainStage = MENU_STAGE;
-					resetGame();
-				}
-
 			}
 		}
-		else if (nChar == VK_ESCAPE) {
+		else if (nChar == VK_ESCAPE && !isDead) {
 			if (isPause)
 				isPause = false;
 			else
 				isPause = true;
+		}
+		// I
+		else if (nChar == 0x49) {//for debug
+			player->setHP(100);
+		}
+		// P
+		else if (nChar == 0x50) {
+			player->setPower(player->getPower() + 10);
 		}
 	}
 
@@ -182,31 +237,38 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 void CGameStateRun::resetGame() {
 	isPause = false;
 	isDead = false;
-	player = ReimuB();////////////
+	isEnd = false;
+
+	player = std::make_shared<ReimuB>(ReimuB());////////////
+	player->onInit();
 	playerBullets.clear();
+
 	enemies.clear();
 	enemyBullets.clear();
+	boss = nullptr;
 	fallingObjects.clear();
+
 	frameCounter = 0;
-	player.onInit();
+
+	currentScore = 0;
 }
 
 void CGameStateRun::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	if (mainStage == GAME_STAGE) {
 		if (nChar == VK_UP) {
-			player.setSpeedY(player.getSpeedY() + playerDelta);
+			player->setSpeedY(player->getSpeedY() + playerDelta);
 		}
 		else if (nChar == VK_DOWN) {
-			player.setSpeedY(player.getSpeedY() - playerDelta);
+			player->setSpeedY(player->getSpeedY() - playerDelta);
 		}
 		else if (nChar == VK_LEFT) {
-			player.setSpeedX(player.getSpeedX() + playerDelta);
-			//player.setRangeAnimation(1, 3, 100, true);
-			//player.startToggleAnimation();
+			player->setSpeedX(player->getSpeedX() + playerDelta);
+			//player->setRangeAnimation(1, 3, 100, true);
+			//player->startToggleAnimation();
 		}
 		else if (nChar == VK_RIGHT) {
-			player.setSpeedX(player.getSpeedX() - playerDelta);
+			player->setSpeedX(player->getSpeedX() - playerDelta);
 			/*
 			*/
 		}
@@ -242,20 +304,23 @@ void CGameStateRun::OnShow()
 	if (mainStage == MENU_STAGE) {
 		background.ShowBitmap();
 		showMainMenuButtons();
+
 	}
 	else {
+		showGame();
 		if (isPause) {
+
 			pauseTitle.ShowBitmap();
 			showPauseButtion();
+
+
 		}
 		if (isDead) {
 			deadTitle_01.ShowBitmap();
 			deadTitle_02.ShowBitmap();
-			deadLivesShower.showNumber(player.getRemainingLives());
+			deadLivesShower.showNumber(player->getRemainingLives());
 			showDeadButtion();
 		}
-
-		showGame();
 	}
 }
 
@@ -275,6 +340,7 @@ void CGameStateRun::showMainMenuButtons() {
 		button.ShowBitmap();
 	}
 }
+
 
 void CGameStateRun::showPauseButtion() {
 	int d = 3;
@@ -309,10 +375,43 @@ void CGameStateRun::showDeadButtion() {
 	}
 }
 
+
+void game_framework::CGameStateRun::setShowResult()
+{
+	if (showFrame > 0)
+		return;
+	if (boss)
+		bounsPoint = boss->getTimeLeft() * 100;
+	showFrame = 120;
+	if (frameCounter > 9360) {
+		frameCounter = 100000;
+		showFrame = 150;
+		isEnd = true;
+	}
+
+}
+
+void CGameStateRun::showStageEndResults(int score) {
+	stageEndResults.ShowBitmap(1.85);
+	stageEndTitle.ShowBitmap();
+	stageClearText.ShowBitmap();
+	stageEndBounsScores.showNumber(score);
+}
+
+void CGameStateRun::showEndResults(int score) {
+	endResults.ShowBitmap();
+	endTitle.ShowBitmap();
+	endScores.showNumber(score);
+}
+
+
 void CGameStateRun::initMenu() {
+
 	// menu background
 	background.LoadBitmapByString({ "Resources\\Image\\TL\\title00\\Sprite0.bmp" });
 	background.SetTopLeft(0, 0);
+
+
 	// main menu
 	vector<vector<string>> buttonImagePaths = {
 		{ "Resources\\Image\\TL\\title01\\Sprite10.bmp","Resources\\Image\\TL\\title01s\\Sprite10.bmp" },
@@ -377,6 +476,13 @@ void CGameStateRun::initMenu() {
 		button.SetTopLeft(deadButtonLocations[i][0], deadButtonLocations[i][1]);
 		deadButtons.push_back(button);
 	}
+	if (!isMusicNow) {
+		MenuMusic->Load(2, "Resources\\s.mp3");
+		MenuMusic->Load(1, "Resources\\m.mp3");
+		MenuMusic->Play(1, true);
+		isMusicNow = true;
+	}
+
 }
 
 
@@ -404,13 +510,8 @@ void CGameStateRun::setDeadButtionSelection(int direction) {
 
 
 void CGameStateRun::initGame() {
-	// player
-	//player.LoadBitmapByString({ "Resources\\Image\\CM\\player00\\Sprite0.bmp" }, RGB(205, 205, 205));
 	pauseTitle.LoadBitmapByString({ "Resources\\Image\\IN\\ascii\\Sprite111.bmp" }, RGB(0, 0, 0));
 	pauseTitle.SetTopLeft(195, 186);
-
-
-
 
 	deadTitle_01.LoadBitmapByString({ "Resources\\Image\\IN\\ascii\\Sprite117.bmp" }, RGB(0, 0, 0));
 	deadTitle_01.SetTopLeft(150, 186);
@@ -418,16 +519,12 @@ void CGameStateRun::initGame() {
 	deadTitle_02.LoadBitmapByString({ "Resources\\Image\\IN\\ascii\\Sprite118.bmp" }, RGB(0, 0, 0));
 	deadTitle_02.SetTopLeft(220, 206);
 
-
-	player.onInit();
-
+	// player
 	// player moveing area
 	playerArea.LoadEmptyBitmap(448, 384);
 	playerArea.setLocationF(32.0f, 16.0f);
 
-	//player
-	//player.startToggleAnimation();
-	// interface background
+
 	for (const int filename : {5, 6, 7, 23}) {
 		CMovingBitmap interfaceBackgound;
 		interfaceBackgound.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite" + to_string(filename) + ".bmp" });
@@ -482,14 +579,46 @@ void CGameStateRun::initGame() {
 	deadLivesShower.setXY(252, 206);
 
 	MapCreator::onInit(&playerArea, &mapDatum);
+
+
+	//end 
+	endResults.LoadBitmapByString({ "Resources\\Image\\TL\\result\\Sprite0.bmp" }, RGB(0, 0, 0));
+	endResults.SetTopLeft(0, 0);
+	endTitle.LoadBitmapByString({ "Resources\\Image\\TL\\result03\\Sprite1.bmp" }, RGB(0, 0, 0));
+	endTitle.SetTopLeft(100, 200);
+
+	endScores.onInit();
+	endScores.setXY(225, 230);
+	endScores.setMinDigit(9);
+	//stage end
+	stageEndResults.LoadBitmapByString({ "Resources\\Image\\CM\\loading\\Sprite0.bmp" });
+	stageEndResults.SetTopLeft(-30, 0);
+
+	stageClearText.LoadBitmapByString({ "Resources\\Image\\stageclear.bmp" }, RGB(0, 0, 0));
+	stageClearText.SetTopLeft(50, 200);
+
+	stageEndTitle.LoadBitmapByString({ "Resources\\Image\\bouns.bmp" }, RGB(0, 0, 0));
+	stageEndTitle.SetTopLeft(50, 220);
+
+
+
+
+	stageEndBounsScores.onInit();
+	stageEndBounsScores.setXY(200, 220);
+	stageEndBounsScores.setMinDigit(9);
+
 }
 
 void CGameStateRun::showGame() {
+	if (isEnd) {
+		showEndResults(currentScore);
+		return;
+	}
 	// player
-	//player.SetAnimation(1, false);
-	player.handMadeShow();
+	//player->SetAnimation(1, false);
+	player->onShow();
 
-	//player.ShowBitmap();
+	//player->ShowBitmap();
 	// player bullets
 	for (size_t i = 0; i < playerBullets.size(); i++)
 		playerBullets[i].ShowBitmap();
@@ -508,6 +637,10 @@ void CGameStateRun::showGame() {
 		boss->showDisplay();
 	}
 
+	// 顯示結算
+	if (frameCounter < 100000 && showFrame > 0)
+		showStageEndResults(bounsPoint);
+
 	// interface
 	// interface border
 	showBorder();
@@ -515,13 +648,13 @@ void CGameStateRun::showGame() {
 	for (size_t i = 0; i < gameInterface.size(); i++)
 		gameInterface[i].ShowBitmap();
 	// number system
-	numberDisplays[0].showNumber(1000000);
-	numberDisplays[1].showNumber(0);
-	numberDisplays[2].showNumber(player.getPower());
+	numberDisplays[0].showNumber(maxScore);
+	numberDisplays[1].showNumber(currentScore);
+	numberDisplays[2].showNumber(player->getPower());
 	numberDisplays[3].showNumber(0);
 	numberDisplays[4].showNumber(0);
 	// player star
-	for (int i = 0; i < player.getRemainingLives(); i++)
+	for (int i = 0; i < player->getHP(); i++)
 	{
 		RedStar.SetTopLeft(496 + i * RedStar.GetWidth(), 122);
 		RedStar.ShowBitmap();
@@ -531,9 +664,6 @@ void CGameStateRun::showGame() {
 	{
 		GreenStar.SetTopLeft(496 + i * GreenStar.GetWidth(), 146);
 		GreenStar.ShowBitmap();
-	}
-	if (player.getPower() >= 8) {
-		player.showBall();
 	}
 }
 
@@ -569,22 +699,22 @@ void CGameStateRun::showBorder() {
 
 void CGameStateRun::fixPlayerLocation() {
 	// hit top bound
-	if (player.getLocationF().y < playerArea.GetTop()) {
-		player.setLocationF(player.getLocationF().x, (float)playerArea.GetTop());
+	if (player->getLocationF().y < playerArea.GetTop()) {
+		player->setLocationF(player->getLocationF().x, (float)playerArea.GetTop());
 	}
 	// hit left bound
-	if (player.getLocationF().x < playerArea.GetLeft())
+	if (player->getLocationF().x < playerArea.GetLeft())
 	{
-		player.setLocationF((float)playerArea.GetLeft(), player.getLocationF().y);
+		player->setLocationF((float)playerArea.GetLeft(), player->getLocationF().y);
 	}
 	// hit bottom bound
-	if (player.getLocationF().y + player.GetHeight() > playerArea.GetTop() + playerArea.GetHeight()) {
-		player.setLocationF(player.getLocationF().x, (float)(playerArea.GetTop() + playerArea.GetHeight() - player.GetHeight()));
+	if (player->getLocationF().y + player->GetHeight() > playerArea.GetTop() + playerArea.GetHeight()) {
+		player->setLocationF(player->getLocationF().x, (float)(playerArea.GetTop() + playerArea.GetHeight() - player->GetHeight()));
 	}
 	// hit right bound
-	if (player.getLocationF().x + player.GetWidth() > playerArea.GetLeft() + playerArea.GetWidth())
+	if (player->getLocationF().x + player->GetWidth() > playerArea.GetLeft() + playerArea.GetWidth())
 	{
-		player.setLocationF((float)(playerArea.GetLeft() + playerArea.GetWidth() - player.GetWidth()), player.getLocationF().y);
+		player->setLocationF((float)(playerArea.GetLeft() + playerArea.GetWidth() - player->GetWidth()), player->getLocationF().y);
 	}
 }
 
@@ -592,6 +722,7 @@ void CGameStateRun::checkBulletHitEnemy() {
 	for (size_t i = 0; i < playerBullets.size(); i++) {
 		for (size_t j = 0; j < enemies.size(); j++) {
 			if (enemies[j].getHitable() && playerBullets[i].IsOverlap(playerBullets[i], enemies[j])) {
+				updateScore(200);
 				addFallingObject(enemies[j]);
 				playerBullets.erase(playerBullets.begin() + i);
 				enemies.erase(enemies.begin() + j);
@@ -599,6 +730,35 @@ void CGameStateRun::checkBulletHitEnemy() {
 			}
 		}
 	}
+}
+
+void game_framework::CGameStateRun::checkBulletHitBoss()
+{
+	if (boss == nullptr)
+		return;
+	for (size_t i = 0; i < playerBullets.size(); i++)
+	{
+		if (playerBullets[i].IsOverlap(playerBullets[i], *boss.get())) {
+			boss->hurted(100);
+			playerBullets.erase(playerBullets.begin() + i);
+			break;
+		}
+	}
+
+	// boss dead
+	if (boss->isDead()) {
+		setShowResult();
+		this->frameCounter = boss->getFinishFrame();
+		updateScore(boss->getTimeLeft() * 100);
+		boss = nullptr;
+	}
+}
+
+void game_framework::CGameStateRun::updateScore(int deltaScore)
+{
+	this->currentScore += deltaScore;
+	if (this->currentScore > this->maxScore)
+		this->maxScore = this->currentScore;
 }
 
 void CGameStateRun::updateEnemy()
@@ -616,7 +776,7 @@ void CGameStateRun::updateEnemy()
 				enemy.setSpeeds(iter->second[i].speeds);
 			}
 			else {
-				double angle2Player = enemy.angleToTarget(&player);
+				double angle2Player = enemy.angleToTarget(player.get());
 				float speed = 3;
 				float x = (float)cos(angle2Player * M_PI / 180) * speed;
 				float y = (float)sin(angle2Player * M_PI / 180) * speed;
@@ -636,20 +796,20 @@ void CGameStateRun::updateEnemy()
 			continue;
 		}
 		else {
-			enemies[i].update(&player, &enemyBullets);
+			enemies[i].update(player.get(), &enemyBullets);
 		}
 	}
 
 	// enemy bullets
 	for (size_t i = 0; i < enemyBullets.size(); i++) {
-		if (!enemyBullets[i].IsOverlap(enemyBullets[i], playerArea))
+		if (!enemyBullets[i].IsOverlap(enemyBullets[i], playerArea) && enemyBullets[i].isRemovable())
 		{
 			enemyBullets.erase(enemyBullets.begin() + i);
 			i--;
 			continue;
 		}
 		else {
-			enemyBullets[i].updateLocationFBySpeed();
+			enemyBullets[i].update(player);
 		}
 	}
 }
@@ -672,13 +832,16 @@ void CGameStateRun::updatePlayerBullet()
 
 	// generate
 	if (fire) {
-		player.setPower(70);
-		vector<MovingObject> ms = player.attack();
+		//player->setPower(70);
+		vector<MovingObject> ms = player->attack();
 		playerBullets.insert(playerBullets.end(), ms.begin(), ms.end());//wave1.insert(wave1.end(), curve1Speeds.begin() + 1, curve1Speeds.end());
 	}
 }
 
 void CGameStateRun::addFallingObject(MovingObject enemy) {
+	bool drop = ((double)rand() / RAND_MAX) > 0.5;
+	if (!drop)
+		return;
 	MovingObject falling;
 	falling.LoadBitmapByString({ "Resources\\Image\\CM\\etama3\\Sprite0.bmp" }, RGB(65, 52, 52));
 	float left = enemy.getLocationF().x + (enemy.GetWidth() - falling.GetWidth()) / 2.0f;

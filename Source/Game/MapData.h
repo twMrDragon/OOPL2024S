@@ -13,7 +13,7 @@ public:
 	COLORREF colorFilter;
 	POINTF location;
 	vector<POINTF> speeds;
-	map<size_t, vector<void(*)(Enemy*, MovingObject*, vector<MovingObject>*)>> enemyAction;
+	map<size_t, vector<void(*)(Enemy*, MovingObject*, vector<EnemyBullet>*)>> enemyAction;
 	bool hitable = true;
 
 	enum class AIM_TARGET {

@@ -21,6 +21,20 @@ int Boss::getStage2Show()
 	return this->stage2Show;
 }
 
+void Boss::hurted(int damaged)
+{
+	if (currentAction != Action::ATTACK)
+		return;
+	this->currentHealth -= (int)(damaged * damagedRatio);
+	if (this->currentHealth < 0)
+		this->currentHealth = 0;
+}
+
+int Boss::getTimeLeft()
+{
+	return this->timer + timeLeft;
+}
+
 void Boss::initDisplay(MovingObject playerArea)
 {
 	enemyWordDisplay.LoadBitmapByString({ "Resources\\Image\\CM\\front\\Sprite12.bmp" }, RGB(0, 0, 0));
@@ -55,18 +69,16 @@ void Boss::countdownTimer()
 	}
 }
 
-void Boss::fireCircleShpaeNBullets(double angle, int n, vector<string> resource, float speed, vector<MovingObject>* enemyBullets)
+void Boss::fireCircleShpaeNBullets(double angle, int n, vector<string> resource, float speed, vector<EnemyBullet>* enemyBullets)
 {
 	double deltaAngle = 360.0 / n;
-	MovingObject bullet;
+	EnemyBullet bullet;
 	bullet.LoadBitmapByString(resource, RGB(67, 54, 54));
 	bullet.setCenter(this->getCenter());
 	for (int i = 0; i < n; i++)
 	{
 		double currentAngle = angle + deltaAngle * i;
-		float x = (float)cos(currentAngle * M_PI / 180) * speed;
-		float y = (float)sin(currentAngle * M_PI / 180) * speed;
-		bullet.setSpeed(POINTF{ x,y });
+		bullet.setSpeed(Utils::calculateXYSpeed(currentAngle, speed));
 		enemyBullets->push_back(bullet);
 	}
 }

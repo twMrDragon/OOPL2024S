@@ -7,11 +7,11 @@ class Daiyousei :public Boss
 public:
 	Daiyousei() = default;
 
-	void update(MovingObject* player, vector<MovingObject>* enemyBullets, MovingObject* playerArea) override;
+	void update(MovingObject* player, vector<EnemyBullet>* enemyBullets, MovingObject* playerArea) override;
 	void onInit(MovingObject playerArea) override;
 	void show() override;
-	void attack(MovingObject* player, vector<MovingObject>* enemyBullets);
-
+	bool isDead() override;
+	int getFinishFrame() override;
 
 private:
 	// enter
@@ -19,6 +19,7 @@ private:
 
 
 	// attack
+	void attack(MovingObject* player, vector<EnemyBullet>* enemyBullets);
 	// move up and loop
 	vector<POINTF> attackSpeeds;
 
@@ -26,8 +27,8 @@ private:
 	size_t flashIndex = 0;
 	vector<float> flashLocationFPosX;
 
-	void fireCircleBullets(vector<string> resource, bool clockwise, vector<MovingObject>* enemyBullets);
-	void fireWhiteBullets(MovingObject* player, vector<MovingObject>* enemyBullets);
+	void fireCircleBullets(vector<string> resource, bool clockwise, vector<EnemyBullet>* enemyBullets);
+	void fireWhiteBullets(MovingObject* player, vector<EnemyBullet>* enemyBullets);
 	POINTF fireCenter;
 	enum BulletType {
 		GREEN_CIRCLE,
