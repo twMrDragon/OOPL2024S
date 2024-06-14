@@ -13,28 +13,48 @@ void Cirno::update(MovingObject* player, vector<EnemyBullet>* enemyBullets, Movi
 			this->frameCounter += 1;
 		}
 		else {
-			changeNextStage();
+			changeNextStage(playerArea);
 		}
 
 		break;
 	case Action::ATTACK:
 
 		attack(player, enemyBullets);
-		move();
-		this->frameCounter += 1;
+		if (this->frameCounter < this->attackSpeed.size())
+		{
+			this->speed = attackSpeed[frameCounter];
+			this->updateLocationFBySpeed();
+			this->frameCounter += 1;
+		}
+		else {
+			this->frameCounter = 0;
+		}
 
 		this->countdownTimer();
+		// change next time condition
 		if (subStage == 0) {
 			if (timer == 0 || currentHealth < maxHealth * 0.3) {
-				POINTF targetPoint = POINTF{ playerArea->getCenter().x,playerArea->GetTop() + 100.0f };
-				Bezier bezier({ this->getCenter(), targetPoint });
-				enterSpeeds = bezier.getEachSpeed(30);
-				changeNextStage();
+				changeNextStage(playerArea);
 			}
 		}
 		else if (subStage == 1) {
+			if (this->timer == 0 || currentHealth == 0) {
+				changeNextStage(playerArea);
+			}
+		}
+		else if (subStage == 2) {
+			if (this->timer == 0 || currentHealth < maxHealth * 0.4) {
+				changeNextStage(playerArea);
+			}
+		}
+		else if (subStage == 3) {
+			if (this->timer == 0 || currentHealth < maxHealth * 0.2) {
+				changeNextStage(playerArea);
+			}
+		}
+		else if (subStage == 4) {
 			if (this->timer == 0)
-				changeNextStage();
+				changeNextStage(playerArea);
 		}
 
 		break;
@@ -49,6 +69,7 @@ void Cirno::update(MovingObject* player, vector<EnemyBullet>* enemyBullets, Movi
 void Cirno::onInit(MovingObject playerArea)
 {
 	this->timer = 750;
+	this->stage2Show = 1;
 	LoadBitmapByString({ "Resources\\Image\\ST\\stg2enm2\\Sprite130.bmp" }, RGB(254, 254, 254));
 	this->setLocationF(playerArea.getCenter().x - this->GetWidth() / 2.0f, (float)-this->GetHeight());
 	this->initDisplay(playerArea);
@@ -60,34 +81,34 @@ void Cirno::onInit(MovingObject playerArea)
 	// attack
 	// stay
 	for (int i = 0; i < 150; i++)
-		subStage0AttackSpeeds.push_back(POINTF{ 0.0f,0.0f });
+		attackSpeed.push_back(POINTF{ 0.0f,0.0f });
 	// move
 	for (int i = 0; i < 40; i++)
-		subStage0AttackSpeeds.push_back(POINTF{ 3.0f,-2.0f });
-	subStage0AttackSpeeds.insert(subStage0AttackSpeeds.end(), subStage0AttackSpeeds.begin(), subStage0AttackSpeeds.begin() + 10);
+		attackSpeed.push_back(POINTF{ 3.0f,-2.0f });
+	attackSpeed.insert(attackSpeed.end(), attackSpeed.begin(), attackSpeed.begin() + 10);
 	for (int i = 0; i < 40; i++)
-		subStage0AttackSpeeds.push_back(POINTF{ -1.0f,3.0f });
-	subStage0AttackSpeeds.insert(subStage0AttackSpeeds.end(), subStage0AttackSpeeds.begin(), subStage0AttackSpeeds.begin() + 10);
+		attackSpeed.push_back(POINTF{ -1.0f,3.0f });
+	attackSpeed.insert(attackSpeed.end(), attackSpeed.begin(), attackSpeed.begin() + 10);
 	for (int i = 0; i < 40; i++)
-		subStage0AttackSpeeds.push_back(POINTF{ -2.0f,-1.0f });
-	subStage0AttackSpeeds.insert(subStage0AttackSpeeds.end(), subStage0AttackSpeeds.begin(), subStage0AttackSpeeds.begin() + 10);
+		attackSpeed.push_back(POINTF{ -2.0f,-1.0f });
+	attackSpeed.insert(attackSpeed.end(), attackSpeed.begin(), attackSpeed.begin() + 10);
 
 	// stay
-	subStage0AttackSpeeds.insert(subStage0AttackSpeeds.end(), subStage0AttackSpeeds.begin(), subStage0AttackSpeeds.begin() + 150);
+	attackSpeed.insert(attackSpeed.end(), attackSpeed.begin(), attackSpeed.begin() + 150);
 
 	// move
 	for (int i = 0; i < 40; i++)
-		subStage0AttackSpeeds.push_back(POINTF{ -1.0f,-1.0f });
-	subStage0AttackSpeeds.insert(subStage0AttackSpeeds.end(), subStage0AttackSpeeds.begin(), subStage0AttackSpeeds.begin() + 10);
+		attackSpeed.push_back(POINTF{ -1.0f,-1.0f });
+	attackSpeed.insert(attackSpeed.end(), attackSpeed.begin(), attackSpeed.begin() + 10);
 	for (int i = 0; i < 40; i++)
-		subStage0AttackSpeeds.push_back(POINTF{ -2.0f,-0.5f });
-	subStage0AttackSpeeds.insert(subStage0AttackSpeeds.end(), subStage0AttackSpeeds.begin(), subStage0AttackSpeeds.begin() + 10);
+		attackSpeed.push_back(POINTF{ -2.0f,-0.5f });
+	attackSpeed.insert(attackSpeed.end(), attackSpeed.begin(), attackSpeed.begin() + 10);
 	for (int i = 0; i < 40; i++)
-		subStage0AttackSpeeds.push_back(POINTF{ 3.0f,1.5f });
-	subStage0AttackSpeeds.insert(subStage0AttackSpeeds.end(), subStage0AttackSpeeds.begin(), subStage0AttackSpeeds.begin() + 10);
+		attackSpeed.push_back(POINTF{ 3.0f,1.5f });
+	attackSpeed.insert(attackSpeed.end(), attackSpeed.begin(), attackSpeed.begin() + 10);
 
 	// stay
-	subStage0AttackSpeeds.insert(subStage0AttackSpeeds.end(), subStage0AttackSpeeds.begin(), subStage0AttackSpeeds.begin() + 150);
+	attackSpeed.insert(attackSpeed.end(), attackSpeed.begin(), attackSpeed.begin() + 150);
 }
 
 void Cirno::show()
@@ -97,7 +118,7 @@ void Cirno::show()
 
 bool Cirno::isDead()
 {
-	return subStage == 1 && currentHealth == 0;
+	return subStage == 4 && currentHealth == 0;
 }
 
 int Cirno::getFinishFrame()
@@ -121,20 +142,27 @@ void Cirno::attack(MovingObject* player, vector<EnemyBullet>* enemyBullets)
 		fireBlueBulletTrunDirection(player, enemyBullets);
 		fireYellowBullet(player, enemyBullets);
 	}
-}
-
-void Cirno::move()
-{
-	if (subStage == 0)
-	{
-		if (this->frameCounter < this->subStage0AttackSpeeds.size())
-		{
-			this->speed = subStage0AttackSpeeds[frameCounter];
-			this->updateLocationFBySpeed();
+	else if (subStage == 2) {
+		if (frameCounter % 150 < 120 && frameCounter % 20 == 0) {
+			double aimAngle = this->angleToTarget(player);
+			fireCircleShpaeNBullets(aimAngle, 11, { "Resources\\Image\\CM\\etama3\\Sprite36.bmp" }, 3.0f, enemyBullets);
+			aimAngle += 45;
+			fireCircleShpaeNBullets(aimAngle, 8, { "Resources\\Image\\CM\\etama3\\Sprite20.bmp" }, 1.5f, enemyBullets);
 		}
-		else {
-			this->frameCounter = 0;
+	}
+	else if (subStage == 3) {
+		if (frameCounter % 300 >= 210) {
+			if (frameCounter % 30 == 0)
+				fireBlueFanShape(player, enemyBullets);
 		}
+		else if (frameCounter % 300 >= 90 && frameCounter % 300 < 190) {
+			if (frameCounter % 5 == 0)
+				fireRandomBullet(player, enemyBullets);
+		}
+	}
+	else if (subStage == 4) {
+		if (timer % 5 == 0)
+			fireBulletBesideBoss(player, enemyBullets);
 	}
 }
 
@@ -236,16 +264,83 @@ void Cirno::fireBlueBulletTrunDirection(MovingObject* player, vector<EnemyBullet
 	}
 }
 
-void Cirno::changeNextStage()
+void Cirno::fireRandomBullet(MovingObject* player, vector<EnemyBullet>* enemyBullets)
+{
+	vector<string> resources = {
+		"Resources\\Image\\CM\\etama3\\Sprite15.bmp",
+		"Resources\\Image\\CM\\etama3\\Sprite28.bmp",
+		"Resources\\Image\\CM\\etama3\\Sprite27.bmp",
+		"Resources\\Image\\CM\\etama3\\Sprite24.bmp",
+		"Resources\\Image\\CM\\etama3\\Sprite19.bmp",
+		"Resources\\Image\\CM\\etama3\\Sprite32.bmp",
+		"Resources\\Image\\CM\\etama3\\Sprite44.bmp",
+		"Resources\\Image\\CM\\etama3\\Sprite43.bmp",
+		"Resources\\Image\\CM\\etama3\\Sprite39.bmp",
+		"Resources\\Image\\CM\\etama3\\Sprite36.bmp"
+	};
+	double baseAngle = (double)rand() / RAND_MAX * 360;
+	double deltaAngle = 360.0 / resources.size();
+	for (size_t i = 0; i < resources.size(); i++)
+	{
+		double currentAngle = baseAngle + deltaAngle * i;
+		float currentSpeed = (float)rand() / RAND_MAX * 2 + 2;
+
+		EnemyBullet bullet;
+		bullet.LoadBitmapByString({ resources[i] }, RGB(67, 54, 54));
+		bullet.setCenter(this->getCenter());
+		POINTF speed = Utils::calculateXYSpeed(currentAngle, currentSpeed);
+		vector<POINTF> speeds(210 - frameCounter % 300, speed);
+		speeds.insert(speeds.end(), 120, POINTF{ 0.0f,0.0f });
+		speeds.push_back(speed);
+
+		bullet.setSpeeds(speeds);
+		enemyBullets->push_back(bullet);
+	}
+}
+
+void Cirno::fireBlueFanShape(MovingObject* player, vector<EnemyBullet>* enemyBullets)
+{
+	EnemyBullet bullet;
+	bullet.LoadBitmapByString({ "Resources\\Image\\CM\\etama3\\Sprite36.bmp" }, RGB(67, 54, 54));
+	bullet.setCenter(this->getCenter());
+	double aimAngle = this->angleToTarget(player);
+	double deltaAngle = 15.0;
+	for (int j = -2; j < 3; j++)
+	{
+		double currentAngle = aimAngle + deltaAngle * j;
+		float baseSpeed = 2.5f;
+		for (int i = 1; i < 4; i++)
+		{
+			bullet.setSpeed(Utils::calculateXYSpeed(currentAngle, baseSpeed));
+			baseSpeed += 0.5f;
+			enemyBullets->push_back(bullet);
+		}
+	}
+}
+
+void Cirno::fireBulletBesideBoss(MovingObject* player, vector<EnemyBullet>* enemyBullets)
+{
+	EnemyBullet bullet;
+	bullet.LoadBitmapByString({ "Resources\\Image\\CM\\etama3\\Sprite52.bmp" }, RGB(67, 54, 54));
+
+	for (int i = 0; i < 6; i++)
+	{
+		double randomAngle = (double)rand() / RAND_MAX * 360;
+		POINTF directtion = Utils::calculateXYSpeed(randomAngle, 10.0f);
+		POINTF center = this->getCenter();
+		POINTF createCenter = POINTF{ center.x + directtion.x,center.y + directtion.y };
+		bullet.setCenter(createCenter);
+		bullet.setSpeed(Utils::calculateXYSpeed(randomAngle, 1.5f));
+		enemyBullets->push_back(bullet);
+	}
+}
+
+void Cirno::changeNextStage(MovingObject* playerArea)
 {
 	if (subStage == 0 && currentAction == Action::ENTER) {
 		this->frameCounter = 0;
+		this->damagedRatio = 0.8f;
 		this->currentAction = Action::ATTACK;
-	}
-	else if (subStage == 1 && currentAction == Action::ENTER)
-	{
-		this->timer = 900;
-		currentAction = Action::ATTACK;
 	}
 	else if (subStage == 0 && currentAction == Action::ATTACK) {
 		this->subStage = 1;
@@ -253,9 +348,87 @@ void Cirno::changeNextStage()
 		this->frameCounter = 0;
 		this->damagedRatio = 0.2f;
 		timeLeft += timer;
+		this->timer = 900;
+		POINTF targetPoint = POINTF{ playerArea->getCenter().x,playerArea->GetTop() + 100.0f };
+		Bezier bezier({ this->getCenter(), targetPoint });
+		enterSpeeds = bezier.getEachSpeed(30);
+		attackSpeed = vector<POINTF>(180, POINTF{ 0.0f,0.0f });
 		currentAction = Action::ENTER;
 	}
+	else if (subStage == 1 && currentAction == Action::ENTER)
+	{
+		currentAction = Action::ATTACK;
+	}
 	else if (subStage == 1 && currentAction == Action::ATTACK) {
+
+		subStage = 2;
+		currentHealth = maxHealth;
+		frameCounter = 0;
+		damagedRatio = 0.6f;
+		timeLeft += timer;
+		this->timer = 1500;
+		stage2Show = 0;
+		// attack speed
+		attackSpeed = vector<POINTF>(40, POINTF{ 0.5f,-1.0f });
+		attackSpeed.insert(attackSpeed.end(), 10, POINTF{ 0.0f,0.0f });
+		attackSpeed.insert(attackSpeed.end(), 40, POINTF{ -1.0f,1.0f });
+		attackSpeed.insert(attackSpeed.end(), 10, POINTF{ 0.0f,0.0f });
+		attackSpeed.insert(attackSpeed.end(), 40, POINTF{ -0.5f,-1.0f });
+		attackSpeed.insert(attackSpeed.end(), 10, POINTF{ 0.0f,0.0f });
+		attackSpeed.insert(attackSpeed.end(), 40, POINTF{ 1.0f,1.0f });
+		attackSpeed.insert(attackSpeed.end(), 10, POINTF{ 0.0f,0.0f });
+
+		currentAction = Action::ATTACK;
+	}
+	else if (subStage == 2 && currentAction == Action::ATTACK) {
+		subStage = 3;
+		currentHealth = (int)(maxHealth * 0.4);
+		frameCounter = 0;
+		damagedRatio = 0.1f;
+		timeLeft += timer;
+		this->timer = 1200;
+		POINTF targetPoint = POINTF{ playerArea->getCenter().x,playerArea->GetTop() + 100.0f };
+		Bezier bezier({ this->getCenter(), targetPoint });
+		enterSpeeds = bezier.getEachSpeed(30);
+		currentAction = Action::ENTER;
+	}
+	else if (subStage == 3 && currentAction == Action::ENTER) {
+		attackSpeed = vector<POINTF>(30, POINTF{ 0.0f,-1.0f });
+		attackSpeed.insert(attackSpeed.end(), 60, POINTF{ 0.0f,0.0f });
+		attackSpeed.insert(attackSpeed.end(), 30, POINTF{ -2.0f,0.0f });
+		attackSpeed.insert(attackSpeed.end(), 30, POINTF{ 0.0f,0.0f });
+		attackSpeed.insert(attackSpeed.end(), 30, POINTF{ 1.0f,0.5f });
+		attackSpeed.insert(attackSpeed.end(), 60, POINTF{ 0.0f,0.0f });
+		attackSpeed.insert(attackSpeed.end(), 30, POINTF{ -0.5f,1.0f });
+		attackSpeed.insert(attackSpeed.end(), 30, POINTF{ 1.5f,-0.5f });
+
+		attackSpeed.insert(attackSpeed.end(), 30, POINTF{ 0.0f,-1.0f });
+		attackSpeed.insert(attackSpeed.end(), 60, POINTF{ 0.0f,0.0f });
+		attackSpeed.insert(attackSpeed.end(), 30, POINTF{ 2.0f,0.0f });
+		attackSpeed.insert(attackSpeed.end(), 30, POINTF{ 0.0f,0.0f });
+		attackSpeed.insert(attackSpeed.end(), 30, POINTF{ -1.0f,0.5f });
+		attackSpeed.insert(attackSpeed.end(), 60, POINTF{ 0.0f,0.0f });
+		attackSpeed.insert(attackSpeed.end(), 30, POINTF{ 0.5f,1.0f });
+		attackSpeed.insert(attackSpeed.end(), 30, POINTF{ -1.5f,-0.5f });
+
+		currentAction = Action::ATTACK;
+	}
+	else if (subStage == 3 && currentAction == Action::ATTACK) {
+		subStage = 4;
+		currentHealth = (int)(maxHealth * 0.2);
+		frameCounter = 0;
+		damagedRatio = 0.1f;
+		timeLeft += timer;
+		this->timer = 900;
+		POINTF targetPoint = POINTF{ playerArea->getCenter().x,playerArea->GetTop() + 100.0f };
+		Bezier bezier({ this->getCenter(), targetPoint });
+		enterSpeeds = bezier.getEachSpeed(30);
+		currentAction = Action::ENTER;
+	}
+	else if (subStage == 4 && currentAction == Action::ENTER) {
+		currentAction = Action::ATTACK;
+	}
+	else if (subStage == 4 && currentAction == Action::ATTACK) {
 		this->currentAction = Action::LEAVE;
 	}
 }

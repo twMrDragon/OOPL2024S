@@ -15,12 +15,12 @@ private:
 	vector<POINTF> enterSpeeds;
 
 	// attack
-	vector<POINTF> subStage0AttackSpeeds;
+	vector<POINTF> attackSpeed;
 
 	int subStage = 0;
 
 	void attack(MovingObject* player, vector<EnemyBullet>* enemyBullets);
-	void move();
+
 	// subStage0
 	void fireBlueBulletWithBellShape(MovingObject* player, vector<EnemyBullet>* enemyBullets);
 	// one of the bullet will aim player after move short time
@@ -30,7 +30,13 @@ private:
 	void fireYellowBullet(MovingObject* player, vector<EnemyBullet>* enemyBullets);
 	void fireBlueBulletTrunDirection(MovingObject* player, vector<EnemyBullet>* enemyBullets);
 
+	// subStage3
+	void fireRandomBullet(MovingObject* player, vector<EnemyBullet>* enemyBullets);
+	void fireBlueFanShape(MovingObject* player, vector<EnemyBullet>* enemyBullets);
 
-	void changeNextStage();
+	// subStage4
+	void fireBulletBesideBoss(MovingObject* player, vector<EnemyBullet>* enemyBullets);
+
+	void changeNextStage(MovingObject* playerArea);
 };
 
