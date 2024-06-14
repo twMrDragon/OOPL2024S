@@ -23,6 +23,8 @@ int Boss::getStage2Show()
 
 void Boss::hurted(int damaged)
 {
+	if (currentAction != Action::ATTACK)
+		return;
 	this->currentHealth -= (int)(damaged * damagedRatio);
 	if (this->currentHealth < 0)
 		this->currentHealth = 0;
@@ -76,9 +78,7 @@ void Boss::fireCircleShpaeNBullets(double angle, int n, vector<string> resource,
 	for (int i = 0; i < n; i++)
 	{
 		double currentAngle = angle + deltaAngle * i;
-		float x = (float)cos(currentAngle * M_PI / 180) * speed;
-		float y = (float)sin(currentAngle * M_PI / 180) * speed;
-		bullet.setSpeed(POINTF{ x,y });
+		bullet.setSpeed(Utils::calculateXYSpeed(currentAngle, speed));
 		enemyBullets->push_back(bullet);
 	}
 }
